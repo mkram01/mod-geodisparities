@@ -1,0 +1,12 @@
+name: dashboard3
+title: dashboard3
+username:
+account: mkramer
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 587802
+bundleId: 1718149
+url: https://mkramer.shinyapps.io/dashboard3/
+when: 1543073862.42002
+asMultiple: FALSE
+asStatic: FALSE

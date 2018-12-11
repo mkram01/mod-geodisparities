@@ -1,0 +1,75 @@
+---
+title: "Geography of disparity"
+output: 
+  flexdashboard::flex_dashboard:
+    social: menu
+    source: embed
+runtime: shiny
+---
+
+```{r global, include = F}
+library(rsconnect)
+library(shiny)
+library(dplyr)
+library(leaflet)
+library(sf)
+library(sp)
+library(tmap)
+library(ggplot2)
+library(plotly)
+
+south <- st_read('south.gpkg', quiet = T) %>%
+  mutate(LABEL = paste(NAME, STATE_NAME, sep = ', '))
+
+varList <- c('BL_r2015','WH_r2015','BW_RR_15','BW_RD_15')
+
+```
+
+
+Column
+------------------------------------------------------
+
+### Black-White PTB Disparity: Relative Measure
+
+```{r}
+tm <- tm_shape(south) +
+  tm_fill('BW_RR_15',
+          style = 'quantile',
+          palette = 'BuPu',
+          title = 'B/W RR VLBW (<1500 gms)',
+            id = 'LABEL',
+            popup.vars = c('Black VLBW %, 2015: ' = 'BL_r2015',
+                          'White VLBW %, 2015: ' =  'WH_r2015',
+                          'Black/White VLBW RR, 2015: ' = 'BW_RR_15'),
+          popup.format = list(BL_r2015 = list(fun=function(x) paste0(sprintf("%.1f%%", 100 * x))),
+                                WH_r2015 = list(fun=function(x) paste0(sprintf("%.1f%%", 100 * x))),
+                                BW_RR_15 = list(digits = 2))) +
+    tm_borders()+
+    tm_layout(legend.format = list(digits = 2))
+
+renderLeaflet(tmap_leaflet(tm))
+```
+
+
+Column
+----------------------------------------------------
+
+### Disparity against rate
+
+```{r}
+g <- ggplot(south, aes(x=100*WH_r2015, y = BW_RR_15, col = STATE_NAME,
+                       text = paste('White VLBW: ', round(100*WH_r2015, digits = 2), '%',
+                                    '<br>Black VLBW: ', round(100*BL_r2015, digits = 2), '%',
+                                    '<br>Black-White RR: ',
+                                    round(BW_RR_15, digits=2))))+
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(STATE_NAME~., ncol = 3) +
+  theme_bw()+
+  xlab('VLBW Rate (%) for Whites in 2015')+
+  ylab('Relative B-W Disparity, 2015') +
+  theme(legend.position = 'none')
+
+ggplotly(g, tooltip = c('text'))
+```
+
