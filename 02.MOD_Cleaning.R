@@ -90,10 +90,11 @@ births2016 <- readRDS("NCHS Birth Data/R/births2016.rda")
 ## DBWT: Birth Weight - Detail in Grams
 #
 ## 2007 has additional variables: XOSTATE, MDEDUC, ALCOHOL
-## XOSTATE: Expanded Occurrence Postal State
+## 2008-2010 have 2 additional variables (38) - XOSTATE, MDEDUC, ALCOHOL, lost lrecl
+## ## XOSTATE: Expanded Occurrence Postal State
 ## MDEDUC: Not in documentation, 18 category + 99
 ## ALCOHOL: Not in documentation, Blank in 2007
-## 2008-2010 have 2 additional variables (38) - XOSTATE, MDEDUC, ALCOHOL, lost lrecl
+
 
 ## Subset data -------------------
 ## Provide list of variables across years
