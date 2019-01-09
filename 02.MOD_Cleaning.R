@@ -49,49 +49,51 @@ births2016 <- readRDS("NCHS Birth Data/R/births2016.rda")
 # write_feather(births2016, "feather/births2016")
 
 ## Data Description -------------------------
+## Based on 2007 data - some years and vars may require cleaning
+## Some data may be present only for the 1989 certificate or the 2003 certificate
 ## Base = 36 variables
-## lrecl
+## lrecl: Value is either 1500 or 775
 ## REVISION: A (2003) or S (1989) birth certificate
-## DOB_YY: Birth year
-## DOB_MM: Birth month
-## OSTATE: Occurrence Postal State   
+## DOB_YY: Birth year - Identical within years
+## DOB_MM: Birth month - 12 months
+## OSTATE: Occurrence Postal State - 50 states
 ## OCNTYFIPS: County FIPS (3-digit) -- will need to add state FIPS for linking 
 ## MAGER: Maternal age, 12 - 50 years, 10-12 classified as 12 , 50 includes 50-64     
-## MAGER9: Maternal age recode: <15, 15-19, 20-24, 25-29, 30-34, 35-39, 40-44, 45-49, 50-64
+## MAGER9: Maternal age recode (9 category) - <15, 15-19, 20-24, 25-29, 30-34, 35-39, 40-44, 45-49, 50-64
 ## MBCNTRY: Maternal birth country (2 letter)
-## UMBSTATE: Maternal Postal Birth State - 1 letter
+## UMBSTATE: Maternal Postal Birth State - 1 letter (Blank in 2007)
 ## mbstate: Maternal Postal Birth State (revised) - 2 letter
-## MBSTATE_REC
-## MRSTATE
-## MRCNTYFIPS
-## MBRACE      
-## MRACE
-## UMHISP
-## MRACEHISP
-## MAR_P
-## MAR
-## MEDUC
-## FAGECOMB
-## UFAGECOMB
-## FBRACE
-## FRACEREC    
-## FRACE
-## UFHISP
-## FRACEHISP
-## LBO_REC
-## TBO_REC
-## UPREVIS
-## CIG_REC
-## DPLURAL
-## COMBGEST
-## OBGEST
-## DBWT" 
-# 
+## MBSTATE_REC (3 category) - Unsure what these refer to ***********
+## MRSTATE: Maternal Residence Postal State (includes non-states)
+## MRCNTYFIPS: Maternal Residence County FIPS
+## MBRACE: Maternal Bridged Race - 18 category, single race and bridged multiple races     
+## MRACE: Maternal Race - 5 category + additional state-specific codes for API
+## UMHISP: Maternal Hispanic Origin - Non-Hispanic, Mexican, Puerto Rican, Cuban, Central/South American, Other and Unknown Hispanic, Unknown
+## MRACEHISP: Maternal Race/Hispanic Origin - Mexican, Puerto Rican, Cuban, Central/South American, Other and Unknown Hispanic, Non-Hispanic White, Non-Hispanic Black, Non-Hispanic Other Races, Unknown
+## MAR_P: Paternity Acknowledged (Blank in 2007): Yes, No, Unknown, NA
+## MAR: Maternal Marital Status - Narried, Unmarried, Unknown
+## MEDUC: Maternal Education (9 category) <= 8th grade, 9-12, High School/GED, Some college, Associate, Bachelor, Master's, Doctorate, Unknown
+## FAGECOMB: Paternal Combined Age (Revised) - 9 - 98, 99 = unknown
+## UFAGECOMB: Paternal Combined Age (Revised) - 10 - 98, 99 = unknown
+## FBRACE: Paternal Bridged Race - 18 category, single race and bridged multiple races
+## FRACEREC: Paternal Race Recode - White, Black, AI/AN, A/PI, Unknown
+## FRACE: Paternal Race - 5 category + additional state-specific codes for API
+## UFHISP: Paternal Hispanic Origin - Non-Hispanic, Mexican, Puerto Rican, Cuban, Central/South American, Other and Unknown Hispanic, Unknown
+## FRACEHISP: Paternal Race/Hispanic Origin - Mexican, Puerto Rican, Cuban, Central/South American, Other and Unknown Hispanic, Non-Hispanic White, Non-Hispanic Black, Non-Hispanic Other Races, Unknown
+## LBO_REC: Live Birth Order Recode - 1-7, 8 or more, Unknown
+## TBO_REC: Total Birth Order Recode - 1-7, 8 or more, Unknown
+## UPREVIS: Number of prenatal visits - 0-49, 99 = unknown
+## CIG_REC: Cigarette Recode - Yes, No, Unknown
+## DPLURAL: Plurality, recoded: Single, Twin, Triplet, Quadruplet, Quintuplet or higher
+## COMBGEST: Gestation - Detail in Weeks - 17-47, 99 = Unknown
+## OBGEST_FLG: Clinical Estimate of Gestation Used Flag - 1= Clinical estimate used
+## DBWT: Birth Weight - Detail in Grams
+#
 ## 2007 has additional variables: XOSTATE, MDEDUC, ALCOHOL
+## XOSTATE: Expanded Occurrence Postal State
+## MDEDUC: Not in documentation, 18 category + 99
+## ALCOHOL: Not in documentation, Blank in 2007
 ## 2008-2010 have 2 additional variables (38) - XOSTATE, MDEDUC, ALCOHOL, lost lrecl
-## Other comments:
-## lrecl always has the same value across all rows in a dataset
-## OSTATE (occurrence postal state) and XOSTATE (expanded occurence postal state) do not always have the same values
 
 ## Subset data -------------------
 ## Provide list of variables across years
