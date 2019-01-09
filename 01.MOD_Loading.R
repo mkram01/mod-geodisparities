@@ -51,17 +51,17 @@ births2013 <- readRDS("NCHS Birth Data/R/births2013.rda")
 births2014 <- readRDS("NCHS Birth Data/R/births2014.rda")
 births2015 <- readRDS("NCHS Birth Data/R/births2015.rda")
 births2016 <- readRDS("NCHS Birth Data/R/births2016.rda")
-
-write_feather(births2007, "feather/births2007")
-write_feather(births2008, "feather/births2008")
-write_feather(births2009, "feather/births2009")
-write_feather(births2010, "feather/births2010")
-write_feather(births2011, "feather/births2011")
-write_feather(births2012, "feather/births2012")
-write_feather(births2013, "feather/births2013")
-write_feather(births2014, "feather/births2014")
-write_feather(births2015, "feather/births2015")
-write_feather(births2016, "feather/births2016")
+# 
+# write_feather(births2007, "feather/births2007")
+# write_feather(births2008, "feather/births2008")
+# write_feather(births2009, "feather/births2009")
+# write_feather(births2010, "feather/births2010")
+# write_feather(births2011, "feather/births2011")
+# write_feather(births2012, "feather/births2012")
+# write_feather(births2013, "feather/births2013")
+# write_feather(births2014, "feather/births2014")
+# write_feather(births2015, "feather/births2015")
+# write_feather(births2016, "feather/births2016")
 
 ## Monica SAS files ---------
 @15   	YEAR			4.
