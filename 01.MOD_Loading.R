@@ -14,7 +14,9 @@ library(haven)
 library(Hmisc)
 library(feather)
 library(dplyr)
+library(plyr)
 library(magrittr)
+library(cdlTools)
 
 ## Read in data ------------------
 years <- c(2007:2016)
@@ -40,7 +42,7 @@ for (i in seq_along(years)) {
   cat("*")
 }  
 
-## Output as feather -----------
+## Output by-year datasets  -----------
 births2007 <- readRDS("NCHS Birth Data/R/births2007.rda")
 births2008 <- readRDS("NCHS Birth Data/R/births2008.rda")
 births2009 <- readRDS("NCHS Birth Data/R/births2009.rda")
@@ -51,14 +53,3 @@ births2013 <- readRDS("NCHS Birth Data/R/births2013.rda")
 births2014 <- readRDS("NCHS Birth Data/R/births2014.rda")
 births2015 <- readRDS("NCHS Birth Data/R/births2015.rda")
 births2016 <- readRDS("NCHS Birth Data/R/births2016.rda")
-# 
-# write_feather(births2007, "feather/births2007")
-# write_feather(births2008, "feather/births2008")
-# write_feather(births2009, "feather/births2009")
-# write_feather(births2010, "feather/births2010")
-# write_feather(births2011, "feather/births2011")
-# write_feather(births2012, "feather/births2012")
-# write_feather(births2013, "feather/births2013")
-# write_feather(births2014, "feather/births2014")
-# write_feather(births2015, "feather/births2015")
-# write_feather(births2016, "feather/births2016")
