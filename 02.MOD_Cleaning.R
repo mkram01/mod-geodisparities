@@ -512,9 +512,10 @@ births$MRSTATEFIPS[which(nchar(births$MRSTATEFIPS) == 1)] <- paste0("0", births$
 births$COMBFIPS <- rep(NA, nrow(births))
 
 # Create combined FIPS variable
-births$COMBFIPS[which(nchar(births$MRSTATEFIPS) == 2)] <- paste0(births$MRSTATEFIPS[i], births$MRCNTYFIPS[i])
+births$COMBFIPS[which(nchar(births$MRSTATEFIPS) == 2)] <- paste0(births$MRSTATEFIPS[which(nchar(births$MRSTATEFIPS) == 2)], 
+                                                                 births$MRCNTYFIPS[which(nchar(births$MRSTATEFIPS) == 2)])
 
-
+## Restrict to US
 
 outfile <- paste0("NCHS Birth Data/R/allbirths_newvars.rda")
 saveRDS(births, outfile)  
