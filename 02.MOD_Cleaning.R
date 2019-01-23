@@ -258,22 +258,20 @@ births$MRSTATEFIPS <- as.character(fips(births$MRSTATE, to = "FIPS"))
 # Note: this transformation may not work with non-US states
 # Caution: 84,505 "NA" values
 
-births$COMBFIPS <- rep("", nrow(births))
-for (i in 1:nrow(births)) {
-  
-  # Change "NA" values to blank"
-  if (births$MRSTATEFIPS[i] == "NA") {
-    births$MRSTATEFIPS[i] <- ""
-  }  
-  # Add leading zeroes to one digit state FIPS
-  if (nchar(births$MRSTATEFIPS[i]) == 1) {
-    births$MRSTATEFIPS[i] <- paste0("0", births$MRSTATEFIPS[i])
-  }
-  if (nchar(births$MRSTATEFIPS[i]) == 2) {
-    births$COMBFIPS <- paste0(births$MRSTATEFIPS[i], births$MRCNTYFIPS[i])
-  }
-}
+# Reset character to logical NA
+births$MRSTATEFIPS[which(births$MRSTATEFIPS == "NA")] <- NA
 
+# Reset long value to logical NA
+births$MRSTATEFIPS[which(nchar(births$MRSTATEFIPS) > 2)] <- NA
+
+# Add leading zeroes to one-digit state FIPS
+births$MRSTATEFIPS[which(nchar(births$MRSTATEFIPS) == 1)] <- paste0("0", births$MRSTATEFIPS[which(nchar(births$MRSTATEFIPS) == 1)])
+
+# Initialize combined variable
+births$COMBFIPS <- rep(NA, nrow(births))
+
+# Create combined FIPS variable
+births$COMBFIPS[which(nchar(births$MRSTATEFIPS) == 2)] <- paste0(births$MRSTATEFIPS[i], births$MRCNTYFIPS[i])
 
 ## Maternal Education (9 category to 3 category)
 # Recode Recode: 1 = No HS/GED, 2 = GED but no college 3 = some college or higher
@@ -309,8 +307,12 @@ df1 <- births %>%
   filter(RACEHISP_RECODE == 2 | 
            RACEHISP_RECODE == 3) %>%
   
+  # Restrict to singleton births
+  filter(PLURALITY == "Singleton") %>%
+  
   # Group by Year, County, Race
   group_by(DOB_YY, COMBFIPS, RACEHISP_RECODE) %>%
+  
 
   # Summarize preterm birth
   summarise(vptb = sum(VPTB),
@@ -318,9 +320,7 @@ df1 <- births %>%
             mptb = sum(MPTB),
             ptb = sum(PTB),
             births = sum(!(is.na(DOB_YY))))
-  
-  # Restrict to singleton births
-  filter(PLURALITY == "singleton") %>%
+saveRDS(df1, "NCHS Birth Data/R/df1.rda")   
   
 ## YEAR x COUNTY x RACE x AGE restricted to SINGLETONS
 df2 <- births %>%
@@ -330,7 +330,7 @@ df2 <- births %>%
   #          RACEHISP_RECODE == 3) %>%
   #          
   # Restrict to singleton births
-  filter(PLURALITY == "singleton") %>%
+  filter(PLURALITY == "Singleton") %>%
     
   # Group by Year, County, Race, Age Cat
   group_by(DOB_YY, COMBFIPS, RACEHISP_RECODE, MAGER9) %>%
@@ -341,7 +341,8 @@ df2 <- births %>%
             mptb = sum(MPTB),
             ptb = sum(PTB),
             births = sum(!(is.na(DOB_YY))))   
-  
+saveRDS(df2, "NCHS Birth Data/R/df2.rda")
+
 ## YEAR x COUNTY x RACE x AGE x MARITAL x EDUCATION restricted to SINGLETONS 
 df3 <- births %>%
   
@@ -350,7 +351,7 @@ df3 <- births %>%
   #          RACEHISP_RECODE == 3) %>%
   
   # Restrict to singleton births
-  filter(PLURALITY == "singleton") %>%
+  filter(PLURALITY == "Singleton") %>%
   
   # Group by Year, County, Race, Age Cat, Marital, Education
   group_by(DOB_YY, COMBFIPS, RACEHISP_RECODE, MAGER9, MAR, MEDUC_R) %>%
@@ -361,6 +362,7 @@ df3 <- births %>%
             mptb = sum(MPTB),
             ptb = sum(PTB),
             births = sum(!(is.na(DOB_YY)))) 
+saveRDS(df3, "NCHS Birth Data/R/df3.rda")
 
 ## Now re-run including multiple births
 ## YEAR x COUNTY x RACE restricted to NH-Black/NH-White
@@ -379,6 +381,7 @@ df4 <- births %>%
             mptb = sum(MPTB),
             ptb = sum(PTB),
             births = sum(!(is.na(DOB_YY)))) 
+saveRDS(df4, "NCHS Birth Data/R/df4.rda")
 
 ## YEAR x COUNTY x RACE x AGE
 df5 <- births %>%
@@ -396,6 +399,7 @@ df5 <- births %>%
             mptb = sum(MPTB),
             ptb = sum(PTB),
             births = sum(!(is.na(DOB_YY)))) 
+saveRDS(df5, "NCHS Birth Data/R/df5.rda")
 
 ## YEAR x COUNTY x RACE x AGE x MARITAL x EDUCATION
 df6 <- births %>%
@@ -413,5 +417,5 @@ df6 <- births %>%
                   mptb = sum(MPTB),
                   ptb = sum(PTB),
                   births = sum(!(is.na(DOB_YY)))) 
-
+saveRDS(df6, "NCHS Birth Data/R/df6.rda")
   
