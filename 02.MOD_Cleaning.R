@@ -255,15 +255,25 @@ births$PLURALITY[which(births$DPLURAL > 1)] <- "Multiple"
 # Transform MRSTATE (abbreviation to FIPS code)
 births$MRSTATEFIPS <- rep(NA, nrow(births))
 births$MRSTATEFIPS <- as.character(fips(births$MRSTATE, to = "FIPS"))
+# Note: this transformation may not work with non-US states
+# Caution: 84,505 "NA" values
 
-# Add leading zeroes to one digit state FIPS
-for (i in nrow(births)) {
+births$COMBFIPS <- rep("", nrow(births))
+for (i in 1:nrow(births)) {
+  
+  # Change "NA" values to blank"
+  if (births$MRSTATEFIPS[i] == "NA") {
+    births$MRSTATEFIPS[i] <- ""
+  }  
+  # Add leading zeroes to one digit state FIPS
   if (nchar(births$MRSTATEFIPS[i]) == 1) {
     births$MRSTATEFIPS[i] <- paste0("0", births$MRSTATEFIPS[i])
   }
+  if (nchar(births$MRSTATEFIPS[i]) == 2) {
+    births$COMBFIPS <- paste0(births$MRSTATEFIPS[i], births$MRCNTYFIPS[i])
+  }
 }
-# Combined FIPS variable
-births$COMBFIPS <- paste0(births$MRSTATEFIPS, births$MRCNTYFIPS)
+
 
 ## Maternal Education (9 category to 3 category)
 # Recode Recode: 1 = No HS/GED, 2 = GED but no college 3 = some college or higher
@@ -271,9 +281,6 @@ births$MEDUC_R <- rep(NA, nrow(births))
 births$MEDUC_R[which(births$MEDUC %in% c(1:2) )] <- 1
 births$MEDUC_R[which(births$MEDUC == 3)] <- 2
 births$MEDUC_R[which(births$MEDUC %in% c(4:8))] <- 3
-ncol(births)
-births <- births[, -"MEDUC"]
-ncol(births)
 
 ## Pre-Term Birth
 # Following Monica Recode
@@ -291,6 +298,9 @@ saveRDS(births, outfile)
 
 ## Output aggregated datasets for analysis ------------------------------------------------
 ## Counts of each preterm birth outcome plus count of total birth in strata
+
+# Cut Non-US births?
+# MRSTATE = AB, AS, BC, GU, PR, VI, CC, CU, MX, XX, ZZ, MB, NB, NF, NL, NT, NS, NU, ON, PE, QC, SK, YT, ?MP?
 
 ## YEAR x COUNTY x RACE restricted to SINGLETONS and NH-Black/NH-White
 df1 <- births %>%
