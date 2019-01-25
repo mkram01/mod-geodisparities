@@ -707,6 +707,14 @@ proc freq data = h.allbirths_temp;
 	tables mrterr*dob_yy*revision/list missing;
 run;
 
+
+* state by year by revision;
+proc freq data = h.allbirths_temp;
+	tables revision * (mracehisp obgest_flg)/list missing;
+run;
+
+
+
 /* 
 No revision values in 2014 or 2015
 Missing values;
@@ -749,7 +757,7 @@ data h.allbirths_rec (drop = MBRACE);
 	* Recode maternal education to 3 category;
 	* 1 = No HS/GED, 2 = GED but no college 3 = some college or higher;
 	MEDUC_R = .;
-	if MEDUC = 1 or MEDUCE = 2 then MEDUC_R = 1;
+	if MEDUC = 1 or MEDUC = 2 then MEDUC_R = 1;
 	if MEDUC = 3 then MEDUC_R = 2;
 	if MEDUC = 4 or MEDUCE = 5 or MEDUC = 6 or MEDUC = 7 or MEDUC = 8 then MEDUC_R = 3;
 
@@ -774,7 +782,7 @@ data h.allbirths_rec (drop = MBRACE);
 	* Race/Hisp Recode (Adapted/Edited from 2014-2016 Natality Data Use File);
     * 1 = Hispanic, 2 = NHW, 3 = NHB, 4 = NHAI/AN, 5 = NHA/PI, 9 = UNK;
 	RACEHISP_RECODE = .;
-	if UMHISP = 1:5, then RACEHISP_RECODE = 1; * Hispanic;
+	if UMHISP = 1 or UMHISP = 2 or UMHISP = 3 or UMHISP = 4 or UMHISP = 5 then RACEHISP_RECODE = 1; * Hispanic;
     if UMHISP = 0 and MBRACE_R = 1 then RACEHISP_RECODE = 2; *Non-Hispanic White;
     if UMHISP = 0 and MBRACE_R = 2 then RACEHISP_RECODE = 3; *Non-Hispanic Black;
     if UMHISP = 0 and MBRACE_R = 3 then RACEHISP_RECODE = 4; *Non-Hispanic AI/AN;
@@ -837,7 +845,7 @@ data h.allbirths_rec (drop = MBRACE);
 	if mrterr = "PR" then STFIPS ="72";
 	
 	* Fix County FIPS;
-	TEMPCNTYFIPS = substr(compress(MRCNTY, 1, 3);
+	TEMPCNTYFIPS = substr(compress(MRCNTY), 1, 3);
 	CNTYFIPS_R = substr(("000"||TEMPCNTYFIPS), length(TEMPCNTYFIPS), 3);
 
 	* Create combined FIPS variable;
@@ -870,8 +878,11 @@ data h.allbirths_rec (drop = MBRACE);
 		  LPTB = "LPTB (Weeks): [34, 37)"
 		  MPTB = "MPTB (Weeks): [32, 37)";
 		  COMBFIPS = "Combined FIPS";
-	run;
+run;
 
+proc print data = h.allbirths_rec (obs = 100);
+	var STFIPS MRCNTY TEMPCNTYFIPS CNTYFIPS_R;
+run;
 
 proc summary data = allbirths nway;
 	class dob_yy;
