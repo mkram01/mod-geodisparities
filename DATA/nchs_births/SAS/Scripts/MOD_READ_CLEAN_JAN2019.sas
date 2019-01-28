@@ -2,7 +2,9 @@
 * Code for reading in and cleaning births dataset ;
 **************************************************;
 
-LIBNAME h "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS";
+*LIBNAME h "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS";
+LIBNAME h "C:\Users\kweiss2\Documents\March of Dimes";
+
 
 /* 2007 ******************************************************************************************/
 DATA h.births_2007 (drop = mrace);
@@ -20,6 +22,7 @@ attrib  umhisp       length=3     label="Mother's Hispanic Origin RFP 569=f_mori
 attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -41,6 +44,7 @@ INPUT
 @149  mracehisp          1. 
 @153  mar                1.  
 @155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
 @451  combgest           2.  
@@ -52,11 +56,6 @@ INPUT
 * Combine mbrace and mrace into mbrace;
 if mbrace = . or mbrace = "" then mbrace = mrace;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2008 ******************************************************************************************/
@@ -75,6 +74,7 @@ attrib  umhisp       length=3     label="Mother's Hispanic Origin RFP 569=f_mori
 attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -90,28 +90,24 @@ INPUT
 @109  mrterr            $2. 
 @114  mrcnty             3. 
 @138  restatus           1. 
-@139  mbrace             2. 
-@141  mrace              2. 
+@139  mbrace             2.
+@141  mrace              2.
 @148  umhisp             1. 
 @149  mracehisp          1. 
-@153  mar                1. 
-@155  meduc              1. 
+@153  mar                1.  
+@155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
-@451  combgest           2. 
+@451  combgest           2.  
 @456  obgest_flg         1. 
 @457  gest_imp           1. 
-@463  dbwt               4.
+@463  dbwt               4. 
 ;
 
 * Combine mbrace and mrace into mbrace;
 if mbrace = . or mbrace = "" then mbrace = mrace;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2009 ******************************************************************************************/
@@ -130,6 +126,7 @@ attrib  umhisp       length=3     label="Mother's Hispanic Origin RFP 569=f_mori
 attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -140,33 +137,29 @@ attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";
 
 INPUT
 @7    revision          $1. 
-@15   dob_yy             4.   
+@15   dob_yy             4. 
 @93   mager9             1. 
 @109  mrterr            $2. 
 @114  mrcnty             3. 
 @138  restatus           1. 
-@139  mbrace             2. 
-@141  mrace              2. 
+@139  mbrace             2.
+@141  mrace              2.
 @148  umhisp             1. 
 @149  mracehisp          1. 
 @153  mar                1.  
 @155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
-@451  combgest           2. 
+@451  combgest           2.  
 @456  obgest_flg         1. 
 @457  gest_imp           1. 
-@463  dbwt               4.
+@463  dbwt               4. 
 ;
 
 * Combine mbrace and mrace into mbrace;
 if mbrace = . or mbrace = "" then mbrace = mrace;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2010 *******************************************************************************************/
@@ -185,6 +178,7 @@ attrib  umhisp       length=3     label="Mother's Hispanic Origin RFP 569=f_mori
 attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -200,15 +194,16 @@ INPUT
 @109  mrterr            $2. 
 @114  mrcnty             3. 
 @138  restatus           1. 
-@139  mbrace             2. 
-@141  mrace              2. 
+@139  mbrace             2.
+@141  mrace              2.
 @148  umhisp             1. 
 @149  mracehisp          1. 
-@153  mar                1. 
-@155  meduc              1. 
+@153  mar                1.  
+@155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
-@451  combgest           2. 
+@451  combgest           2.  
 @456  obgest_flg         1. 
 @457  gest_imp           1. 
 @463  dbwt               4. 
@@ -217,11 +212,6 @@ INPUT
 * Combine mbrace and mrace into mbrace;
 if mbrace = . or mbrace = "" then mbrace = mrace;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2011 *******************************************************************************************/
@@ -240,6 +230,7 @@ attrib  umhisp       length=3     label="Mother's Hispanic Origin RFP 569=f_mori
 attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -255,15 +246,16 @@ INPUT
 @109  mrterr            $2. 
 @114  mrcnty             3. 
 @138  restatus           1. 
-@139  mbrace             2. 
-@141  mrace              2. 
+@139  mbrace             2.
+@141  mrace              2.
 @148  umhisp             1. 
 @149  mracehisp          1. 
 @153  mar                1.  
-@155  meduc              1. 
+@155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
-@451  combgest           2. 
+@451  combgest           2.  
 @456  obgest_flg         1. 
 @457  gest_imp           1. 
 @463  dbwt               4. 
@@ -272,11 +264,6 @@ INPUT
 * Combine mbrace and mrace into mbrace;
 if mbrace = . or mbrace = "" then mbrace = mrace;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2012 *******************************************************************************************/
@@ -295,6 +282,7 @@ attrib  umhisp       length=3     label="Mother's Hispanic Origin RFP 569=f_mori
 attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -310,15 +298,16 @@ INPUT
 @109  mrterr            $2. 
 @114  mrcnty             3. 
 @138  restatus           1. 
-@139  mbrace             2. 
-@141  mrace              2. 
+@139  mbrace             2.
+@141  mrace              2.
 @148  umhisp             1. 
 @149  mracehisp          1. 
 @153  mar                1.  
-@155  meduc              1. 
+@155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
-@451  combgest           2. 
+@451  combgest           2.  
 @456  obgest_flg         1. 
 @457  gest_imp           1. 
 @463  dbwt               4. 
@@ -327,11 +316,6 @@ INPUT
 * Combine mbrace and mrace into mbrace;
 if mbrace = . or mbrace = "" then mbrace = mrace;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2013 *******************************************************************************************/
@@ -350,6 +334,7 @@ attrib  umhisp       length=3     label="Mother's Hispanic Origin RFP 569=f_mori
 attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -365,15 +350,16 @@ INPUT
 @109  mrterr            $2. 
 @114  mrcnty             3. 
 @138  restatus           1. 
-@139  mbrace             2. 
-@141  mrace              2. 
+@139  mbrace             2.
+@141  mrace              2.
 @148  umhisp             1. 
 @149  mracehisp          1. 
-@153  mar                1. 
-@155  meduc              1. 
+@153  mar                1.  
+@155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
-@451  combgest           2. 
+@451  combgest           2.  
 @456  obgest_flg         1. 
 @457  gest_imp           1. 
 @463  dbwt               4. 
@@ -382,11 +368,6 @@ INPUT
 * Combine mbrace and mrace into mbrace;
 if mbrace = . or mbrace = "" then mbrace = mrace;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2014 *******************************************************************************************/
@@ -438,14 +419,10 @@ rename compgst_imp = gest_imp;
 rename dmar = mar;
 rename mhisp_r = umhisp;
 
-* Add revision;
+* Add revision and dmeduc;
 revision = "";
+dmeduc = "";
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
 /* 2015 *******************************************************************************************/
@@ -497,22 +474,26 @@ rename compgst_imp = gest_imp;
 rename dmar = mar;
 rename mhisp_r = umhisp;
 
-* Add revision;
+* Add revision and dmeduc;
 revision = "";
+dmeduc = "";
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
 run;
 
-/* 2016 ******************************************************************************************
-DATA h.births_2016 (keep = dob_yy mager9 mrterr rcnty restatus mbrace mhisp_r mracehisp 
-							mar meduc dplural compgst_imp obgest_flg combgest oegest_comb dbwt);
+
+proc freq data = births_2015;
+	tables mrterr /missing;
+run;
+
+proc freq data = births_2015;
+	tables oegest_comb/missing;
+run;
+
+/* 2016 ****************************************************************************************** */
+DATA h.births_2016;
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2016US.AllCnty.txt" LRECL = 20000;
-/*                     
+/*                       
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R"; 
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R"; 
@@ -528,6 +509,7 @@ attrib  compgst_imp  length=3     label="Combined Gestation Imputation Flag Blan
 attrib  obgest_flg   length=3     label="Obstetric Estimate of Gestation Used Flag Blank Obstetric Estimate is not u";
 attrib  combgest     length=3     label="Combined Gestation - Detail in Weeks 17-47 17th through 47th week of";
 attrib  oegest_comb  length=3     label="Obstetric Estimate Edited 17-47 Weeks of gestation";
+*/
 
 INPUT
 
@@ -554,17 +536,13 @@ rename rcnty = mrcnty;
 rename oegest_comb = estgest;
 rename compgst_imp = gest_imp;
 rename dmar = mar;
+rename mhisp_r = umhisp;
 
-* Add revision;
+* Add revision and dmeduc;
 revision = "";
+dmeduc = "";
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" then delete;
-;
-*/
+run;
 
 /*
 /* 2007 Territories ********************************************************************************
@@ -584,6 +562,7 @@ attrib  mracehisp    length=3     label="Mother's Race/Hispanic Origin RFP 569=f
 attrib  mar          length=3     label="Mother's Marital Status U,R";          
 attrib  mar_imp      length=3     label="Mother's Marital Status Imputed Flag U,R";
 attrib  meduc        length=3     label="Mother's Education RFP 571=f_meduc R"; 
+attrib  dmeduc       length=3     label="Mother's Education RFP 647=f_med U";   
 attrib  dplural      length=3     label="Plurality U,R";                        
 attrib  estgest      length=3     label="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
 attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R"; 
@@ -591,20 +570,21 @@ attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Fla
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
 
+
 INPUT
 @7    revision          $1. 
 @15   dob_yy             4. 
 @93   mager9             1. 
 @109  mrterr            $2. 
-@114  mrcntyfips         3. 
+@114  mrcnty             3. 
 @138  restatus           1. 
-@139  mbrace             2. 
-@141  mrace              2. 
+@139  mbrace             2.
+@141  mrace              2.
 @148  umhisp             1. 
 @149  mracehisp          1. 
-@153  mar                1. 
-@154  mar_imp            1. 
-@155  meduc              1. 
+@153  mar                1.  
+@155  meduc              1.  
+@156  dmeduc             2. 
 @423  dplural            1. 
 @446  estgest            2. 
 @451  combgest           2.  
@@ -613,14 +593,10 @@ INPUT
 @463  dbwt               4. 
 ;
 
-* Drop non-US (Keep PR);
-if mrterr = "AB" or mrterr = "AS" or mrterr = "BC" or mrterr = "FM" or mrterr = "GU" or mrterr = "MB" or 
-	mrterr = "MH" or mrterr = "MP" or mrterr = "NB" or mrterr = "NL" or mrterr = "NT" or mrterr = "NS" or 
-	mrterr = "NU" or mrterr = "ON" or mrterr = "PE" or mrterr = "PW" or mrterr = "QC" or mrterr = "SK" or 
-	mrterr = "VI" or mrterr = "XX" or mrterr = "YT" or mrterr = "YY" or mrterr = "ZZ" then delete;
+* Drop non-territory values PR);
+if mrterr != 'PR' then delete;
 ;
 */
-
 
 
 /* Combine dataset and clean ****************************************************************************************/
@@ -686,7 +662,6 @@ proc means data = h.allbirths_temp n mean nmiss;
 	var combgest dbwt estgest;
 run;
 
-
 * Meduc by year, state, revision;
 proc freq data = h.allbirths_temp;
 	tables meduc*dob_yy*mrterr*revision/list missing;
@@ -702,18 +677,20 @@ proc freq data = h.allbirths_temp;
 	tables obgest_flg*dob_yy*mrterr*revision/list missing;
 run;
 
-* state by year by revision;
+* year by state by revision;
 proc freq data = h.allbirths_temp;
-	tables mrterr*dob_yy*revision/list missing;
+	tables dob_yy*mrterr*revision/list missing;
+run;
+
+* Race/ethnicity variables;
+proc freq data = h.allbirths_temp;
+	tables mracehisp*umhisp*mbrace/list missing;
 run;
 
 
-* state by year by revision;
 proc freq data = h.allbirths_temp;
-	tables revision * (mracehisp obgest_flg)/list missing;
+	tables meduc*mrterr*dob_yy / list missing;
 run;
-
-
 
 /* 
 No revision values in 2014 or 2015
@@ -740,14 +717,24 @@ data h.allbirths_rec (drop = MBRACE);
 	set h.allbirths_temp;
 
 	* Remove rest of world;
-	if mrterr = "ZZ" then delete;
+	* Drop non-US (Keep PR);
+	if mrterr = 'AB' or mrterr = 'AS' or mrterr = 'BC' or mrterr = 'FM' or mrterr = 'GU' or mrterr = 'MB' or 
+		mrterr = 'MH' or mrterr = 'MP' or mrterr = 'NB' or mrterr = 'NL' or mrterr = 'NT' or mrterr = 'NS' or 
+		mrterr = 'NU' or mrterr = 'ON' or mrterr = 'PE' or mrterr = 'PW' or mrterr = 'QC' or mrterr = 'SK' or 
+		mrterr = 'VI' or mrterr = 'XX' or mrterr = 'YT' or mrterr = 'YY' or mrterr = 'ZZ' then delete;
 
 	***** Create new variables **************;
+
+	* Clean ESTGEST;
+	if ESTGEST < 17 or ESTGEST > 47 then ESTGEST = .;
+
+	* Clean COMBGEST;
+	if COMBGEST > 47 then COMBGEST = .;
+
 	* Create BESTGEST Estimate (obstetric ESTGEST if available, otherwise COMBGEST);
 	BESTGEST = .;
-	if OBGEST_FLG = . then BESTGEST = COMBGEST;
-	if ESTGEST > 0 and OBGEST_FLG = 1 then BESTGEST = ESTGEST;
-	if BESTGEST = 99 then BESTGEST = .;
+	if ESTGEST > 17 then BESTGEST = ESTGEST;
+	else BESTGEST = COMBGEST;
 
 	* Recode singleton births to singleton or multiple;
 	PLURALITY = .;
@@ -761,15 +748,15 @@ data h.allbirths_rec (drop = MBRACE);
 	if MEDUC = 3 then MEDUC_R = 2;
 	if MEDUC = 4 or MEDUCE = 5 or MEDUC = 6 or MEDUC = 7 or MEDUC = 8 then MEDUC_R = 3;
 
-	* Pre-Term Birth (Following Monica Recode);
+	* Pre-Term Birth (Following Monica Recode) - using clinical estimate;
 	PTB = 0;
 	VPTB = 0;
 	MPTB = 0;
 	LPTB = 0;
-	if BESTGEST >= 20 and BESTGEST < 37 then PTB = 1;
-	if BESTGEST >= 20 and BESTGEST < 32 then VPTB = 1;
-	if BESTGEST >= 32 and BESTGEST < 37 then MPTB = 1;
-	if BESTGEST >= 34 and BESTGEST < 37 then LPTB = 1;
+	if ESTGEST >= 20 and ESTGEST < 37 then PTB = 1;
+	if ESTGEST >= 20 and ESTGEST < 32 then VPTB = 1;
+	if ESTGEST >= 32 and ESTGEST < 37 then MPTB = 1;
+	if ESTGEST >= 34 and ESTGEST < 37 then LPTB = 1;
 
 	* Revised Coding for MBRACE_R;
     * 1 = White, 2 = Black, # 3 = AI/AN, 4 = A/PI;
@@ -790,59 +777,59 @@ data h.allbirths_rec (drop = MBRACE);
     if UMHISP = 9 then RACEHISP_RECODE = 9; *Unknown/Not Stated
     
 	* Assign State FIPS;
-	STFIPS = "";
-	if mrterr = "AL" then STFIPS ="01";
-	if mrterr = "AK" then STFIPS ="02";
-	if mrterr = "AZ" then STFIPS ="04";
-	if mrterr = "AR" then STFIPS ="05";
-	if mrterr = "CA" then STFIPS ="06";
-	if mrterr = "CO" then STFIPS ="08";
-	if mrterr = "CT" then STFIPS ="09";
-	if mrterr = "DE" then STFIPS ="10";
-	if mrterr = "DC" then STFIPS ="11";
-	if mrterr = "FL" then STFIPS ="12";
-	if mrterr = "GA" then STFIPS ="13";
-	if mrterr = "HI" then STFIPS ="15";
-	if mrterr = "ID" then STFIPS ="16";
-	if mrterr = "IL" then STFIPS ="17";
-	if mrterr = "IN" then STFIPS ="18";
-	if mrterr = "IA" then STFIPS ="19";
-	if mrterr = "KS" then STFIPS ="20";
-	if mrterr = "KY" then STFIPS ="21";
-	if mrterr = "LA" then STFIPS ="22";
-	if mrterr = "ME" then STFIPS ="23";
-	if mrterr = "MD" then STFIPS ="24";
-	if mrterr = "MA" then STFIPS ="25";
-	if mrterr = "MI" then STFIPS ="26";
-	if mrterr = "MN" then STFIPS ="27";
-	if mrterr = "MS" then STFIPS ="28";
-	if mrterr = "MO" then STFIPS ="29";
-	if mrterr = "MT" then STFIPS ="30";
-	if mrterr = "NE" then STFIPS ="31";
-	if mrterr = "NV" then STFIPS ="32";
-	if mrterr = "NH" then STFIPS ="33";
-	if mrterr = "NJ" then STFIPS ="34";
-	if mrterr = "NM" then STFIPS ="35";
-	if mrterr = "NY" then STFIPS ="36";
-	if mrterr = "NC" then STFIPS ="37";
-	if mrterr = "ND" then STFIPS ="38";
-	if mrterr = "OH" then STFIPS ="39";
-	if mrterr = "OK" then STFIPS ="40";
-	if mrterr = "OR" then STFIPS ="41";
-	if mrterr = "PA" then STFIPS ="42";
-	if mrterr = "RI" then STFIPS ="44";
-	if mrterr = "SC" then STFIPS ="45";
-	if mrterr = "SD" then STFIPS ="46";
-	if mrterr = "TN" then STFIPS ="47";
-	if mrterr = "TX" then STFIPS ="48";
-	if mrterr = "UT" then STFIPS ="49";
-	if mrterr = "VT" then STFIPS ="50";
-	if mrterr = "VA" then STFIPS ="51";
-	if mrterr = "WA" then STFIPS ="53";
-	if mrterr = "WV" then STFIPS ="54";
-	if mrterr = "WI" then STFIPS ="55";
-	if mrterr = "WY" then STFIPS ="56";
-	if mrterr = "PR" then STFIPS ="72";
+	STFIPS = '';
+	if mrterr = 'AL' then STFIPS ='01';
+	if mrterr = 'AK' then STFIPS ='02';
+	if mrterr = 'AZ' then STFIPS ='04';
+	if mrterr = 'AR' then STFIPS ='05';
+	if mrterr = 'CA' then STFIPS ='06';
+	if mrterr = 'CO' then STFIPS ='08';
+	if mrterr = 'CT' then STFIPS ='09';
+	if mrterr = 'DE' then STFIPS ='10';
+	if mrterr = 'DC' then STFIPS ='11';
+	if mrterr = 'FL' then STFIPS ='12';
+	if mrterr = 'GA' then STFIPS ='13';
+	if mrterr = 'HI' then STFIPS ='15';
+	if mrterr = 'ID' then STFIPS ='16';
+	if mrterr = 'IL' then STFIPS ='17';
+	if mrterr = 'IN' then STFIPS ='18';
+	if mrterr = 'IA' then STFIPS ='19';
+	if mrterr = 'KS' then STFIPS ='20';
+	if mrterr = 'KY' then STFIPS ='21';
+	if mrterr = 'LA' then STFIPS ='22';
+	if mrterr = 'ME' then STFIPS ='23';
+	if mrterr = 'MD' then STFIPS ='24';
+	if mrterr = 'MA' then STFIPS ='25';
+	if mrterr = 'MI' then STFIPS ='26';
+	if mrterr = 'MN' then STFIPS ='27';
+	if mrterr = 'MS' then STFIPS ='28';
+	if mrterr = 'MO' then STFIPS ='29';
+	if mrterr = 'MT' then STFIPS ='30';
+	if mrterr = 'NE' then STFIPS ='31';
+	if mrterr = 'NV' then STFIPS ='32';
+	if mrterr = 'NH' then STFIPS ='33';
+	if mrterr = 'NJ' then STFIPS ='34';
+	if mrterr = 'NM' then STFIPS ='35';
+	if mrterr = 'NY' then STFIPS ='36';
+	if mrterr = 'NC' then STFIPS ='37';
+	if mrterr = 'ND' then STFIPS ='38';
+	if mrterr = 'OH' then STFIPS ='39';
+	if mrterr = 'OK' then STFIPS ='40';
+	if mrterr = 'OR' then STFIPS ='41';
+	if mrterr = 'PA' then STFIPS ='42';
+	if mrterr = 'RI' then STFIPS ='44';
+	if mrterr = 'SC' then STFIPS ='45';
+	if mrterr = 'SD' then STFIPS ='46';
+	if mrterr = 'TN' then STFIPS ='47';
+	if mrterr = 'TX' then STFIPS ='48';
+	if mrterr = 'UT' then STFIPS ='49';
+	if mrterr = 'VT' then STFIPS ='50';
+	if mrterr = 'VA' then STFIPS ='51';
+	if mrterr = 'WA' then STFIPS ='53';
+	if mrterr = 'WV' then STFIPS ='54';
+	if mrterr = 'WI' then STFIPS ='55';
+	if mrterr = 'WY' then STFIPS ='56';
+	if mrterr = 'PR' then STFIPS ='72';
 	
 	* Fix County FIPS;
 	TEMPCNTYFIPS = substr(compress(MRCNTY), 1, 3);
@@ -855,14 +842,14 @@ data h.allbirths_rec (drop = MBRACE);
     * Remove any record with Birthweight < 500 grams;
     if DBWT >= 500 then delete;
 
+	    * Remove any records with Gestational Age < 20 weeks;
+    if ESTGEST < 20 then delete;
+
 	* Remove any record missing Plurality; 
 	if DPLURAL = . then delete;
 
 	* Remove any record missing county of residence;
-	if COMBFIPS = "" then delete;
-
-    * Remove any records with Gestational Age < 20 weeks;
-    if BESTGEST < 20 then delete;
+	if COMBFIPS = '' then delete;
  
     * Remove any records missing maternal race/ethnicity;
 	if RACEHISP_RECODE = . then delete;
@@ -880,19 +867,39 @@ data h.allbirths_rec (drop = MBRACE);
 		  COMBFIPS = "Combined FIPS";
 run;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 proc print data = h.allbirths_rec (obs = 100);
 	var STFIPS MRCNTY TEMPCNTYFIPS CNTYFIPS_R;
 run;
 
-proc summary data = allbirths nway;
+proc summary data = h.allbirths_rec nway;
 	class dob_yy;
 	var ptb vptb lptb mptb;
-	output out=test(n=count_identifer sum=sum_payout;
+	output out=test(n=count_identifer sum=sum_payout);
 run;
 
 proc print data=test;
 run;
-
+/*
                                Obs    region    identifer    payout
 
 
@@ -903,3 +910,4 @@ run;
                                 3        3          3          50
 
                                 4        4          2          30
+*/
