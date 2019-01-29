@@ -40,10 +40,26 @@ apis <- listCensusApis()
 View(apis)
 
 #checkout variables inside api of interest - acs5; 2005-2009 5-year ACS 
-acs_vars <- listCensusMetadata(name = "acs5", 
+acs_vars <- listCensusMetadata(name = "acs5",
+                               vintage = 2009,
                                type = "variables")
-  
-  
+
+######################################################################################################
+# -------------------------------------- ACS5 2009 ------------------------------------- #
+######################################################################################################
+#race/ethnicity
+acs_race_eth <- getCensus(name = "acs5",
+                        vintage = 2009, 
+                        vars = c("NAME","B02001_001E", #total pop
+                                 "B02001_002E", #white pop alone
+                                 "B02001_003E", #black pop alone 
+                                 "B03001_003E" #hispanic or latino
+                                 ), 
+                        region = "county:*",
+                        regionin = "state:02")
+
+
+
 acs_income <- getCensus(name = "acs/acs5",
                         vintage = 2017, 
                         vars = c("NAME", "B19013_001E", "B19013_001EA", "B19013_001M", "B19013_001MA"), 
