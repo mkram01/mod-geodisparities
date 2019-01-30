@@ -10,7 +10,8 @@ LIBNAME h "C:\Users\kweiss2\Documents\March of Dimes";
 DATA h.births_2007 (drop = mrace);
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2007US.AllCnty.txt" LRECL = 20000;
-/*attrib  revision     length=$1    label="Revision U,R";                         
+
+attrib  revision     length=$1    label="Revision U,R";                         
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R";            
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R";
@@ -29,7 +30,6 @@ attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R";
 attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Flag U,R";
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
-*/
 
 INPUT
 @7    revision          $1. 
@@ -62,7 +62,8 @@ run;
 DATA h.births_2008 (drop = mrace);
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2008US.AllCnty.txt" LRECL = 20000;
-/*attrib  revision     length=$1    label="Revision U,R";                         
+
+attrib  revision     length=$1    label="Revision U,R";                         
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R";            
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R";
@@ -81,7 +82,6 @@ attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R";
 attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Flag U,R";
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
-*/
 
 INPUT
 @7    revision          $1. 
@@ -114,7 +114,8 @@ run;
 DATA h.births_2009 (drop = mrace);
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2009US.AllCnty.txt" LRECL = 20000;
-/*attrib  revision     length=$1    label="Revision U,R";                         
+
+attrib  revision     length=$1    label="Revision U,R";                         
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R";            
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R";
@@ -133,7 +134,6 @@ attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R";
 attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Flag U,R";
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
-*/
 
 INPUT
 @7    revision          $1. 
@@ -166,7 +166,8 @@ run;
 DATA h.births_2010 (drop = mrace);
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2010US.AllCnty.txt" LRECL = 20000;
-/*attrib  revision     length=$1    label="Revision U,R";                         
+
+attrib  revision     length=$1    label="Revision U,R";                         
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R";            
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R";
@@ -185,7 +186,6 @@ attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R";
 attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Flag U,R";
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
-*/
 
 INPUT
 @7    revision          $1. 
@@ -218,7 +218,8 @@ run;
 DATA h.births_2011 (drop = mrace);
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2011US.AllCnty.txt" LRECL = 20000;
-/*attrib  revision     length=$1    label="Revision U,R";                         
+
+attrib  revision     length=$1    label="Revision U,R";                         
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R";            
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R";
@@ -237,7 +238,6 @@ attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R";
 attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Flag U,R";
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
-*/
 
 INPUT
 @7    revision          $1. 
@@ -270,7 +270,8 @@ run;
 DATA h.births_2012 (drop = mrace);
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2012US.AllCnty.txt" LRECL = 20000;
-/*attrib  revision     length=$1    label="Revision U,R";                         
+
+attrib  revision     length=$1    label="Revision U,R";                         
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R";            
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R";
@@ -289,7 +290,7 @@ attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R";
 attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Flag U,R";
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
-*/
+
 
 INPUT
 @7    revision          $1. 
@@ -322,7 +323,8 @@ run;
 DATA h.births_2013 (drop = mrace);
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2013US.AllCnty.txt" LRECL = 20000;
-/*attrib  revision     length=$1    label="Revision U,R";                         
+
+attrib  revision     length=$1    label="Revision U,R";                         
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R";            
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R";
@@ -341,7 +343,6 @@ attrib  combgest     length=3     label="Gestation - Detail in Weeks U,R";
 attrib  obgest_flg   length=3     label="Clinical Estimate of Gestation Used Flag U,R";
 attrib  gest_imp     length=3     label="Gestation Imputed Flag U,R";           
 attrib  dbwt         length=4     label="Birth Weight - Detail in Grams U,R";   
-*/
 
 INPUT
 @7    revision          $1. 
@@ -374,7 +375,7 @@ run;
 DATA h.births_2014;
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2014US.AllCnty.txt" LRECL = 20000;
-/*                        
+                       
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R"; 
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R"; 
@@ -390,10 +391,8 @@ attrib  compgst_imp  length=3     label="Combined Gestation Imputation Flag Blan
 attrib  obgest_flg   length=3     label="Obstetric Estimate of Gestation Used Flag Blank Obstetric Estimate is not u";
 attrib  combgest     length=3     label="Combined Gestation - Detail in Weeks 17-47 17th through 47th week of";
 attrib  oegest_comb  length=3     label="Obstetric Estimate Edited 17-47 Weeks of gestation";
-*/
 
 INPUT
-
 @9    dob_yy             4. 
 @79   mager9             1. 
 @89   mrterr            $2. 
@@ -421,7 +420,7 @@ rename mhisp_r = umhisp;
 
 * Add revision and dmeduc;
 revision = "";
-dmeduc = "";
+dmeduc = .;
 
 run;
 
@@ -429,7 +428,7 @@ run;
 DATA h.births_2015;
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2015US.AllCnty.txt" LRECL = 20000;
-/*                       
+                     
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R"; 
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R"; 
@@ -445,10 +444,8 @@ attrib  compgst_imp  length=3     label="Combined Gestation Imputation Flag Blan
 attrib  obgest_flg   length=3     label="Obstetric Estimate of Gestation Used Flag Blank Obstetric Estimate is not u";
 attrib  combgest     length=3     label="Combined Gestation - Detail in Weeks 17-47 17th through 47th week of";
 attrib  oegest_comb  length=3     label="Obstetric Estimate Edited 17-47 Weeks of gestation";
-*/
 
 INPUT
-
 @9    dob_yy             4. 
 @79   mager9             1. 
 @89   mrterr            $2. 
@@ -476,7 +473,7 @@ rename mhisp_r = umhisp;
 
 * Add revision and dmeduc;
 revision = "";
-dmeduc = "";
+dmeduc = .;
 
 run;
 
@@ -493,7 +490,7 @@ run;
 DATA h.births_2016;
 
 INFILE "C:\Users\kweiss2\Box Sync\March of Dimes_ShareFolder\data\nchs_births\SAS\Input\NATL2016US.AllCnty.txt" LRECL = 20000;
-/*                       
+                       
 attrib  dob_yy       length=4     label="Birth Year U,R";                               
 attrib  mager9       length=3     label="Mother's Age Recode 9 U,R"; 
 attrib  mrterr       length=$2    label="Mother's Residence Territory/Posession U,R"; 
@@ -509,10 +506,8 @@ attrib  compgst_imp  length=3     label="Combined Gestation Imputation Flag Blan
 attrib  obgest_flg   length=3     label="Obstetric Estimate of Gestation Used Flag Blank Obstetric Estimate is not u";
 attrib  combgest     length=3     label="Combined Gestation - Detail in Weeks 17-47 17th through 47th week of";
 attrib  oegest_comb  length=3     label="Obstetric Estimate Edited 17-47 Weeks of gestation";
-*/
 
 INPUT
-
 @9    dob_yy             4. 
 @79   mager9             1. 
 @89   mrterr            $2. 
@@ -540,7 +535,7 @@ rename mhisp_r = umhisp;
 
 * Add revision and dmeduc;
 revision = "";
-dmeduc = "";
+dmeduc = .;
 
 run;
 
@@ -603,7 +598,6 @@ if mrterr != 'PR' then delete;
 data allbirths;
 	set h.births_2007;
 run;
-
 proc append base=allbirths data=h.births_2008;
 run;
 proc append base=allbirths data=h.births_2009;
@@ -620,16 +614,18 @@ proc append base=allbirths data=h.births_2014;
 run;
 proc append base=allbirths data=h.births_2015;
 run;
+proc append base=allbirths data=h.births_2016;
+run;
 
 ods html close;
 ods html;
-/* Appended Dataset ****/
+
+/* Create raw appended Dataset in library****/
 data h.allbirths_temp;
 	set allbirths;
-	if revision = "R" then revision = "";
-	if mrterr = "ZZ" then delete;
 run;
 
+/* Data exploration
 * Meduc by year, state, revision;
 proc freq data = h.allbirths_temp;
 	tables meduc*dob_yy*mrterr*revision/list missing;
@@ -691,37 +687,57 @@ run;
 proc freq data = h.allbirths_temp;
 	tables meduc*mrterr*dob_yy / list missing;
 run;
-
-/* 
-No revision values in 2014 or 2015
-Missing values;
-meduc 7264584 19.90%
-mracehisp 200449 0.55%
-obgest_flg 34416709 94.29%
-
-* Missing values of OBGEST_FLG - Both A and S birth certificates, across all states, 2007-2015
-* Missing values of MEDUC - all S birth certificates, across all states, 2007-2015
-* Missing values of MRACEHISP - 39 states
-2014 AL (2) AR (1) CA (13) CO (4) CT (35426) DC (4) DE (22) FL (36) GA (14)
-	 HI (1) IL (1) IN (3) KS (1) KY (1) LA(1) MA (94) MD (17) ME (4) MI (6) MN (1)
-	 MO (2) NC (15) NH (10) NJ (91098) NV (4) NY (3131) OH (7) OK (5) OR (2) PA (1364)
-	 RI (87) SC (4) SD (1) TN (1) TX (19) VA (21) VT (2) WA (7) WV (3)
-
-30 states (different 30)
-2015 AL (1) AR (1) AZ (2) CA(5) CT (34912) DE (5) FL (20) GA (3) IL (2) MA (86) MD (4) ME (1) MN (1)
-	 MO (2) MT (1) NC (5) NH (5) NJ (30980) NV (1) NY (2490) OH (2) PA (388) PR (1)
-	 RI (78) TN (1) TX (3) VA (8) WA (1) WI (1) WV (2)
 */
-data h.allbirths_rec (drop = MBRACE);
+
+data h.allbirths_rec;
 
 	set h.allbirths_temp;
+
+	attrib  revision    	length = $1   	label ="Revision U,R";                         
+	attrib  dob_yy      	length = 4    	label ="Birth Year U,R";                               
+	attrib  mager9      	length = 3    	label ="Mother's Age Recode 9 U,R";            
+	
+	attrib  restatus    	length = 3    	label ="Residence Status U,R";                 
+
+	attrib  mbrace      	length = 3    	label ="Revised (Combined U Race and R Bridged Race)";                 
+	attrib  umhisp      	length = 3    	label ="Mother's Hispanic Origin RFP 569=f_morigin U,R";
+	attrib  mracehisp   	length = 3    	label ="Mother's Race/Hispanic Origin RFP 569=f_morigin U,R";
+	attrib 	mbrace_r 		length = 3		label = "Recoded Maternal Race: White, Black, AI/AN, A/PI";
+	attrib 	racehisp_recode length = 3		label = "Recode Race/Ethnicity: Hisp, NHW, NHB, NHAI/AN, NHA/PI, UNK";
+
+	attrib  mar         	length = 3    	label ="Mother's Marital Status U,R";          
+
+	attrib  meduc       	length = 3    	label ="Mother's Education RFP 571=f_meduc R"; 
+	attrib  dmeduc      	length = 3    	label ="Mother's Education RFP 647=f_med U";   
+	attrib 	meduc_r 		length = 3		label = "Maternal Education Recode (No HS/GED, GED no college, Some college)- R";
+
+	attrib  dplural     	length = 3    	label ="Plurality U,R";
+    attrib 	plurality 		length = 3		label = "Plurality (0 = Singleton)";
+ 
+	attrib  dbwt        	length = 4		label="Birth Weight - Detail in Grams U,R";
+
+	attrib  estgest     	length = 3    	label ="Obstetric/Clinical Gestation Est. RFP 573=f_clinest U,R";
+	attrib  combgest    	length = 3    	label ="Gestation - Detail in Weeks U,R"; 
+	attrib  bestgest 		length = 3		label = "Best Gestational Age Estimate (Clin/Obstet if available)";
+
+	attrib 	ptb				length = 3		label = "PTB (Weeks): [20, 37)";
+	attrib 	vptb			length = 3		label = "VPTB (Weeks): [20, 37)";
+	attrib 	lptb			length = 3		label = "LPTB (Weeks): [34, 37)";
+	attrib 	mptb			length = 3		label = "MPTB (Weeks): [32, 37)";
+
+	attrib  mrterr      	length = $2   	label ="Mother's Residence Territory/Posession U,R";
+	attrib  mrcnty      	length = 3    	label ="Mother's County of Residence U,R";  
+	attrib  cntyfips_r     	length = $3    	label ="Character - Mother's County of Residence U,R";
+	attrib 	stfips			length = $2		label = "State FIPS Code";
+	attrib 	combfips		length = $5  	label = "Combined FIPS"; 
 
 	* Remove rest of world;
 	* Drop non-US (Keep PR);
 	if mrterr = 'AB' or mrterr = 'AS' or mrterr = 'BC' or mrterr = 'FM' or mrterr = 'GU' or mrterr = 'MB' or 
 		mrterr = 'MH' or mrterr = 'MP' or mrterr = 'NB' or mrterr = 'NL' or mrterr = 'NT' or mrterr = 'NS' or 
 		mrterr = 'NU' or mrterr = 'ON' or mrterr = 'PE' or mrterr = 'PW' or mrterr = 'QC' or mrterr = 'SK' or 
-		mrterr = 'VI' or mrterr = 'XX' or mrterr = 'YT' or mrterr = 'YY' or mrterr = 'ZZ' then delete;
+		mrterr = 'VI' or mrterr = 'XX' or mrterr = 'YT' or mrterr = 'YY' or mrterr = 'ZZ' or mrterr = 'PR' then delete;
+	* Removes 84,867 records;
 
 	***** Create new variables **************;
 
@@ -746,7 +762,7 @@ data h.allbirths_rec (drop = MBRACE);
 	MEDUC_R = .;
 	if MEDUC = 1 or MEDUC = 2 then MEDUC_R = 1;
 	if MEDUC = 3 then MEDUC_R = 2;
-	if MEDUC = 4 or MEDUCE = 5 or MEDUC = 6 or MEDUC = 7 or MEDUC = 8 then MEDUC_R = 3;
+	if MEDUC = 4 or MEDUC = 5 or MEDUC = 6 or MEDUC = 7 or MEDUC = 8 then MEDUC_R = 3;
 
 	* Pre-Term Birth (Following Monica Recode) - using clinical estimate;
 	PTB = 0;
@@ -762,22 +778,40 @@ data h.allbirths_rec (drop = MBRACE);
     * 1 = White, 2 = Black, # 3 = AI/AN, 4 = A/PI;
 	MBRACE_R = .;
 	if MBRACE = 1 or MBRACE = 21 then MBRACE_R = 1; *White (single or multiple);
-    if MBRACE = 2 or MBRACE = 22 then MBRACE_R = 2;  *Black (single or multiple);
-    if MBRACE = 3 or MBRACE = 23 then MBRACE_R = 3 ; *AI/AN (single or multiple);
+    else if MBRACE = 2 or MBRACE = 22 then MBRACE_R = 2;  *Black (single or multiple);
+    else if MBRACE = 3 or MBRACE = 23 then MBRACE_R = 3 ; *AI/AN (single or multiple);
     else if MBRACE > 0 then MBRACE_R = 4; * A/PI (single or multiple - MBRACE = (4:14, 24) | MRACE =(4:7, 18, 28, 38, 48, 58))]; 
 	
+	* Note, if including Puerto Rico, re-examine race and ethnicity variables
+
 	* Race/Hisp Recode (Adapted/Edited from 2014-2016 Natality Data Use File);
     * 1 = Hispanic, 2 = NHW, 3 = NHB, 4 = NHAI/AN, 5 = NHA/PI, 9 = UNK;
 	RACEHISP_RECODE = .;
 	if UMHISP = 1 or UMHISP = 2 or UMHISP = 3 or UMHISP = 4 or UMHISP = 5 then RACEHISP_RECODE = 1; * Hispanic;
-    if UMHISP = 0 and MBRACE_R = 1 then RACEHISP_RECODE = 2; *Non-Hispanic White;
-    if UMHISP = 0 and MBRACE_R = 2 then RACEHISP_RECODE = 3; *Non-Hispanic Black;
-    if UMHISP = 0 and MBRACE_R = 3 then RACEHISP_RECODE = 4; *Non-Hispanic AI/AN;
-	if UMHISP = 0 and MBRACE_R = 3 then RACEHISP_RECODE = 4; *Non-Hispanic A/PI;
-    if UMHISP = 9 then RACEHISP_RECODE = 9; *Unknown/Not Stated
-    
+    else if UMHISP = 0 and MBRACE_R = 1 then RACEHISP_RECODE = 2; *Non-Hispanic White;
+    else if UMHISP = 0 and MBRACE_R = 2 then RACEHISP_RECODE = 3; *Non-Hispanic Black;
+    else if UMHISP = 0 and MBRACE_R = 3 then RACEHISP_RECODE = 4; *Non-Hispanic AI/AN;
+	else if UMHISP = 0 and MBRACE_R = 4 then RACEHISP_RECODE = 5; *Non-Hispanic A/PI;
+    else if UMHISP = 9 then RACEHISP_RECODE = 9; *Unknown/Not Stated;
+
+	***** Restrictions **************;
+    * Remove any record with Birthweight < 500 grams;
+    if DBWT < 500 then delete;
+	* Removes 61,109 records
+
+	* Remove any records with Gestational Age < 20 weeks;
+    if ESTGEST < 20 then delete;
+	* Removes 98,139 records;
+
+	* Remove any record missing Plurality; 
+	if DPLURAL = . then delete;
+	* Removes 0 records;
+
+    * Remove any records missing maternal race/ethnicity;
+	if RACEHISP_RECODE = . then delete;
+	* Removes 0 records, but 297,728 with unknown ethnicity;
+
 	* Assign State FIPS;
-	STFIPS = '';
 	if mrterr = 'AL' then STFIPS ='01';
 	if mrterr = 'AK' then STFIPS ='02';
 	if mrterr = 'AZ' then STFIPS ='04';
@@ -829,85 +863,98 @@ data h.allbirths_rec (drop = MBRACE);
 	if mrterr = 'WV' then STFIPS ='54';
 	if mrterr = 'WI' then STFIPS ='55';
 	if mrterr = 'WY' then STFIPS ='56';
-	if mrterr = 'PR' then STFIPS ='72';
+	*if mrterr = 'PR' then STFIPS ='72';
 	
-	* Fix County FIPS;
-	TEMPCNTYFIPS = substr(compress(MRCNTY), 1, 3);
-	CNTYFIPS_R = substr(("000"||TEMPCNTYFIPS), length(TEMPCNTYFIPS), 3);
-
-	* Create combined FIPS variable;
-	COMBFIPS = catx("", STFIPS, CNTYFIPS_R);
-
-	***** Restrictions **************;
-    * Remove any record with Birthweight < 500 grams;
-    if DBWT >= 500 then delete;
-
-	    * Remove any records with Gestational Age < 20 weeks;
-    if ESTGEST < 20 then delete;
-
-	* Remove any record missing Plurality; 
-	if DPLURAL = . then delete;
+	* Create new geo variables;
+	mrcnty_char = put(mrcnty, 3.);
+	CNTYFIPS_R = put(input(mrcnty_char, best4.), z3.);
+	COMBFIPS = cats("", STFIPS, CNTYFIPS_R);
 
 	* Remove any record missing county of residence;
 	if COMBFIPS = '' then delete;
- 
-    * Remove any records missing maternal race/ethnicity;
-	if RACEHISP_RECODE = . then delete;
 
-	* Create variable labels;
-	label PLURALITY = "Plurality (0 = Singleton)"
-		  MBRACE_R = "Recoded Maternal Race: White, Black, AI/AN, A/PI"
-		  RACEHISP_RECODE = "Recode Race/Ethnicity: Hisp, NHW, NHB, NHAI/AN, NHA/PI, UNK"
-		  MEDUC_R = "Maternal Education Recode (No HS/GED, GED no college, Some college)"
-		  BESTGEST = "Best Gestational Age Estimate (Clin/Obstet if available)"
-		  PTB = "PTB (Weeks): [20, 37)"
-		  VPTB = "VPTB(Weeks): [20, 32)"
-		  LPTB = "LPTB (Weeks): [34, 37)"
-		  MPTB = "MPTB (Weeks): [32, 37)";
-		  COMBFIPS = "Combined FIPS";
+	* Drop temporary variables;
+	drop mrcnty_char obgest_flg gest_imp;
+
 run;
 
 
+* Need to look for FIPS code issues;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-proc print data = h.allbirths_rec (obs = 100);
-	var STFIPS MRCNTY TEMPCNTYFIPS CNTYFIPS_R;
+* Create data subsets for models;
+data singletons;
+	set h.allbirths_rec;
+	if plurality = 0 then delete;
 run;
 
-proc summary data = h.allbirths_rec nway;
-	class dob_yy;
+data singletonblackwhite;
+	set h.allbirths_rec;
+	* Delete plural records;
+	if plurality = 1 then delete;
+	* Delete all but NH-Black and NH-White;
+	if racehisp_recode < 2 or racehisp_recode > 3 then delete; 
+run;
+
+data allblackwhite;
+	set h.allbirths_rec;
+	* Delete all but NH-Black and NH-White;
+	if racehisp_recode < 2 or racehisp_recode > 3 then delete; 
+run;
+
+/* MODEL 1 
+## YEAR x COUNTY x RACE restricted to SINGLETONS and NH-Black/NH-White */
+proc summary data = singletonblackwhite nway;
+	class dob_yy combfips racehisp_recode;
+	where racehisp_recode = 2 or racehisp_recode = 3;
+	where plurality = 0;
 	var ptb vptb lptb mptb;
-	output out=test(n=count_identifer sum=sum_payout);
+	output out = h.model1 (drop = _type_)
+		   sum = ptb vptb lptb mptb;
 run;
 
-proc print data=test;
+/* MODEL 2
+## YEAR x COUNTY x RACE x AGE restricted to SINGLETONS */
+proc summary data = singletons nway;
+	class dob_yy combfips racehisp_recode mager9;
+	where plurality = 0;
+	var ptb vptb lptb mptb;
+	output out = h.model2 (drop = _type_)
+		   sum = ptb vptb lptb mptb;
 run;
-/*
-                               Obs    region    identifer    payout
 
+/* MODEL 3
+## YEAR x COUNTY x RACE x AGE x MARITAL x EDUCATION restricted to SINGLETONS  */
+proc summary data = singletons nway;
+	class dob_yy combfips racehisp_recode mager9 mar meduc_r;
+	var ptb vptb lptb mptb;
+	output out = h.model3 (drop = _type_)
+		   sum = ptb vptb lptb mptb;
+run;
 
-                                1        1          3          30
+/* MODEL 4 
+## YEAR x COUNTY x RACE restricted to NH-Black/NH-White */
+proc summary data = allblackwhite nway;
+	class dob_yy combfips racehisp_recode;
+	var ptb vptb lptb mptb;
+	output out = h.model4 (drop = _type_)
+		   sum = ptb vptb lptb mptb;
+run;
 
-                                2        2          4          70
+/* MODEL 5
+## YEAR x COUNTY x RACE x AGE */
+proc summary data = h.allbirths_rec nway;
+	class dob_yy combfips racehisp_recode mager9;
+	var ptb vptb lptb mptb;
+	output out = h.model5 (drop = _type_)
+		   sum = ptb vptb lptb mptb;
+run;
 
-                                3        3          3          50
-
-                                4        4          2          30
-*/
+/* MODEL 6
+## YEAR x COUNTY x RACE x AGE x MARITAL x EDUCATION */
+proc summary data = h.allbirths_rec nway;
+	class dob_yy combfips racehisp_recode mager9 mar meduc_r;
+	var ptb vptb lptb mptb;
+	output out = h.model6 (drop = _type_)
+		   sum = ptb vptb lptb mptb;
+run;
