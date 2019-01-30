@@ -885,7 +885,7 @@ run;
 * Create data subsets for models;
 data singletons;
 	set h.allbirths_rec;
-	if plurality = 0 then delete;
+	if plurality = 1 then delete;
 run;
 
 data singletonblackwhite;
@@ -906,8 +906,6 @@ run;
 ## YEAR x COUNTY x RACE restricted to SINGLETONS and NH-Black/NH-White */
 proc summary data = singletonblackwhite nway;
 	class dob_yy combfips racehisp_recode;
-	where racehisp_recode = 2 or racehisp_recode = 3;
-	where plurality = 0;
 	var ptb vptb lptb mptb;
 	output out = h.model1 (drop = _type_)
 		   sum = ptb vptb lptb mptb;
@@ -917,7 +915,6 @@ run;
 ## YEAR x COUNTY x RACE x AGE restricted to SINGLETONS */
 proc summary data = singletons nway;
 	class dob_yy combfips racehisp_recode mager9;
-	where plurality = 0;
 	var ptb vptb lptb mptb;
 	output out = h.model2 (drop = _type_)
 		   sum = ptb vptb lptb mptb;
@@ -957,4 +954,8 @@ proc summary data = h.allbirths_rec nway;
 	var ptb vptb lptb mptb;
 	output out = h.model6 (drop = _type_)
 		   sum = ptb vptb lptb mptb;
+run;
+
+
+proc print data = h.model1;
 run;
