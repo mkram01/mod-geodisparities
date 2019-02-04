@@ -904,7 +904,8 @@ run;
 
 /* MODEL 1 
 ## YEAR x COUNTY x RACE restricted to SINGLETONS and NH-Black/NH-White */
-proc summary data = singletonblackwhite nway;
+options missing = 0;
+proc summary data = singletonblackwhite nway completetypes;
 	class dob_yy combfips racehisp_recode;
 	var ptb vptb lptb mptb;
 	output out = h.model1 (drop = _type_)
@@ -913,7 +914,8 @@ run;
 
 /* MODEL 2
 ## YEAR x COUNTY x RACE x AGE restricted to SINGLETONS */
-proc summary data = singletons nway;
+options missing = 0;
+proc summary data = singletons nway completetypes;
 	class dob_yy combfips racehisp_recode mager9;
 	var ptb vptb lptb mptb;
 	output out = h.model2 (drop = _type_)
@@ -922,7 +924,8 @@ run;
 
 /* MODEL 3
 ## YEAR x COUNTY x RACE x AGE x MARITAL x EDUCATION restricted to SINGLETONS  */
-proc summary data = singletons nway;
+options missing = 0;
+proc summary data = singletons nway completetypes;
 	class dob_yy combfips racehisp_recode mager9 mar meduc_r;
 	var ptb vptb lptb mptb;
 	output out = h.model3 (drop = _type_)
@@ -931,7 +934,8 @@ run;
 
 /* MODEL 4 
 ## YEAR x COUNTY x RACE restricted to NH-Black/NH-White */
-proc summary data = allblackwhite nway;
+options missing = 0;
+proc summary data = allblackwhite nway completetypes;
 	class dob_yy combfips racehisp_recode;
 	var ptb vptb lptb mptb;
 	output out = h.model4 (drop = _type_)
@@ -940,7 +944,8 @@ run;
 
 /* MODEL 5
 ## YEAR x COUNTY x RACE x AGE */
-proc summary data = h.allbirths_rec nway;
+options missing = 0;
+proc summary data = h.allbirths_rec nway completetypes;
 	class dob_yy combfips racehisp_recode mager9;
 	var ptb vptb lptb mptb;
 	output out = h.model5 (drop = _type_)
@@ -949,13 +954,10 @@ run;
 
 /* MODEL 6
 ## YEAR x COUNTY x RACE x AGE x MARITAL x EDUCATION */
-proc summary data = h.allbirths_rec nway;
+options missing = 0;
+proc summary data = h.allbirths_rec nway completetypes;
 	class dob_yy combfips racehisp_recode mager9 mar meduc_r;
 	var ptb vptb lptb mptb;
 	output out = h.model6 (drop = _type_)
 		   sum = ptb vptb lptb mptb;
-run;
-
-
-proc print data = h.model1;
 run;
