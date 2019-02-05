@@ -41,10 +41,20 @@ gatestmodel1 <- readRDS(file = "DATA/nchs_births/R/data/gatestmodel1.rda")
 
 # Zero-inflated Poisson?
 model <- inla(ptb ~ dob_yy + combfips + racehisp_recode, family = c("poisson"), 
-     data = gatestmodel1) 
+     data = gatestmodel1, control.predictor = list(link = 1)) 
 
 
 # Testing -----------------------
+# Links:
+# https://haakonbakka.bitbucket.io/alltopics.html
+# https://haakonbakka.bitbucket.io/organisedtopics.html
+# https://haakonbakka.bitbucket.io/btopic102.html
+# https://haakonbakka.bitbucket.io/btopic116.html
+# https://haakonbakka.bitbucket.io/btopic115.html
+# https://haakonbakka.bitbucket.io/btopic125.html
+# http://discovery.ucl.ac.uk/1415919/1/Baio_BlaCamBaiRue.pdf
+# https://www.stat.washington.edu/peter/591/INLA.html
+
 formula <- Petal.Length ~ 1 + Petal.Width
 output <- inla(formula, family = "gaussian", data = iris)
 summary(output)
@@ -84,7 +94,7 @@ sd
 # inla.tmarginal transforms given marginal distribution
 plot.default(inla.tmarginal(function(x) 1/x,prec_post),
              type = "l",xlab = expression(sigmâ2),
-             ylab = xpression(tilde(p)(paste(sigmâ2,"|",y))))
+             ylab = expression(tilde(p)(paste(sigmâ2,"|",y))))
 
 
 
