@@ -21,7 +21,7 @@ rm(list = ls())
 ######################################################################################################
 # -------------------------------------- set up environment ---------------------------------------- #
 ######################################################################################################
-pacman::p_load(censusapi, data.table)
+pacman::p_load(censusapi, data.table, tidycensus, tidyr,tidyverse,dplyr)
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
@@ -32,23 +32,146 @@ data_repo <- Sys.getenv('mod_data')
 setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
 
-######################################################################################################
-# -------------------------------------- find appropriate APIs ------------------------------------- #
-######################################################################################################
-#To see a current table of every available endpoint, run listCensusApis:
-apis <- listCensusApis()
-View(apis)
+#define the survey to use
+acs_survey <- "acs5"
 
-#checkout variables inside api of interest - acs5; 2005-2009 5-year ACS 
-acs_vars <- listCensusMetadata(name = "acs5",
-                               vintage = 2009,
-                               type = "variables")
+######################################################################################################
+# -------------------------------------- load config ----------------------------------------------- #
+######################################################################################################
+config <- fread(file = paste0(data_repo, "/acs/config_acs_api_pull.csv"), stringsAsFactors = F)
+
+#will need to loop through by year and grouping
+years <- unique(config$year)
+i <- years[1]  
+
+######################################################################################################
+# -------------------------------------- 2010 county boundaries ------------------------------------ #
+######################################################################################################
+#get base pop & associated spatial data -- NOT CURRENTLY WORKING
+acs_geo <- get_acs(geography = (unique(config$geo_level)),
+                   variables = "B25001_001E",
+                   year = 2010,
+                   survey = "acs5",
+                   geometry = TRUE
+                   )
+
+######################################################################################################
+# -------------------------------------- function for extracting acs data using config  ------------ #
+######################################################################################################
+pull_acsdata <- function(group, yr){
+  # Function for pulling ACS data via the US Census bureau API using a custom config file specifying necessary
+  #           arguments.
+  # Args:
+  #   group   : string value corresponding to field in config entitled "grouping" -- which group do you want to extract data for?
+  
+  # ----------------------------------- subset -------------------------------------------------------
+  #subset config to grouping vars
+  config_sub <- config[grouping == (group) & year == (yr),] 
+  
+  # ----------------------------------- make key -----------------------------------------------------
+  #reduce config to get acs name - field names key
+  config_names <- config_sub[,c('mod_label','acs_name'),with=F]
+  
+  # ----------------------------------- grab dat data! -----------------------------------------------
+  #get relevant data
+  acs_data <- get_acs(geography = (unique(config_sub$geo_level)),
+                      variables = as.vector(config_sub$acs_name),
+                      year = (i),
+                      survey = (acs_survey)
+                      ) %>% 
+    
+    #join to config key to get readable var names
+    left_join(config_names, by = c("variable"="acs_name"))
+  
+  return(acs_data)
+  
+}
+
+## how to concatenate groups of acs data --
+#   split-apply-combine strategy: already split, and will apply, now need to combine
+#   1. could try to use an if statement, if(group == grps[1]){define acs_data for first time} else {extract data, then rowbind to acs_data}
+#   2. could do a for loop and in that loop take care of the concatenation
+#   3. could try an lapply using the get_acs function, then bind list elements
+
+#option 3.
+pull_acsdata <- function(groups, yrs){
+  # Function for pulling ACS data via the US Census bureau API using a custom config file specifying necessary
+  #           arguments.
+  # Args:
+  #   group   : string value corresponding to field in config entitled "grouping" -- which group do you want to extract data for?
+  
+  # ----------------------------------- subset -------------------------------------------------------
+  #subset config to grouping vars
+  config_sub <- config[grouping == (group) & year == (yr),] 
+  
+  # ----------------------------------- make key -----------------------------------------------------
+  #reduce config to get acs name - field names key
+  config_names <- config_sub[,c('mod_label','acs_name'),with=F]
+  
+  # ----------------------------------- grab dat data! -----------------------------------------------
+  #get relevant data
+  acs_data <- get_acs(geography = (unique(config_sub$geo_level)),
+                      variables = as.vector(config_sub$acs_name),
+                      year = (i),
+                      survey = (acs_survey)
+  ) %>% 
+    
+    #join to config key to get readable var names
+    left_join(config_names, by = c("variable"="acs_name"))
+  
+  return(acs_data)
+  
+}
+
+
+
+
+
+######################################################################################################
+# -------------------------------------- call funciton --------------------------------------------- #
+######################################################################################################
+#define a vector of groups -- used this in config, field entitled 'grouping'; will use this vector
+#     to apply function over each element in vector
+grps <- c("race_eth", "income", "poverty", "housing", "education", "employment")
+
+#will need to apply over year too
+years <- unique(config$year)
+i <- years[1]  
 
 ######################################################################################################
 # -------------------------------------- ACS5 2009 ------------------------------------------------- #
 ######################################################################################################
 
+
 # ------------------------------------- race/ethnicity --------------------------------------------- #
+group_sub = "race_eth"
+
+#subset config to race eth vars
+config_sub <- config[grouping == (group)] 
+
+#reduce config to get acs name - field names key
+config_names <- config_sub[,c('mod_label','acs_name'),with=F]
+
+#will need to loop through by year and grouping
+years <- unique(config_sub$year)
+i <- years[1]  
+
+#get relevant data
+acs_data <- get_acs(geography = (unique(config_sub$geo_level)),
+                    variables = as.vector(config_sub$acs_name),
+                    year = (i),
+                    survey = "acs5"
+                    ) %>% 
+  #join to config key to get readable var names
+  left_join(config_names, by = c("variable"="acs_name"))
+  
+  
+#join
+acs_data2 <- left_join(acs_data, config_names, by = c("variable"="acs_name"))
+
+#test on another grouping
+
+#start making function -- bind all groupings together into one long table
 acs_race_eth <- getCensus(name = "acs5",
                         vintage = 2009, 
                         vars = c("NAME","B02001_001E", #total pop
@@ -59,6 +182,20 @@ acs_race_eth <- getCensus(name = "acs5",
                         region = "county:*",
                         regionin = "state:02")
 
+compare <- getCensus(name = "acs5",
+                          vintage = 2009, 
+                          vars = c("NAME","B02001_001E", #total pop
+                                   "B01003_001E",
+                                   "B00001_001E", #unweighted households
+                                   "B25001_001E" #housing units
+                          ),
+                          region = "county:*",
+                          regionin = "state:02")
+
+
+B00001_001E
+
+
 #rename columns
 
 #create table with the following cols:
@@ -67,37 +204,88 @@ acs_race_eth <- getCensus(name = "acs5",
 ##  ---- percent hispanic
 ##  ---- black-white ratio
 
-# ------------------------------------- income, poverty, housing --------------------------------------------- #
+# ------------------------------------- income -------------------------------------------------------------- #
+#grouping = "income"
 acs_income <- getCensus(name = "acs5",
                         vintage = 2009, 
-                        vars = c("NAME","B19013_001E", # Median household income in the past 12 months (in 2009 inflation-adjusted dollars), B19013. Median Household Income
-                                 "B17001_001E", #Total:	B17001. Poverty Status in the past 12 Months by Sex by Age
-                                 "B17012_001E", # Total:	B17012. POVERTY STATUS IN THE PAST 12 MONTHS OF FAMILIES BY HOUSEHOLD TYPE BY NUMBER OF RELATED CHILDREN UNDER 18 YEARS
-                                 "B00002_001E" #	Total	B00002. Unweighted Sample Housing Units
+                        vars = c("NAME",
+                                 "B19013_001E" # Median household income in the past 12 months (in 2009 inflation-adjusted dollars), B19013. Median Household Income
                                  ), 
                         region = "county:*",
                         regionin = "state:02")
-acs_poverty <- 
 
-acs_housing <- getCensus(name = "acs5",
+# ------------------------------------- poverty ------------------------------------------------------------- #
+#grouping = "poverty"
+acs_poverty <- getCensus(name = "acs5",
                          vintage = 2009, 
                          vars = c("NAME",
-                                  "B25001_001E", #Total	B25001. Housing Units
+                                  "B25001_001E", #	Housing Units
+                                  "B17001_001E", #Total:	B17001. Poverty Status in the past 12 Months by Sex by Age
+                                  "B17012_001E" # Total:	B17012. POVERTY STATUS IN THE PAST 12 MONTHS OF FAMILIES BY HOUSEHOLD TYPE BY NUMBER OF RELATED CHILDREN UNDER 18 YEARS
+                                  
+                         ), 
+                         region = "county:*",
+                         regionin = "state:02")
+
+#calculate rate (divide by pop total)
+
+# ------------------------------------- housing ------------------------------------------------------------- #
+#grouping = "housing"
+acs_tenure <- getCensus(name = "acs5",
+                         vintage = 2009, 
+                         vars = c("NAME",
+                                  "B25003_001E", #Tenure total -- use as denominator
                                   "B25002_003E", #Vacant	B25002. Occupancy Status
                                   "B25003_002E", #Owner occupied	B25003. Tenure
-                                  "B25003_003E", #Renter occupied	B25003. Tenure
+                                  "B25003_003E" #Renter occupied	B25003. Tenure
+                                  
                                   
                                   ), 
                          region = "tract:*",
                          regionin = "state:02")
 
+#calculate tenure as proportion owners vs renters
+
+acs_stability <- getCensus(name = "acs5",
+                        vintage = 2009, 
+                        vars = c("NAME",
+                                 "B25038_001E",# B25038. Tenure by Year Householder Moved into Unit
+                                 "B25038_003E", #	Owner occupied:!!Moved in 2005 or later
+                                 "B25038_010E" #Renter occupied:!!Moved in 2005 or later
+                        ), 
+                        region = "tract:*",
+                        regionin = "state:02")
+
+#calculate stability:
+#Proportion of population that has resided in the area for previous 1-5 years
+#sum owner and renter occupied : moved in 2005orlater; divide sum by total
+# ------------------------------------- education ----------------------------------------------------------- #
+#grouping = "education"
 
 
+
+# ------------------------------------- employment ---------------------------------------------------------- #
+try <- getCensus(name = "acs5",
+                 vintage = 2009, 
+                 table = "S2301",
+                 region = "tract:*",
+                 regionin = "state:02")
+
+try2 <- get_acs(geography = "county",
+                table = "S2301",
+                year = 2009,
+                survey = "acs5",
+                state = "GA")
+
+
+#SCRAP
 acs_poverty_group <- getCensus(name = "acs/acs5",
                                vintage = 2016, 
                                vars = c("NAME", "group(B17020)"), 
                                region = "tract:*",
                                regionin = "state:02")
+
+
 # List column names
 colnames(acs_poverty_group)
 

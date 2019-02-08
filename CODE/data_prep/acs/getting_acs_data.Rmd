@@ -25,6 +25,7 @@ This document outlines how to obtain the data from the API using R and the requi
 ## API key setup
 Sign up for an API key [here].(https://api.census.gov/data/key_signup.html)
 
+###Setup for `censusapi` 
 Then, if you’re on a non-shared computer, add your Census API key to your .Renviron profile and call it CENSUS_KEY. The `censusapi` package, if you use this, will use it by default without any extra work on your part. Within R run:
 ```{r, eval = FALSE}
 # Add key to .Renviron
@@ -35,6 +36,9 @@ Then, if you’re on a non-shared computer, add your Census API key to your .Ren
  Sys.getenv("CENSUS_KEY")
 
 ```
+
+###Setup for `tidycensus`
+Neeed to define a sys env var called "CENSUS_API_KEY"
 
 If you are on a shared computer (e.g. a library or school computer), you may not want to put your key in your .Renviron profile. For `censusapi`, you can specify your key within `getCensus` instead.
 
@@ -48,6 +52,8 @@ If you are on a shared computer (e.g. a library or school computer), you may not
 
 ## Custom approach
 I created a config for acquiring data considering it was a large amount of data over an extended period of time.
+
+I used the American Factfinder GUI to locate IDs for vars and matched to the API keys
 
 # Resources
 Below are some resources that proved helpful in using the Census API
