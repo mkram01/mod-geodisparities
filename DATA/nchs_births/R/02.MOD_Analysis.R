@@ -45,6 +45,100 @@ model <- inla(ptb ~ dob_yy + combfips + racehisp_recode, family = c("poisson"),
 
 
 # Testing -----------------------
+# http://www.maths.bath.ac.uk/~jjf23/inla/multilevel.html
+# https://rpubs.com/corey_sparks/132760
+# http://www.maths.bath.ac.uk/~jjf23/inla/multiple.html
+# https://gist.github.com/famuvie/639e3aaebba1ba0b1862215b02cccabe
+# https://txrdc.tamu.edu/wp-content/uploads/sites/20/2018/03/TAMU_May14_Bayes_workshop.pdf
+# 
+
+#Corey Sparks Rpubs
+library(INLA)
+library(car)
+#load brfss
+load("~/Google Drive/dem7283/data/brfss_11.Rdata")
+nams <- names(brfss_11)
+newnames <- gsub("_", "", nams)
+names(brfss_11)<-tolower(newnames)
+
+brfss_11$statefip<-sprintf("%02d", brfss_11$state )
+brfss_11$cofip<-sprintf("%03d", brfss_11$cnty )
+brfss_11$cofips<-paste(brfss_11$statefip, brfss_11$cofip, sep="")
+
+#bmi
+brfss_11$bmi<-ifelse(is.na(brfss_11$bmi5)==T, NA, brfss_11$bmi5/100)
+#poor or fair health
+brfss_11$badhealth<-ifelse(brfss_11$genhlth %in% c(4,5),1,0)
+
+#race
+brfss_11$black<-recode(brfss_11$racegr2, recodes="2=1; 9=NA; else=0", as.factor.result=T)
+brfss_11$white<-recode(brfss_11$racegr2, recodes="1=1; 9=NA; else=0", as.factor.result=T)
+brfss_11$other<-recode(brfss_11$racegr2, recodes="3:4=1; 9=NA; else=0", as.factor.result=T)
+brfss_11$hispanic<-recode(brfss_11$racegr2, recodes="5=1; 9=NA; else=0", as.factor.result=T)
+
+#education level
+brfss_11$lths<-recode(brfss_11$educa, recodes="1:3=1;9=NA; else=0", as.factor.result=F)
+brfss_11$coll<-recode(brfss_11$educa, recodes="5:6=1;9=NA; else=0", as.factor.result=F)
+
+#employment
+brfss_11$employ<-recode(brfss_11$employ, recodes="1:2='Employed'; 2:6='nilf'; 7='retired'; 8='unable'; else=NA", as.factor.result=T)
+brfss_11$employ<-relevel(brfss_11$employ, ref='Employed')
+
+#marital status
+brfss_11$marst<-recode(brfss_11$marital, recodes="1='married'; 2='divorced'; 3='widowed'; 4='separated'; 5='nm';6='cohab'; else=NA", as.factor.result=T)
+brfss_11$marst<-relevel(brfss_11$marst, ref='married')
+
+#income
+brfss_11$inc<-as.factor(ifelse(brfss_11$incomg==9, NA, brfss_11$incomg))
+
+#Age cut into intervals
+brfss_11$agec<-cut(brfss_11$age, breaks=c(0,24,39,59,79,99))
+
+# higher-level predictors
+acsecon<-read.csv("~/Google Drive/dem7283/data/aff_download/ACS_10_5YR_DP03_with_ann.csv")
+acsecon$povrate<-acsecon[, "HC03_VC156"]
+acsecon$unemployed<-acsecon[, "HC03_VC13"]
+acsecon$cofips<-substr(acsecon$GEO.id, 10,14)
+acsecon$povz<-scale(acsecon$povrate, center=T, scale=T)
+acsecon$unempz<-scale(acsecon$unemployed, center=T, scale=T)
+acsecon<-acsecon[, c("cofips", "povrate","povz", "unemployed","unempz")]
+
+head(acsecon)
+
+# join data
+joindata<-merge(brfss_11, acsecon, by="cofips", all.x=T, all.y=F)
+#and merge the data back to the kids data
+joindata$bmiz<-scale(joindata$bmi, center=T, scale=T)
+joindata$agez<-scale(joindata$age, center=T, scale=T)
+
+
+library(maptools) 
+library(spdep)
+gpclibPermit()
+
+uscos<-readShapePoly("/Users/ozd504/Google Drive/dem7263/data/co99_d00.shp")
+uscos@data$cofips<-as.character(paste(uscos$STATE, uscos$COUNTY, sep=""))
+uscos2<-unionSpatialPolygons(uscos, IDs = uscos@data$cofips)
+uscos2<-as(uscos2, "SpatialPolygonsDataFrame")
+uscos2@data$cofips<-as.character(row.names(uscos2))
+uscos2$state<-substr(uscos2$cofips, 1,2)
+
+#See what counties are in the brfss data
+brfco<-unique(brfss_11$cofips)
+
+cob<-uscos2[uscos2$cofips%in% brfco,]
+cob$struct<-1:length(cob$cofips)
+plot(cob)
+nbs<-knearneigh(coordinates(cob), longlat = T, k = 4)
+nbs<-knn2nb(nbs, row.names = cob$struct, sym = T)
+wts<-nb2listw(nbs)
+plot(cob)
+plot(wts, coords=coordinates(cob), add=T, col=2)
+
+
+
+
+
 # Links:
 # https://haakonbakka.bitbucket.io/alltopics.html
 # https://haakonbakka.bitbucket.io/organisedtopics.html
