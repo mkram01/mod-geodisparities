@@ -28,6 +28,7 @@ model4 <- readRDS(file = "DATA/nchs_births/R/data/model4.rda")
 model5 <- readRDS(file = "DATA/nchs_births/R/data/model5.rda")
 model6 <- readRDS(file = "DATA/nchs_births/R/data/model6.rda")
 gatestmodel1 <- readRDS(file = "DATA/nchs_births/R/data/gatestmodel1.rda")
+gatestmodel1singleyear <- readRDS(file = "DATA/nchs_births/R/data/gatestmodel1singleyear.rda")
 
 # Data Description
 
@@ -40,8 +41,8 @@ gatestmodel1 <- readRDS(file = "DATA/nchs_births/R/data/gatestmodel1.rda")
 
 
 # Zero-inflated Poisson?
-model <- inla(ptb ~ dob_yy + combfips + racehisp_recode, family = c("poisson"), 
-     data = gatestmodel1, control.predictor = list(link = 1)) 
+model <- inla(ptb ~ dob_yy + combfips + racehisp_recode, family = c("poisson"),
+     data = gatestmodel1, control.predictor = list(link = 1))
 
 
 # Testing -----------------------
@@ -50,7 +51,7 @@ model <- inla(ptb ~ dob_yy + combfips + racehisp_recode, family = c("poisson"),
 # http://www.maths.bath.ac.uk/~jjf23/inla/multiple.html
 # https://gist.github.com/famuvie/639e3aaebba1ba0b1862215b02cccabe
 # https://txrdc.tamu.edu/wp-content/uploads/sites/20/2018/03/TAMU_May14_Bayes_workshop.pdf
-# 
+#
 
 #Corey Sparks Rpubs
 library(INLA)
@@ -112,7 +113,7 @@ joindata$bmiz<-scale(joindata$bmi, center=T, scale=T)
 joindata$agez<-scale(joindata$age, center=T, scale=T)
 
 
-library(maptools) 
+library(maptools)
 library(spdep)
 gpclibPermit()
 

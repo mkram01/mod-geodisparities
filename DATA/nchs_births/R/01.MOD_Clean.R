@@ -18,14 +18,22 @@ library(magrittr)
 #                  dep = TRUE)
 library(INLA)
 
-## PreGit --------------------
-# Convert model SAS files to R data files (note: done on local computer, not on Git)
-model1 <- as.data.frame(haven::read_sas("March of Dimes/model1.sas7bdat"))
-model2 <- as.data.frame(haven::read_sas("March of Dimes/model2.sas7bdat"))
-model3 <- as.data.frame(haven::read_sas("March of Dimes/model3.sas7bdat"))
-model4 <- as.data.frame(haven::read_sas("March of Dimes/model4.sas7bdat"))
-model5 <- as.data.frame(haven::read_sas("March of Dimes/model5.sas7bdat"))
-model6 <- as.data.frame(haven::read_sas("March of Dimes/model6.sas7bdat"))
+##  Convert model SAS files to R data files (note: done on local computer, not on Git)
+# Emory Computer
+model1 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model1.sas7bdat"))
+model2 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model2.sas7bdat"))
+model3 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model3.sas7bdat"))
+model4 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model4.sas7bdat"))
+model5 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model5.sas7bdat"))
+model6 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model6.sas7bdat"))
+
+# Laptop
+# model1 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model1.sas7bdat"))
+# model2 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model2.sas7bdat"))
+# model3 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model3.sas7bdat"))
+# model4 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model4.sas7bdat"))
+# model5 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model5.sas7bdat"))
+# model6 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model6.sas7bdat"))
 
 # Set NA values to 0
 model1$mptb[which(is.na(model1$mptb))] <- model1$lptb[which(is.na(model1$lptb))] <- 0
@@ -58,11 +66,16 @@ model6 <- rename(model6, replace = c("_FREQ_" = "births"))
 gatestmodel1 <- model1 %>%
   filter(substr(combfips, 1, 2) == "13")
 
+gatestmodel1singleyear <- model1 %>%
+  filter(substr(combfips, 1, 2) == "13") %>%
+  filter(dob_yy == "2007")
+
 # Save as .rda files
-saveRDS(model1, file = "GitHub/mod-geodisparities/DATA/nchs_births/R/data/model1.rda")
-saveRDS(model2, file = "GitHub/mod-geodisparities/DATA/nchs_births/R/data/model2.rda")
-saveRDS(model3, file = "GitHub/mod-geodisparities/DATA/nchs_births/R/data/model3.rda")
-saveRDS(model4, file = "GitHub/mod-geodisparities/DATA/nchs_births/R/data/model4.rda")
-saveRDS(model5, file = "GitHub/mod-geodisparities/DATA/nchs_births/R/data/model5.rda")
-saveRDS(model6, file = "GitHub/mod-geodisparities/DATA/nchs_births/R/data/model6.rda")
-saveRDS(gatestmodel1, file = "GitHub/mod-geodisparities/DATA/nchs_births/R/data/gatestmodel1.rda")
+saveRDS(model1, file = "DATA/nchs_births/R/data/model1.rda")
+saveRDS(model2, file = "DATA/nchs_births/R/data/model2.rda")
+saveRDS(model3, file = "DATA/nchs_births/R/data/model3.rda")
+saveRDS(model4, file = "DATA/nchs_births/R/data/model4.rda")
+saveRDS(model5, file = "DATA/nchs_births/R/data/model5.rda")
+saveRDS(model6, file = "DATA/nchs_births/R/data/model6.rda")
+saveRDS(gatestmodel1, file = "DATA/nchs_births/R/data/gatestmodel1.rda")
+saveRDS(gatestmodel1singleyear, file = "DATA/nchs_births/R/data/gatestmodel1singleyear.rda")

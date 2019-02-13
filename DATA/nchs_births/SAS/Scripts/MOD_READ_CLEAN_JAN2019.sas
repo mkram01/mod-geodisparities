@@ -736,11 +736,10 @@ data h.allbirths_rec;
 	if mrterr = 'AB' or mrterr = 'AS' or mrterr = 'BC' or mrterr = 'FM' or mrterr = 'GU' or mrterr = 'MB' or 
 		mrterr = 'MH' or mrterr = 'MP' or mrterr = 'NB' or mrterr = 'NL' or mrterr = 'NT' or mrterr = 'NS' or 
 		mrterr = 'NU' or mrterr = 'ON' or mrterr = 'PE' or mrterr = 'PW' or mrterr = 'QC' or mrterr = 'SK' or 
-		mrterr = 'VI' or mrterr = 'XX' or mrterr = 'YT' or mrterr = 'YY' or mrterr = 'ZZ' or mrterr = 'PR' then delete;
-	* Removes 84,867 records;
+		mrterr = 'VI' or mrterr = 'XX' or mrterr = 'YT' or mrterr = 'YY' or mrterr = 'ZZ' then delete; *or mrterr = 'PR' then delete;
+	* Removes 84,748 records; *84,867 if cutting PR;
 
 	***** Create new variables **************;
-
 	* Clean ESTGEST;
 	if ESTGEST < 17 or ESTGEST > 47 then ESTGEST = .;
 
@@ -797,19 +796,15 @@ data h.allbirths_rec;
 	***** Restrictions **************;
     * Remove any record with Birthweight < 500 grams;
     if DBWT < 500 then delete;
-	* Removes 61,109 records
+	* Removes 61,109 records;
 
 	* Remove any records with Gestational Age < 20 weeks;
     if ESTGEST < 20 then delete;
-	* Removes 98,139 records;
+	* Removes 98,140 records; *Removes 98,139 records if PR gone;
 
 	* Remove any record missing Plurality; 
 	if DPLURAL = . then delete;
 	* Removes 0 records;
-
-    * Remove any records missing maternal race/ethnicity;
-	if RACEHISP_RECODE = . then delete;
-	* Removes 0 records, but 297,728 with unknown ethnicity;
 
 	* Assign State FIPS;
 	if mrterr = 'AL' then STFIPS ='01';
@@ -863,7 +858,7 @@ data h.allbirths_rec;
 	if mrterr = 'WV' then STFIPS ='54';
 	if mrterr = 'WI' then STFIPS ='55';
 	if mrterr = 'WY' then STFIPS ='56';
-	*if mrterr = 'PR' then STFIPS ='72';
+	if mrterr = 'PR' then STFIPS ='72';
 	
 	* Create new geo variables;
 	mrcnty_char = put(mrcnty, 3.);
@@ -872,6 +867,10 @@ data h.allbirths_rec;
 
 	* Remove any record missing county of residence;
 	if COMBFIPS = '' then delete;
+
+    * Remove any records missing maternal race/ethnicity;
+	if RACEHISP_RECODE = . then delete;
+	* Removes 0 records, but 297,731 with unknown ethnicity;
 
 	* Drop temporary variables;
 	drop mrcnty_char obgest_flg gest_imp;
