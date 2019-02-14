@@ -6,144 +6,124 @@
 
 # To run the code below be sure to sign up for an API key here(https://api.census.gov/data/key_signup.html)
 #   Then, if you’re on a non-shared computer, add your Census API key to your .Renviron profile and 
-#         call it CENSUS_KEY. censusapi will use it by default without any extra work on your part. 
+#         call it CENSUS_API_KEY. tidycensus will use it by default without any extra work on your part. 
 #   If on a shared computer, within R, run:
     # # Add key to .Renviron
-    # Sys.setenv(CENSUS_KEY=YOURKEYHERE)
+    # Sys.setenv(CENSUS_API_KEY=<YOURKEYHERE>)
     # # Reload .Renviron
     # readRenviron("~/.Renviron")
     # # Check to see that the expected key is output in your R console
-    # Sys.getenv("CENSUS_KEY")
-# Good reference: https://cran.r-project.org/web/packages/censusapi/vignettes/getting-started.html
+    # Sys.getenv("CENSUS_API_KEY")
 
 rm(list = ls())
 
 ######################################################################################################
 # -------------------------------------- set up environment ---------------------------------------- #
 ######################################################################################################
-pacman::p_load(censusapi, data.table, tidycensus, tidyr,tidyverse,dplyr)
+#load packages
+pacman::p_load(data.table, tidycensus, tidyr, tidyverse,dplyr, feather)
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
 # set data repo
 data_repo <- Sys.getenv('mod_data')
 
+#source function script
+source(paste0(repo, "/CODE/data_prep/acs/pull_acs_fxn.R"))
+
 #setting working directory
 setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
-
-#define the survey to use
-acs_survey <- "acs5"
 
 ######################################################################################################
 # -------------------------------------- load config ----------------------------------------------- #
 ######################################################################################################
 config <- fread(file = paste0(data_repo, "/acs/config_acs_api_pull.csv"), stringsAsFactors = F)
 
-#will need to loop through by year and grouping
-years <- unique(config$year)
-i <- years[1]  
+#define the survey to use -- currently function can only handle one value here, if wanting 
+#   to use different surveys for different indicators, will need to change some things
+acs_survey <- unique(config$survey)
+
+#define geography  -- currently function can only handle one value here, if wanting 
+#   to use different surveys for different indicators, will need to change some things
+geo <- unique(config$geo_level)
+
+######################################################################################################
+# -------------------------------------- call funciton --------------------------------------------- #
+######################################################################################################
+#get unique set of groups and years
+grp_yrs <- (unique(config[,c('grouping','year'),with=F]))
+
+#define a vector of groups -- used this in config, field entitled 'grouping'; will use this vector
+#     to apply function over each element in vector
+groups <- grp_yrs$grouping
+
+#define a vector of years corresponding to groups to apply function over each element
+years <- grp_yrs$year
+
+#validation check:
+if (length(groups) != length(years)){
+  message("Your grouping and year vectors are of unequal length -- need to correct this to proceed")
+  stop()
+} else {
+  message("Your grouping and year vectors are of equal length - WOOT WOOT!")
+}
+
+#call function
+acs_all_list <- mapply(pull_acsdata, groups, years, SIMPLIFY = FALSE)
+
+#bind all tables together into one
+acs_all <- rbindlist(l=acs_all_list, use.names = TRUE)
+
+#save
+save(acs_all, file = paste0(data_repo,"/acs/acs_all_raw.RData"))
+
+#save as feather
+write_feather(acs_all, paste0(data_repo,"/acs/acs_all_raw.feather"))
+
+
+
+
+#****************************************************************************************************************
+# -------------------- EVERYTHING BELOW THIS LINE IS STILL 'UNDER CONSTRUCTION' -----------------
+#****************************************************************************************************************
+
+
+
+
+
+
+######################################################################################################
+# -------------------------------------- wrangling ------------------------------------------------- #
+######################################################################################################
+
+
+# ------------------------------------- race/ethnicity --------------------------------------------- #
+#calculate the following fields:
+##  ---- percent black
+##  ---- percent white
+##  ---- percent hispanic
+##  ---- black-white ratio
+
+
+
 
 ######################################################################################################
 # -------------------------------------- 2010 county boundaries ------------------------------------ #
 ######################################################################################################
-#get base pop & associated spatial data -- NOT CURRENTLY WORKING
+#get base pop & associated spatial data -- NOT CURRENTLY WORKING -- return to last
 acs_geo <- get_acs(geography = (unique(config$geo_level)),
                    variables = "B25001_001E",
                    year = 2010,
                    survey = "acs5",
                    geometry = TRUE
-                   )
+)
 
 ######################################################################################################
-# -------------------------------------- function for extracting acs data using config  ------------ #
-######################################################################################################
-pull_acsdata <- function(group, yr){
-  # Function for pulling ACS data via the US Census bureau API using a custom config file specifying necessary
-  #           arguments.
-  # Args:
-  #   group   : string value corresponding to field in config entitled "grouping" -- which group do you want to extract data for?
-  
-  # ----------------------------------- subset -------------------------------------------------------
-  #subset config to grouping vars
-  config_sub <- config[grouping == (group) & year == (yr),] 
-  
-  # ----------------------------------- make key -----------------------------------------------------
-  #reduce config to get acs name - field names key
-  config_names <- config_sub[,c('mod_label','acs_name'),with=F]
-  
-  # ----------------------------------- grab dat data! -----------------------------------------------
-  #get relevant data
-  acs_data <- get_acs(geography = (unique(config_sub$geo_level)),
-                      variables = as.vector(config_sub$acs_name),
-                      year = (i),
-                      survey = (acs_survey)
-                      ) %>% 
-    
-    #join to config key to get readable var names
-    left_join(config_names, by = c("variable"="acs_name"))
-  
-  return(acs_data)
-  
-}
-
-## how to concatenate groups of acs data --
-#   split-apply-combine strategy: already split, and will apply, now need to combine
-#   1. could try to use an if statement, if(group == grps[1]){define acs_data for first time} else {extract data, then rowbind to acs_data}
-#   2. could do a for loop and in that loop take care of the concatenation
-#   3. could try an lapply using the get_acs function, then bind list elements
-
-#option 3.
-pull_acsdata <- function(groups, yrs){
-  # Function for pulling ACS data via the US Census bureau API using a custom config file specifying necessary
-  #           arguments.
-  # Args:
-  #   group   : string value corresponding to field in config entitled "grouping" -- which group do you want to extract data for?
-  
-  # ----------------------------------- subset -------------------------------------------------------
-  #subset config to grouping vars
-  config_sub <- config[grouping == (group) & year == (yr),] 
-  
-  # ----------------------------------- make key -----------------------------------------------------
-  #reduce config to get acs name - field names key
-  config_names <- config_sub[,c('mod_label','acs_name'),with=F]
-  
-  # ----------------------------------- grab dat data! -----------------------------------------------
-  #get relevant data
-  acs_data <- get_acs(geography = (unique(config_sub$geo_level)),
-                      variables = as.vector(config_sub$acs_name),
-                      year = (i),
-                      survey = (acs_survey)
-  ) %>% 
-    
-    #join to config key to get readable var names
-    left_join(config_names, by = c("variable"="acs_name"))
-  
-  return(acs_data)
-  
-}
-
-
-
-
-
-######################################################################################################
-# -------------------------------------- call funciton --------------------------------------------- #
-######################################################################################################
-#define a vector of groups -- used this in config, field entitled 'grouping'; will use this vector
-#     to apply function over each element in vector
-grps <- c("race_eth", "income", "poverty", "housing", "education", "employment")
-
-#will need to apply over year too
-years <- unique(config$year)
-i <- years[1]  
-
-######################################################################################################
-# -------------------------------------- ACS5 2009 ------------------------------------------------- #
+# -------------------------------------- SCRAP ----------------------------------------------------- #
 ######################################################################################################
 
 
-# ------------------------------------- race/ethnicity --------------------------------------------- #
 group_sub = "race_eth"
 
 #subset config to race eth vars
