@@ -1,0 +1,66 @@
+---
+title: "Acquiring ACS Data via the Census API"
+author: "Erin R Stearns"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 3
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# About
+Census data was acquired via the United States Census Bureau's APIs.  As of 2017, over 200 Census API endpoints are available, including Decennial Census, American Community Survey, Poverty Statistics, and Population Estimates APIs. 
+
+This document outlines how to obtain the data from the API using R and the required information to do so successfully.
+
+# Acquiring the data from the API
+
+## API key setup
+Sign up for an API key [here].(https://api.census.gov/data/key_signup.html)
+
+###Setup for `censusapi` 
+Then, if you’re on a non-shared computer, add your Census API key to your .Renviron profile and call it CENSUS_KEY. The `censusapi` package, if you use this, will use it by default without any extra work on your part. Within R run:
+```{r, eval = FALSE}
+# Add key to .Renviron
+ Sys.setenv(CENSUS_KEY= <YOURKEYHERE>)
+# Reload .Renviron
+ readRenviron("~/.Renviron")
+# Check to see that the expected key is output in your R console
+ Sys.getenv("CENSUS_KEY")
+
+```
+
+###Setup for `tidycensus`
+Neeed to define a sys env var called "CENSUS_API_KEY"
+
+If you are on a shared computer (e.g. a library or school computer), you may not want to put your key in your .Renviron profile. For `censusapi`, you can specify your key within `getCensus` instead.
+
+## Package options
+
+### [`censusapi`](https://github.com/hrecht/censusapi)
+
+`censusapi` is a wrapper for the United States Census Bureau’s APIs. This package is designed to get data from all those APIs using the same main function — `getCensus` — and the same syntax for each dataset.
+
+`censusapi` generally uses the APIs’ original parameter names so that users can easily transition between Census’s documentation and examples and this package. It also includes metadata functions to return data frames of available APIs, variables, and geographies.
+
+## Custom approach
+I created a config for acquiring data considering it was a large amount of data over an extended period of time.
+
+I used the American Factfinder GUI to locate IDs for vars and matched to the API keys
+
+# Resources
+Below are some resources that proved helpful in using the Census API
+
+## Census-specific resources
+* [Table of Census API Datasets & their descendents](https://api.census.gov/data.html)
+
+
+## Tutorials
+* [Getting started with censusapi](https://cran.r-project.org/web/packages/censusapi/vignettes/getting-started.html)
