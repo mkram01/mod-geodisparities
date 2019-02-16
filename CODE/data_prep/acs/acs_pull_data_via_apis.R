@@ -21,7 +21,7 @@ rm(list = ls())
 # -------------------------------------- set up environment ---------------------------------------- #
 ######################################################################################################
 #load packages
-pacman::p_load(data.table, tidycensus, tidyr, tidyverse,dplyr, feather)
+pacman::p_load(data.table, tidycensus, tidyr, tidyverse,dplyr, feather, sf)
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
@@ -75,38 +75,218 @@ acs_all_list <- mapply(pull_acsdata, groups, years, SIMPLIFY = FALSE)
 #bind all tables together into one
 acs_all <- rbindlist(l=acs_all_list, use.names = TRUE)
 
-#save
-save(acs_all, file = paste0(data_repo,"/acs/acs_all_raw.RData"))
-
 #save as feather
-write_feather(acs_all, paste0(data_repo,"/acs/acs_all_raw.feather"))
-
-
-
-
-#****************************************************************************************************************
-# -------------------- EVERYTHING BELOW THIS LINE IS STILL 'UNDER CONSTRUCTION' -----------------
-#****************************************************************************************************************
-
-
-
-
-
+#write_feather(acs_all, paste0(data_repo,"/acs/acs5_2009_2017_raw.feather"))
 
 ######################################################################################################
 # -------------------------------------- wrangling ------------------------------------------------- #
 ######################################################################################################
+#drop margin of error col & 'variable' col
+acs_all <- acs_all[,-c("moe", "variable"),with=F]
 
-
+######################################################################################################
 # ------------------------------------- race/ethnicity --------------------------------------------- #
+######################################################################################################
 #calculate the following fields:
 ##  ---- percent black
 ##  ---- percent white
 ##  ---- percent hispanic
 ##  ---- black-white ratio
 
+#grab "race_eth" group only
+re <- acs_all[grouping == "race_eth",]
+
+#cast wide on mod_label
+re_wide <- dcast.data.table(re, GEOID + year + grouping + source + NAME ~ mod_label, value.var = "estimate")
+
+#calculate percents
+re_wide[,perc_black:=(pop_black/pop_total)]
+re_wide[,perc_hisp:=(pop_hispanic/pop_total)]
+re_wide[,perc_white:=(pop_white/pop_total)]
+
+#calculate black-white ratio
+re_wide[,blackwhite_ratio:=pop_black/pop_white]
+
+#validation checks
+if (nrow(re_wide[perc_black > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% of the population black-- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated percent population black numbers exceed 100%!")
+}
+if (nrow(re_wide[perc_hisp > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% of the population hispacnic-- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated percent population hispanic numbers exceed 100%!")
+}
+if (nrow(re_wide[perc_white > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% of the population white -- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated percent population white numbers exceed 100%!")
+}
 
 
+#drop original cols
+re_wide <- re_wide[,-c("pop_black", "pop_hispanic", "pop_white", "pop_total"),with=F]
+
+#melt back long
+re_long <- melt.data.table(re_wide, id.vars = c("GEOID","year","grouping","source","NAME"),
+                           variable.name = "mod_label",
+                           value.name = "estimate",
+                           variable.factor = FALSE)
+######################################################################################################
+# ------------------------------------- income ----------------------------------------------------- #
+######################################################################################################
+#grab "income" group only -- no transformation needed
+inc <- acs_all[grouping == "income",]
+
+#change col order
+inc_long <- inc[,c("GEOID", "year", "grouping", "source", "NAME", "mod_label", "estimate")]
+
+######################################################################################################
+# ------------------------------------- poverty ---------------------------------------------------- #
+######################################################################################################
+#grab "poverty" group only
+pov <- acs_all[grouping == "poverty",]
+
+#calculate the following fields:
+##  ---- household poverty rate (hh poverty/total)
+##  ---- female poverty rate (individual, female poverty/total)
+
+#cast wide on mod_label
+pov_wide <- dcast.data.table(pov, GEOID + year + grouping + source + NAME ~ mod_label, value.var = "estimate")
+
+#calculate poverty rates
+pov_wide[,poverty_hh_rate:=(poverty_hh/poverty_hh_denom)]
+pov_wide[,poverty_fem_rate:=(poverty_females/poverty_ind_denom)]
+
+#validation checks
+if (nrow(pov_wide[poverty_hh_rate > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% of households living in poverty -- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated poverty rates exceed 100%!")
+}
+if (nrow(pov_wide[poverty_fem_rate > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% of females living in poverty -- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated female poverty rates exceed 100%!")
+}
+
+#drop original cols
+pov_wide <- pov_wide[,-c("poverty_hh", "poverty_hh_denom", "poverty_females", "poverty_ind_denom"),with=F]
+
+#melt back long
+pov_long <- melt.data.table(pov_wide, id.vars = c("GEOID","year","grouping","source","NAME"),
+                           variable.name = "mod_label",
+                           value.name = "estimate",
+                           variable.factor = FALSE)
+
+######################################################################################################
+# ------------------------------------- housing ---------------------------------------------------- #
+######################################################################################################
+#grab "housing" group only 
+hous <- acs_all[grouping == "housing",]
+
+#calculate the following fields:
+##  ---- housing stability: (Owner occupied:Moved in past 1-5 years + Renter occupied:!!Moved in 2005 or later)/Total households
+##  ---- housing tenure: Owners/renters
+
+#cast wide on mod_label
+hous_wide <- dcast.data.table(hous, GEOID + year + grouping + source + NAME ~ mod_label, value.var = "estimate")
+
+#calculate housing stability
+hous_wide[,stability:=((stability_owner + stability_renter)/stability_total)]
+#calculate housing tenure
+hous_wide[,tenure:=(tenure_owner/tenure_renter)]
+
+#validation check
+if (nrow(hous_wide[stability > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% stability  -- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated stability exceed 100%!")
+}
+
+#drop original cols
+hous_wide <- hous_wide[,-c("stability_owner", "stability_renter", "stability_total", 
+                           "tenure_owner", "tenure_renter", "tenure_total"),with=F]
+
+#melt back long
+hous_long <- melt.data.table(hous_wide, id.vars = c("GEOID","year","grouping","source","NAME"),
+                            variable.name = "mod_label",
+                            value.name = "estimate",
+                            variable.factor = FALSE)
+
+######################################################################################################
+# ------------------------------------- education -------------------------------------------------- #
+######################################################################################################
+#grab "education" group only
+ed <- acs_all[grouping == "education",]
+
+#calculate the following fields:
+##  ---- Education < HS
+##  ---- Education HS/GED
+##  ---- Education some college or higher -- sum(some college + college or higher/total)
+
+#cast wide on mod_label
+ed_wide <- dcast.data.table(ed, GEOID + year + grouping + source + NAME ~ mod_label, value.var = "estimate")
+
+#calculate fields
+ed_wide[,edu_lt_hs:=(edu_lt_hs/edu_total)]
+ed_wide[,edu_hs_ged:=(edu_hs_ged/edu_total)]
+ed_wide[,edu_collegeplus:=((edu_some_college + edu_college)/edu_total)]
+
+#validation checks
+if (nrow(ed_wide[edu_lt_hs > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% less than HS  -- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated 'less than HS' exceed 100%!")
+}
+
+if (nrow(ed_wide[edu_hs_ged > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% ged/hs  -- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated 'ged/hs' exceed 100%!")
+}
+
+if (nrow(ed_wide[edu_collegeplus > 1,]) != 0) {
+  message("Uh oh -- it appears you have over 100% college plus  -- check your calculations again")
+  stop()
+} else {
+  message("Niiice! None of your calculated 'college plus' exceed 100%!")
+}
+
+#drop original cols
+ed_wide <- ed_wide[,-c("edu_college", "edu_some_college", "edu_total"),with=F]
+
+#melt back long
+ed_long <- melt.data.table(ed_wide, id.vars = c("GEOID","year","grouping","source","NAME"),
+                             variable.name = "mod_label",
+                             value.name = "estimate",
+                             variable.factor = FALSE)
+
+######################################################################################################
+# ------------------------------------- all together ----------------------------------------------- #
+######################################################################################################
+fin <- rbindlist(l=list(re_long, inc_long, pov_long, hous_long, ed_long))
+
+#grab 2015 and copy for 2016 and 2017 and then bind again
+tbl_2016 <- fin[year == 2015,]
+tbl_2016 <- tbl_2016[,year:=2016]
+tbl_2017 <- fin[year == 2015,]
+tbl_2017 <- tbl_2017[,year:=2017]
+
+#bind these 2 additional table to main
+final <- rbindlist(l=list(fin, tbl_2016, tbl_2017))
+
+#save as feather
+write_feather(final, paste0(data_repo,"/acs/acs5_2007_2017_rtg.feather"))
 
 ######################################################################################################
 # -------------------------------------- 2010 county boundaries ------------------------------------ #
@@ -119,167 +299,9 @@ acs_geo <- get_acs(geography = (unique(config$geo_level)),
                    geometry = TRUE
 )
 
-######################################################################################################
-# -------------------------------------- SCRAP ----------------------------------------------------- #
-######################################################################################################
+#saveRDS(acs_geo, paste0(data_repo,"/acs/2010_county_shp/acs_2010_counties.Rds"))
 
 
-group_sub = "race_eth"
-
-#subset config to race eth vars
-config_sub <- config[grouping == (group)] 
-
-#reduce config to get acs name - field names key
-config_names <- config_sub[,c('mod_label','acs_name'),with=F]
-
-#will need to loop through by year and grouping
-years <- unique(config_sub$year)
-i <- years[1]  
-
-#get relevant data
-acs_data <- get_acs(geography = (unique(config_sub$geo_level)),
-                    variables = as.vector(config_sub$acs_name),
-                    year = (i),
-                    survey = "acs5"
-                    ) %>% 
-  #join to config key to get readable var names
-  left_join(config_names, by = c("variable"="acs_name"))
-  
-  
-#join
-acs_data2 <- left_join(acs_data, config_names, by = c("variable"="acs_name"))
-
-#test on another grouping
-
-#start making function -- bind all groupings together into one long table
-acs_race_eth <- getCensus(name = "acs5",
-                        vintage = 2009, 
-                        vars = c("NAME","B02001_001E", #total pop
-                                 "B02001_002E", #white pop alone
-                                 "B02001_003E", #black pop alone 
-                                 "B03001_003E" #hispanic or latino
-                                 ), 
-                        region = "county:*",
-                        regionin = "state:02")
-
-compare <- getCensus(name = "acs5",
-                          vintage = 2009, 
-                          vars = c("NAME","B02001_001E", #total pop
-                                   "B01003_001E",
-                                   "B00001_001E", #unweighted households
-                                   "B25001_001E" #housing units
-                          ),
-                          region = "county:*",
-                          regionin = "state:02")
-
-
-B00001_001E
-
-
-#rename columns
-
-#create table with the following cols:
-##  ---- percent black
-##  ---- percent white
-##  ---- percent hispanic
-##  ---- black-white ratio
-
-# ------------------------------------- income -------------------------------------------------------------- #
-#grouping = "income"
-acs_income <- getCensus(name = "acs5",
-                        vintage = 2009, 
-                        vars = c("NAME",
-                                 "B19013_001E" # Median household income in the past 12 months (in 2009 inflation-adjusted dollars), B19013. Median Household Income
-                                 ), 
-                        region = "county:*",
-                        regionin = "state:02")
-
-# ------------------------------------- poverty ------------------------------------------------------------- #
-#grouping = "poverty"
-acs_poverty <- getCensus(name = "acs5",
-                         vintage = 2009, 
-                         vars = c("NAME",
-                                  "B25001_001E", #	Housing Units
-                                  "B17001_001E", #Total:	B17001. Poverty Status in the past 12 Months by Sex by Age
-                                  "B17012_001E" # Total:	B17012. POVERTY STATUS IN THE PAST 12 MONTHS OF FAMILIES BY HOUSEHOLD TYPE BY NUMBER OF RELATED CHILDREN UNDER 18 YEARS
-                                  
-                         ), 
-                         region = "county:*",
-                         regionin = "state:02")
-
-#calculate rate (divide by pop total)
-
-# ------------------------------------- housing ------------------------------------------------------------- #
-#grouping = "housing"
-acs_tenure <- getCensus(name = "acs5",
-                         vintage = 2009, 
-                         vars = c("NAME",
-                                  "B25003_001E", #Tenure total -- use as denominator
-                                  "B25002_003E", #Vacant	B25002. Occupancy Status
-                                  "B25003_002E", #Owner occupied	B25003. Tenure
-                                  "B25003_003E" #Renter occupied	B25003. Tenure
-                                  
-                                  
-                                  ), 
-                         region = "tract:*",
-                         regionin = "state:02")
-
-#calculate tenure as proportion owners vs renters
-
-acs_stability <- getCensus(name = "acs5",
-                        vintage = 2009, 
-                        vars = c("NAME",
-                                 "B25038_001E",# B25038. Tenure by Year Householder Moved into Unit
-                                 "B25038_003E", #	Owner occupied:!!Moved in 2005 or later
-                                 "B25038_010E" #Renter occupied:!!Moved in 2005 or later
-                        ), 
-                        region = "tract:*",
-                        regionin = "state:02")
-
-#calculate stability:
-#Proportion of population that has resided in the area for previous 1-5 years
-#sum owner and renter occupied : moved in 2005orlater; divide sum by total
-# ------------------------------------- education ----------------------------------------------------------- #
-#grouping = "education"
-
-
-
-# ------------------------------------- employment ---------------------------------------------------------- #
-try <- getCensus(name = "acs5",
-                 vintage = 2009, 
-                 table = "S2301",
-                 region = "tract:*",
-                 regionin = "state:02")
-
-try2 <- get_acs(geography = "county",
-                table = "S2301",
-                year = 2009,
-                survey = "acs5",
-                state = "GA")
-
-
-#SCRAP
-acs_poverty_group <- getCensus(name = "acs/acs5",
-                               vintage = 2016, 
-                               vars = c("NAME", "group(B17020)"), 
-                               region = "tract:*",
-                               regionin = "state:02")
-
-
-# List column names
-colnames(acs_poverty_group)
-
-
-acs_income2 <- getCensus(name = "acs5",
-                        vintage = 2009, 
-                        vars = c("NAME", "B19013_001E", "B19013_001EA", "B19013_001M", "B19013_001MA"), 
-                        region = "tract:*",
-                        regionin = "state:02")
-
-
-
-acs_income <- getCensus(name = "acs/acs5",
-                        vintage = 2017, 
-                        vars = c("NAME", "B19013_001E", "B19013_001EA", "B19013_001M", "B19013_001MA"), 
-                        region = "tract:*",
-                        regionin = "state:02")
+#****************************************************************************************************************
+# -------------------- EVERYTHING BELOW THIS LINE IS STILL 'UNDER CONSTRUCTION' -----------------
+#****************************************************************************************************************
