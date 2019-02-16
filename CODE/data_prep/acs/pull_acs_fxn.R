@@ -21,7 +21,7 @@ pull_acsdata <- function(group, yr){
   
   # ----------------------------------- make key -----------------------------------------------------
   #reduce config to get acs name - field names key
-  config_names <- config_sub[,c('mod_label','grouping','acs_name'),with=F]
+  config_names <- config_sub[,c('mod_label','grouping','year_rep_start','acs_name'),with=F]
   
   # ----------------------------------- grab dat data! -----------------------------------------------
   #get relevant data
@@ -36,6 +36,12 @@ pull_acsdata <- function(group, yr){
     
     #convert to data table
     as.data.table()
+    
+    #create col for source
+    acs_data[,source:=paste0(yr,"_",acs_survey)]
+    
+    #rename the representative year col 'year'
+    setnames(acs_data, "year_rep_start", "year")
   
   #return(acs_data_coll)
   return(acs_data)
