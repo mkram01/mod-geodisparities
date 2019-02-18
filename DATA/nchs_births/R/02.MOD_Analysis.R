@@ -5,14 +5,11 @@
 
 ## Package and Data setup -----------------
 rm(list = ls())
-library(sas7bdat)
-library(haven)
-library(Hmisc)
-library(feather)
-library(dplyr)
-library(plyr)
-library(tidyr)
-library(magrittr)
+
+library(dplyr) # for data manipulation
+library(plyr) # for data manipulation
+library(tidyr) # for data manipulation
+library(magrittr) # for chaining actions together
 # install.packages("INLA", repos = c(getOption("repos"),
 #                                    INLA = "https://inla.r-inla-download.org/R/stable"),
 #                  dep = TRUE)
@@ -43,6 +40,8 @@ gatestmodel1singleyear <- readRDS(file = "DATA/nchs_births/R/data/gatestmodel1si
 # Zero-inflated Poisson?
 model <- inla(ptb ~ dob_yy + combfips + racehisp_recode, family = c("poisson"),
      data = gatestmodel1, control.predictor = list(link = 1))
+
+
 
 
 # Testing -----------------------

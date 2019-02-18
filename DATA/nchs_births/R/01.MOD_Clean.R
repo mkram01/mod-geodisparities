@@ -5,18 +5,18 @@
 
 ## Package and Data setup -----------------
 rm(list = ls())
-library(sas7bdat)
-library(haven)
-library(Hmisc)
-library(feather)
-library(dplyr)
-library(plyr)
-library(tidyr)
-library(magrittr)
-# install.packages("INLA", repos = c(getOption("repos"),
-#                                    INLA = "https://inla.r-inla-download.org/R/stable"),
-#                  dep = TRUE)
-library(INLA)
+library(sas7bdat) # for data transfer
+library(haven) # for data transfer
+library(Hmisc) # for data transfer
+library(dplyr) # for data manipulation
+library(plyr) # for data manipulation
+library(tidyr) # for data manipulation
+library(magrittr) # for chaining actions together
+library(sp) # for spatial data manipulation
+library(spdep) # for adjacency matrix creation
+library(tigris) # for TIGRIS county shapefile
+library(colorspace) # for HCL color palette
+library(grid) # for spplot customization
 
 ##  Convert model SAS files to R data files (note: done on local computer, not on Git)
 # Emory Computer
@@ -26,14 +26,6 @@ model3 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dim
 model4 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model4.sas7bdat"))
 model5 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model5.sas7bdat"))
 model6 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model6.sas7bdat"))
-
-# Laptop
-# model1 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model1.sas7bdat"))
-# model2 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model2.sas7bdat"))
-# model3 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model3.sas7bdat"))
-# model4 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model4.sas7bdat"))
-# model5 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model5.sas7bdat"))
-# model6 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model6.sas7bdat"))
 
 # Set NA values to 0
 model1$mptb[which(is.na(model1$mptb))] <- model1$lptb[which(is.na(model1$lptb))] <- 0
@@ -70,6 +62,9 @@ gatestmodel1singleyear <- model1 %>%
   filter(substr(combfips, 1, 2) == "13") %>%
   filter(dob_yy == "2007")
 
+model1singleyear <- model1 %>%
+  filter(dob_yy == "2007")
+
 # Save as .rda files
 saveRDS(model1, file = "DATA/nchs_births/R/data/model1.rda")
 saveRDS(model2, file = "DATA/nchs_births/R/data/model2.rda")
@@ -79,3 +74,4 @@ saveRDS(model5, file = "DATA/nchs_births/R/data/model5.rda")
 saveRDS(model6, file = "DATA/nchs_births/R/data/model6.rda")
 saveRDS(gatestmodel1, file = "DATA/nchs_births/R/data/gatestmodel1.rda")
 saveRDS(gatestmodel1singleyear, file = "DATA/nchs_births/R/data/gatestmodel1singleyear.rda")
+saveRDS(model1singleyear, file = "DATA/nchs_births/R/data/model1singleyear.rda")
