@@ -105,7 +105,7 @@ adj <- as(adj, "dgTMatrix") # create sparse matrix, memory conservation
 
 
 
-# Create expected counts
+# Create expected counts ----------------------------------------
 # Expected cases (raw counts of events relative to some expected value, or population offset)
 rates <- aggregate(ptb ~ 1, health_df, mean) #in this case, we will standardize to the average IMR for the period
 
@@ -182,3 +182,6 @@ options(scipen = 999)
 # 
 # final.dat < -merge(dat.long, cov_dat, by="cofips")
 # head(final.dat)
+
+# Output data ------------------------------------------
+# Output graph object

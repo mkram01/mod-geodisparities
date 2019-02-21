@@ -10,10 +10,8 @@ library(dplyr) # for data manipulation
 library(plyr) # for data manipulation
 library(tidyr) # for data manipulation
 library(magrittr) # for chaining actions together
-# install.packages("INLA", repos = c(getOption("repos"),
-#                                    INLA = "https://inla.r-inla-download.org/R/stable"),
-#                  dep = TRUE)
 library(INLA)
+
 
 ## Model Analysis --------------------
 
@@ -28,6 +26,10 @@ gatestmodel1 <- readRDS(file = "DATA/nchs_births/R/data/gatestmodel1.rda")
 gatestmodel1singleyear <- readRDS(file = "DATA/nchs_births/R/data/gatestmodel1singleyear.rda")
 model1singleyear <- readRDS(file = "DATA/nchs_births/R/data/model1singleyear.rda")
 
+# Define spatial adjacency matrix
+#matrix <- 
+  
+
 # Data Description
 
 # Model 1: YEAR x COUNTY x RACE restricted to SINGLETONS and NH-Black/NH-White
@@ -40,28 +42,28 @@ model1singleyear <- readRDS(file = "DATA/nchs_births/R/data/model1singleyear.rda
 # Plotting data ------------------
 # Options = binomial, poisson, negative binomial
 # Distribution of IMR by yearggplot(data = final.dat) + 
-  geom_histogram(aes(x = log(rate) , y = 0.5 * ..density..)) + 
-  facet_wrap(~ year) +
-  ggtitle(label = "Distribution of Infant Mortality Rate by Year", 
-          subtitle = "US Counties, 2000-2007")
-
-# Distribution of IMR by year
-ggplot(data = final.dat) + 
-  geom_histogram(aes(x = log(rate/E_d) , y = 0.5* ..density..)) + 
-  facet_wrap(~ year) +
-  ggtitle(label = "Distribution of Infant Mortality Relative Risk by Year", 
-          subtitle = "US Counties, 2000-2007")
-
-ggplot(data = final.dat) + 
-  geom_histogram(aes(x = deaths , y = 0.5*..density..)) + 
-  facet_wrap(~year) +
-  ggtitle(label = "Distribution of Deaths by Year", subtitle = "Texas Counties, 2000-2007")
-
-ggplot(data = final.dat) + 
-  geom_histogram(aes(x = deaths/E_d , y = 0.5*..density..)) + 
-  facet_wrap(~year) +
-  ggtitle(label = "Distribution of Mortality Relative Risk by Year", 
-          subtitle = "Texas Counties, 2000-2007")
+#   geom_histogram(aes(x = log(rate) , y = 0.5 * ..density..)) + 
+#   facet_wrap(~ year) +
+#   ggtitle(label = "Distribution of Infant Mortality Rate by Year", 
+#           subtitle = "US Counties, 2000-2007")
+# 
+# # Distribution of IMR by year
+# ggplot(data = final.dat) + 
+#   geom_histogram(aes(x = log(rate/E_d) , y = 0.5* ..density..)) + 
+#   facet_wrap(~ year) +
+#   ggtitle(label = "Distribution of Infant Mortality Relative Risk by Year", 
+#           subtitle = "US Counties, 2000-2007")
+# 
+# ggplot(data = final.dat) + 
+#   geom_histogram(aes(x = deaths , y = 0.5*..density..)) + 
+#   facet_wrap(~year) +
+#   ggtitle(label = "Distribution of Deaths by Year", subtitle = "Texas Counties, 2000-2007")
+# 
+# ggplot(data = final.dat) + 
+#   geom_histogram(aes(x = deaths/E_d , y = 0.5*..density..)) + 
+#   facet_wrap(~year) +
+#   ggtitle(label = "Distribution of Mortality Relative Risk by Year", 
+#           subtitle = "Texas Counties, 2000-2007")
 
 
 # # Create dataset
@@ -77,7 +79,7 @@ ggplot(data = final.dat) +
 #   coord_sf(crs = 102008)
 
 # Null model ----------------------------------------
-null <- bmiz~ 1 + # Fixed effects
+null <- ptb ~ 1 + # Fixed effects
   f(struct, model = "iid") # Random effects
 # THis is a gaussian model
 fit0 <- inla(null, 

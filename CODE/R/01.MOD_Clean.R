@@ -12,11 +12,6 @@ library(dplyr) # for data manipulation
 library(plyr) # for data manipulation
 library(tidyr) # for data manipulation
 library(magrittr) # for chaining actions together
-library(sp) # for spatial data manipulation
-library(spdep) # for adjacency matrix creation
-library(tigris) # for TIGRIS county shapefile
-library(colorspace) # for HCL color palette
-library(grid) # for spplot customization
 
 ##  Convert model SAS files to R data files (note: done on local computer, not on Git)
 # Emory Computer
@@ -28,23 +23,35 @@ model5 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dim
 model6 <- as.data.frame(haven::read_sas("C:/Users/kweiss2/Documents/March of Dimes/model6.sas7bdat"))
 
 # Set NA values to 0
-model1$mptb[which(is.na(model1$mptb))] <- model1$lptb[which(is.na(model1$lptb))] <- 0
-model1$vptb[which(is.na(model1$vptb))] <- model1$ptb[which(is.na(model1$ptb))] <- 0
+model1$mptb[which(is.na(model1$mptb))] <- 0 
+model1$lptb[which(is.na(model1$lptb))] <- 0
+model1$vptb[which(is.na(model1$vptb))] <- 0
+model1$ptb[which(is.na(model1$ptb))] <- 0
 
-model2$mptb[which(is.na(model2$mptb))] <- model2$lptb[which(is.na(model2$lptb))] <- 0
-model2$vptb[which(is.na(model2$vptb))] <- model2$ptb[which(is.na(model2$ptb))] <- 0
+model2$mptb[which(is.na(model2$mptb))] <- 0
+model2$lptb[which(is.na(model2$lptb))] <- 0
+model2$vptb[which(is.na(model2$vptb))] <- 0
+model2$ptb[which(is.na(model2$ptb))] <- 0
 
-model3$mptb[which(is.na(model3$mptb))] <- model3$lptb[which(is.na(model3$lptb))] <- 0
-model3$vptb[which(is.na(model3$vptb))] <- model3$ptb[which(is.na(model3$ptb))] <- 0
+model3$mptb[which(is.na(model3$mptb))] <- 0
+model3$lptb[which(is.na(model3$lptb))] <- 0
+model3$vptb[which(is.na(model3$vptb))] <- 0
+model3$ptb[which(is.na(model3$ptb))] <- 0
 
-model4$mptb[which(is.na(model4$mptb))] <- model4$lptb[which(is.na(model4$lptb))] <- 0
-model4$vptb[which(is.na(model4$vptb))] <- model4$ptb[which(is.na(model4$ptb))] <- 0
+model4$mptb[which(is.na(model4$mptb))] <- 0
+model4$lptb[which(is.na(model4$lptb))] <- 0
+model4$vptb[which(is.na(model4$vptb))] <- 0
+model4$ptb[which(is.na(model4$ptb))] <- 0
 
-model5$mptb[which(is.na(model5$mptb))] <- model5$lptb[which(is.na(model5$lptb))] <- 0
-model5$vptb[which(is.na(model5$vptb))] <- model5$ptb[which(is.na(model5$ptb))] <- 0
+model5$mptb[which(is.na(model5$mptb))] <- 0
+model5$lptb[which(is.na(model5$lptb))] <- 0
+model5$vptb[which(is.na(model5$vptb))] <- 0
+model5$ptb[which(is.na(model5$ptb))] <- 0
 
-model6$mptb[which(is.na(model6$mptb))] <- model6$lptb[which(is.na(model6$lptb))] <- 0
-model6$vptb[which(is.na(model6$vptb))] <- model6$ptb[which(is.na(model6$ptb))] <- 0
+model6$mptb[which(is.na(model6$mptb))] <- 0
+model6$lptb[which(is.na(model6$lptb))] <- 0
+model6$vptb[which(is.na(model6$vptb))] <- 0
+model6$ptb[which(is.na(model6$ptb))] <- 0
 
 # Rename total births variable
 model1 <- rename(model1, replace = c("_FREQ_" = "births"))
