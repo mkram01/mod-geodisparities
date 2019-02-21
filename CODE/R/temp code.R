@@ -268,3 +268,79 @@ data.frame(restab)
 # Plots
 ddf <- data.frame(rbind(sigmaschool,sigmaclass,sigmaid,sigmaepsilon),errterm=gl(4,1024,labels = c("school","class","id","epsilon")))
 ggplot(ddf, aes(x,y, linetype=errterm))+geom_line()+xlab("score")+ylab("density")+xlim(0,0.15)
+
+## CDC Webinar -----------------
+#https://nces.ed.gov/fcsm/pdf/GIG_Workshop_2016_Mapping_Suicide_Death_Rates_NCHS.pdf
+
+
+
+
+#read in shapefile and data
+county.map <- readShapePoly('//path to shapefile here/shapefilename.shp',IDvar="NUMFIPS")
+suic <- read.csv("//path to data here/datafilename.csv",header=TRUE)
+
+#create spatial data frame
+polys <- SpatialPolygonsDataFrame(county.map,data=as.data.frame(county.map),match.ID=TRUE)
+
+#obtain lat long coordinates
+coords <- coordinates(polys)
+polys$x <- coords[,1]
+polys$y <- coords[,2]
+
+#create adjacency matrix, neighbors list - here using Delaunay Triangulation
+triang <- tri2nb(coords, row.names=NULL)
+neib <- nb2WB(triang)
+
+#calculate sum of number of neighbors
+neib$sumnb <- sum(neib$num)
+
+#how many neighbors for each county?
+summary(neib$num)
+
+#set seed if you want to replicate results
+set.seed(1234)
+
+#create a file with the required info about what counties/units are neighbors
+inla.geobugs2inla(neib$adj, neib$num, graph.file="suicides_map")
+#create the model - here a binomial model for suicide deaths/population, including a
+# random effect for county (iid), a spatially structured county-level
+#random effect (besag), a random effect for time (type 1 random walk),
+# and a county-year specific iid residual term
+# 
+countyid <- rep(1:3140,each=10) #number of counties
+countyid2 <- countyid #number of counties for second random effect
+resid <- rep(1:31400) #number of county-year observations
+year <- rep(1:10,len=31400) #year variable
+numerator <- suic$numerator
+denominator <- suic$denominator
+data <- data.frame(numerator, denominator, countyid, countyid2, resid, year)
+
+# Evaluated each of the terms to see if better fit
+formula7<-numerator ~ 1 + f(countyid, model="iid") +  # • County-level non-spatial random effect (iid)
+  f(countyid2, model = "besag", graph = "suicides_map") + # • County-level spatially structured random effect
+  f(year, model = "rw1")+ # • Year random effect (type 1 random walk)
+  f(resid, model = "iid") # • Space-time interaction term (residual, iid)
+
+result7 <- inla(formula7, 
+                family = "Binomial", 
+                Ntrials = denominator,
+                data = data,
+                control.compute = list(dic = TRUE,
+                                     cpo = TRUE))
+
+#get fit statistics
+result7$dic$dic;result7$dic$p.eff
+
+# 
+# Model Components DIC n.eff
+# 1.Simple random effects, 𝑣𝑖 𝛼0 + 𝑣𝑖 150371.4 2316
+# 2.Spatial 𝑢𝑖 and non-Spatial 𝑣𝑖
+# , random effects 𝛼0 +𝑢𝑖 +𝑣𝑖 149966.2 2316
+# Random time effects
+# 3. Correlated time effects, 𝜑1𝑡 𝛼0 + 𝑢𝑖 + 𝑣𝑖 + 𝜑1𝑡 148008.6 1884
+# 4. Uncorrelated time effects, 𝜑2𝑡
+# Full Model
+# 𝛼0 + 𝑢𝑖 + 𝑣𝑖 + 𝜑2𝑡 148010.3 1886
+# 5. Space time interaction term, 𝜓𝑖𝑡 𝛼0 +𝑢𝑖+𝑣𝑖 + 𝜑2𝑡+𝜓𝑖𝑡 147821.9 2766
+# Full Model with Covariates
+#  𝜑1𝑡+𝜓𝑖𝑡+𝑿𝒊𝒕′𝜷 147181.1 1896
