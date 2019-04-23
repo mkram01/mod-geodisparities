@@ -144,4 +144,8 @@ saveRDS(smpl_mod_spatial, file=paste0(data_repo, "/model_output/eb_spatial.Rds")
 
 
 
+#for running final app script locally:
+#for running app locally, start here
+setwd("/home/e/Documents/git_repos/mod-geodisparities/CODE/shiny/mod_geo_mockup/")
+
 
