@@ -571,14 +571,14 @@ server <- function(input, output, session) {
   
   # dependent on subsetting of df above
   output$mod_xvar <- renderUI(selectInput('mod_xvar',label='x Var',
-                                          choices = names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year')],
-                                          selected =  names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year')][1]))
+                                          choices = names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year','geometry')],
+                                          selected =  names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year','geometry')][1]))
   output$mod_yvar <- renderUI(selectInput('mod_yvar',label='y Var',
-                                          choices = names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year')],
-                                          selected =  names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year')][2]))
+                                          choices = names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year','geometry')],
+                                          selected =  names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year','geometry')][2]))
   output$mod_cvar <- renderUI(selectInput('mod_color',label='Color Var',
-                                          choices = names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year')],
-                                          selected =  names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year')][1]))
+                                          choices = names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year','geometry')],
+                                          selected =  names(mod_df)[!names(mod_df) %in% c('FIPS','state_name', 'Year','geometry')][1]))
   
   # Defining xvar, yvar & color var reactives -------------------------------------------------------
   mod_xvar_ <- ''
