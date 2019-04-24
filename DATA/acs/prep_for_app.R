@@ -10,7 +10,7 @@ rm(list = ls())
 # -------------------------------------- set up environment ---------------------------------------- #
 ######################################################################################################
 #load packages
-pacman::p_load(data.table,feather,sf,dplyr)
+pacman::p_load(data.table,feather,sf,dplyr,rgeos,rmapshaper)
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
@@ -120,16 +120,59 @@ mod_spatial <- mod_spatial[,c('FIPS','Year',
 #coerce new obj into an sf object
 mod_spatial <- st_as_sf(mod_spatial)
 
-#transform spatial data to wgs84
-acs_spatial <- st_transform(acs_spatial, crs = 4326)
-mod_spatial <- st_transform(mod_spatial, crs = 4326)
+#try simplifying geometry with rmapshaper
+# acs_smpl <- rmapshaper::ms_simplify(acs_spatial, keep = 0.01, keep_shapes = TRUE)
+# mod_smpl <- rmapshaper::ms_simplify(mod_spatial, keep = 0.01, keep_shapes = TRUE)
+# #save
+# saveRDS(acs_smpl, file = "C:/Users/erinste/Desktop/test/simpl_acs_spatial.Rds")
+# saveRDS(mod_smpl, file = "C:/Users/erinste/Desktop/test/simpl_eb_spatial.Rds")
 
-# for visualizing in app, need to simplify geometries -- doesn't look right
-smpl_acs_spatial <- st_simplify(acs_spatial, dTolerance = 0.1)
-smpl_mod_spatial <- st_simplify(mod_spatial, dTolerance = 0.1)
-# 
-# plot(st_geometry(smpl_acs_spatial[smpl_acs_spatial$state_name == "Georgia",]), col = "grey")
-# plot(st_geometry(acs_spatial[acs_spatial$state_name == "Georgia",]), add = TRUE, col = "transparent", border = "firebrick")
+#having issues running this on ubuntu machine, so ran elsewhere, loading simplified objects back in
+acs_smpl <- readRDS(paste0(data_repo,"/acs/simpl_acs_spatial.Rds"))
+mod_smpl <- readRDS(paste0(data_repo,"/model_output/simpl_eb_spatial.Rds"))
+
+#transform spatial data to wgs84
+acs_smpl_v <- st_transform(acs_smpl, crs = 4326)
+mod_smpl_v <- st_transform(mod_smpl, crs = 4326)
+
+
+# for visualizing in app, need to simplify geometries -- doesn't look right --- need to project first
+smpl_acs_spatial <- st_simplify(acs_spatial, dTolerance = 0.1, preserveTopology = T)
+smpl_mod_spatial <- st_simplify(mod_spatial, dTolerance = 0.1, preserveTopology = T)
+
+#plot
+#base gray is douglas-peuker method
+plot(st_geometry(smpl_acs_spatial[smpl_acs_spatial$state_name == "Georgia",]), col = "grey") 
+#visvalingam's algorithm
+plot(st_geometry(acs_smpl[acs_smpl$state_name == "Georgia",]), col = "transparent", border="blue", add = T)
+#true base geometry
+plot(st_geometry(acs_spatial[acs_spatial$state_name == "Georgia",]), add = TRUE, col = "transparent", border = "firebrick")
+
+#transform to Albers Equal Area projection
+aeap <- "+proj=aea +lat_1=29.83333333333334 +lat_2=45.83333333333334 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+
+#transform to projected CRS and try simplifying
+new_acs <- st_transform(acs_spatial, aeap)
+new_mod <- st_transform(mod_spatial, aeap)
+
+#simplify
+smpl_acs_spatial2 <- st_simplify(new_acs, dTolerance = 0.1, preserveTopology = T)
+smpl_mod_spatial2 <- st_simplify(new_mod, dTolerance = 0.1, preserveTopology = T)
+
+#base gray is douglas-peuker method -- worked much better with projected data
+plot(st_geometry(smpl_acs_spatial2[smpl_acs_spatial2$state_name == "Georgia",]), col = "grey") 
+
+#testing if transformed back to a non-projected crs
+smpl_acs_fin <- st_transform(smpl_acs_spatial2, crs = 4326)
+smpl_mod_fin <- st_transform(smpl_mod_spatial2, crs = 4326)
+
+#worked
+plot(st_geometry(acs_test[acs_test$state_name == "Georgia",]), col = "grey") 
+
+#transform spatial data to wgs84
+#acs_spatial <- st_transform(acs_spatial, crs = 4326)
+#mod_spatial <- st_transform(mod_spatial, crs = 4326)
+
 
 #calculate centroids -- encountering error here, apparently some geometries may be empty
 acs_pts <- st_point_on_surface(acs_spatial)
@@ -138,9 +181,15 @@ acs_pts <- st_centroid(acs_spatial)
 ######################################################################################################
 # -------------------------------------- save ------------------------------------------------------ #
 ######################################################################################################
-saveRDS(smpl_acs_spatial, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties.Rds"))
-#save spatial model data
-saveRDS(smpl_mod_spatial, file=paste0(data_repo, "/model_output/eb_spatial.Rds"))
+#douglas-peuker
+saveRDS(smpl_acs_fin, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties.Rds"))
+#visvalingam's
+saveRDS(acs_smpl_v, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties_v.Rds"))
+
+#save spatial model data - douglas-peuker 
+saveRDS(smpl_mod_fin, file=paste0(data_repo, "/model_output/eb_spatial.Rds"))
+#save spatial model data - visvalingam's 
+saveRDS(mod_smpl_v, file=paste0(data_repo, "/model_output/eb_spatial_v.Rds"))
 
 
 
