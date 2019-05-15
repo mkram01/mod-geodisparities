@@ -1,0 +1,12 @@
+name: mod_geo_mockup
+title: mod_geo_mockup
+username:
+account: erstearns
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 846750
+bundleId: 2035909
+url: https://erstearns.shinyapps.io/mod_geo_mockup/
+when: 1556118080.38493
+asMultiple: FALSE
+asStatic: FALSE

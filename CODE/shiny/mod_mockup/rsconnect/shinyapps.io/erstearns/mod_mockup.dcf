@@ -1,0 +1,12 @@
+name: mod_mockup
+title:
+username:
+account: erstearns
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 846151
+bundleId: 1994341
+url: https://erstearns.shinyapps.io/mod_mockup/
+when: 1554715465.83624
+asMultiple: FALSE
+asStatic: FALSE
