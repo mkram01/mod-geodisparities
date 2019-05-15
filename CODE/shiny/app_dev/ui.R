@@ -14,6 +14,7 @@ ui <- bootstrapPage(
     dashboardSidebar(
       sidebarMenu(
         menuItem("About", tabName = "about", icon = icon("leanpub")),
+        menuItem("Project details", tabName = "details", icon = icon("asterisk")),
         menuItem("Data explorer", tabName = "indata", icon = icon("database")),
         menuItem("Model explorer", tabName = "moddata", icon = icon("crosshairs"))
       )
@@ -29,22 +30,47 @@ ui <- bootstrapPage(
                   #about markdown
                   box(includeMarkdown("mod_geo_mockup/about.md")
                       )
-                    ),
-                #detailing aims
-                fluidRow(
-                  box(includeMarkdown("mod_geo_mockup/socepi_aim1.md"),
-                      width = 4),
-                  box(includeMarkdown("mod_geo_mockup/socepi_aim2.md"),
-                      width = 4),
-                  box(includeMarkdown("mod_geo_mockup/socepi_aim1.md"),
-                      width = 4)
-                  ),
-                #citations
-                fluidRow(
-                  box(includeMarkdown("mod_geo_mockup/socepi_ref.md")
-                      )
                     )
                   ), # ------------------------------------------------------- end About tab
+        
+        #Project Details -------------------------------------------------------------
+        tabItem(tabName = "details",
+                #soc epi of preterm birth
+                fluidRow(
+                  box(includeMarkdown("mod_geo_mockup/socepi_pretermbirth.md"),
+                      width = 12)
+                ),
+                
+                #detailing aims
+                fluidRow(
+                  # aim 1
+                  tabBox(
+                    title = includeMarkdown("mod_geo_mockup/socepi_aim1_title.md"),
+                    id = "aim1_tabset", #height = "250px",
+                    tabPanel("Motivation", includeMarkdown("mod_geo_mockup/socepi_aim1_motivation.md")),
+                    tabPanel("Methodology", includeMarkdown("mod_geo_mockup/socepi_aim1_methodology.md")),
+                    width = 4
+                  ),
+                  #aim 2
+                  tabBox(
+                    title = includeMarkdown("mod_geo_mockup/socepi_aim2_title.md"),
+                    id = "aim2_tabset", #height = "250px",
+                    tabPanel("Motivation", includeMarkdown("mod_geo_mockup/socepi_aim2_motivation.md")),
+                    tabPanel("Methodology", includeMarkdown("mod_geo_mockup/socepi_aim2_methodology.md")),
+                    width = 4
+                  ),
+                  
+                  #aim 3
+                  box(includeMarkdown("mod_geo_mockup/socepi_aim3.md"),
+                      width = 4)
+                ),
+                #citations
+                fluidRow(
+                  box(includeMarkdown("mod_geo_mockup/socepi_ref.md"),
+                      width = 12
+                  )
+                )
+                ), # ------------------------------------------------------- end Projec details tab
         # Data explorer --------------------------------------------------------------
         tabItem(tabName = "indata",
                 fluidRow(
