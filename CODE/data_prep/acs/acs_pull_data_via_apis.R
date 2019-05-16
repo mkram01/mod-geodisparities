@@ -4,6 +4,11 @@
 # date: 22 january 2019
 ###########################################
 
+# ----------------- TO DO ---------------------
+#
+# Final clean up, create state and state code cols -- API not working properly on 2/20, will update once working
+
+
 # To run the code below be sure to sign up for an API key here(https://api.census.gov/data/key_signup.html)
 #   Then, if you’re on a non-shared computer, add your Census API key to your .Renviron profile and 
 #         call it CENSUS_API_KEY. tidycensus will use it by default without any extra work on your part. 
@@ -285,8 +290,19 @@ tbl_2017 <- tbl_2017[,year:=2017]
 #bind these 2 additional table to main
 final <- rbindlist(l=list(fin, tbl_2016, tbl_2017))
 
+
+## ----- TO DO ** -------------------
+#create state col & remove whitespace
+final[,state_name:=trimws(sapply(strsplit(NAME,","), "[", 2))]
+
+#create state code col
+final[,state_code:=trimws(substr(GEOID, start = 1, stop = 2))]
+
+#rearrange col orders
+final <- final[]
+
 #save as feather
-write_feather(final, paste0(data_repo,"/acs/acs5_2007_2017_rtg.feather"))
+#write_feather(final, paste0(data_repo,"/acs/acs5_2007_2017_rtg.feather"))
 
 ######################################################################################################
 # -------------------------------------- 2010 county boundaries ------------------------------------ #
