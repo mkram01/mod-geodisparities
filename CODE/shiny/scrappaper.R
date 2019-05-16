@@ -33,6 +33,7 @@ bb_contig <- st_bbox(usa_contig)
 geomod <- readRDS('mod_geo_mockup/data/eb_spatial_v.Rds')
 #transform spatial data to wgs84
 geomod <- st_transform(geomod, crs = 4326)
+modtest <- copy(geomod)
 
 
 
@@ -52,3 +53,7 @@ usa_contig$quintiles <- bin(usa_contig$blackwhite_ratio, nbins = 5, method = "co
 usa_contig$quintiles <- bin(usa_contig$blackwhite_ratio, nbins = 10, method = "content")
 
 plot(usa_contig["quintiles"])
+
+
+modtest$quintiles <- bin(modtest$Black_PTB_per_1000, nbins = 5, method = "content")
+plot(modtest["quintiles"])
