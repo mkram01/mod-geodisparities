@@ -251,6 +251,12 @@ ui <- bootstrapPage(
 ) #close bootstrap page
 
 
+############################################
+# code author: erin stearns
+# script objective: spatial app server elements (separated out for testing)
+# date: 5 march 2019
+###########################################
+
 ######################################################################################################
 # -------------------------------------- server function ------------------------------------------- #
 ######################################################################################################
@@ -712,7 +718,11 @@ server <- function(input, output, session) {
   #creating color palette
   mod_colorpal <- reactive({
     print('reactive: create mod color palette')
-    colorFactor("YlOrRd", mod_colorData())
+    if (mod_colorVar() %in% c("Black_White_Rate_Ratio", "Black_White_Rate_Difference")) {
+      colorFactor("RdBu", mod_colorData())
+    } else {
+      colorFactor("YlOrRd", mod_colorData()) 
+    }
   })
   mod_pal <- reactive({
     print('reactive: create mod palette for leaflet arg')
