@@ -28,6 +28,7 @@ library(dplyr)
 library(fontawesome)
 require(raster)
 require(gstat)
+library(OneR)
 
 # -------------------------------------- load data ------------------------------------------------- 
 #load spatial data
