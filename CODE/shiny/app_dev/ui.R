@@ -70,7 +70,7 @@ ui <- bootstrapPage(
                       width = 12
                   )
                 )
-                ), # ------------------------------------------------------- end Projec details tab
+                ), # ------------------------------------------------------- end Project details tab
         # Data explorer --------------------------------------------------------------
         tabItem(tabName = "indata",
                 fluidRow(
@@ -82,8 +82,9 @@ ui <- bootstrapPage(
                     selectInput('state', label = "State", choices = c("All",state_names), selected = "All"),
                     #select year
                     # -> source - parent of:
-                    sliderInput('year', label = "Year", value = 2007, min = 2007, max = 2017, step=1, sep = "",
-                                animate = animationOptions(interval = 750)),
+                    sliderInput('year', label = "Year", value = 2007, min = 2007, max = 2017, step=1, sep = ""
+                                #,animate = animationOptions(interval = 750) #too slow with animation
+                                ),
                     #select xvar
                     # -> endpoint - child of: renderUI -- not currently
                     # -> source - parent of:
@@ -141,8 +142,9 @@ ui <- bootstrapPage(
                     #select year
                     # -> source - parent of:
                     sliderInput('mod_year', label = "Year", value = 2012, min = 2012, max = 2016, 
-                                step=4, sep = "",
-                                animate = animationOptions(interval = 750)),
+                                step=4, sep = ""
+                                #, animate = animationOptions(interval = 750) #currently does not make sense
+                                ),
                     #select xvar
                     # -> endpoint - child of: renderUI -- not currently
                     # -> source - parent of:

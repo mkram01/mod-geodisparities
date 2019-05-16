@@ -19,7 +19,7 @@ library(shiny)
 library(leaflet)
 library(leaflet.extras)
 library(RColorBrewer)
-library(rgdal)
+#library(rgdal)
 library(sf)
 library(ggplot2)
 library(ggvis)
@@ -63,9 +63,9 @@ ui <- bootstrapPage(
     dashboardSidebar(
       sidebarMenu(
         menuItem("About", tabName = "about", icon = icon("leanpub")),
+        menuItem("Project details", tabName = "details", icon = icon("asterisk")),
         menuItem("Data explorer", tabName = "indata", icon = icon("database")),
-        menuItem("Model explorer", tabName = "moddata", icon = icon("crosshairs")),
-        menuItem("Social Epi of Preterm Birth", tabName = "socepi")
+        menuItem("Model explorer", tabName = "moddata", icon = icon("crosshairs"))
       )
     ),
     
@@ -75,18 +75,51 @@ ui <- bootstrapPage(
         tabItem(tabName = "about",
                 fluidRow(
                   box(tags$img(src = "mod.jpg", height = 250, width = 225), width = 3),
-                  box(includeHTML("about.html"), width = 9)
-              ),
-              fluidRow(
-                box(
-                    width = 4),
-                box(
-                    width = 4),
-                box(
-                  width = 4)
-              )
-              
-            ), # ------------------------------------------------------- end About tab
+                  
+                  #about markdown
+                  box(includeMarkdown("about.md")
+                  )
+                )
+        ), # ------------------------------------------------------- end About tab
+        
+        #Project Details -------------------------------------------------------------
+        tabItem(tabName = "details",
+                #soc epi of preterm birth
+                fluidRow(
+                  box(includeMarkdown("socepi_pretermbirth.md"),
+                      width = 12)
+                ),
+                
+                #detailing aims
+                fluidRow(
+                  # aim 1
+                  tabBox(
+                    title = includeMarkdown("socepi_aim1_title.md"),
+                    id = "aim1_tabset", #height = "250px",
+                    tabPanel("Motivation", includeMarkdown("socepi_aim1_motivation.md")),
+                    tabPanel("Methodology", includeMarkdown("socepi_aim1_methodology.md")),
+                    width = 4
+                  ),
+                  #aim 2
+                  tabBox(
+                    title = includeMarkdown("socepi_aim2_title.md"),
+                    id = "aim2_tabset", #height = "250px",
+                    tabPanel("Motivation", includeMarkdown("socepi_aim2_motivation.md")),
+                    tabPanel("Methodology", includeMarkdown("socepi_aim2_methodology.md")),
+                    width = 4
+                  ),
+                  
+                  #aim 3
+                  box(includeMarkdown("socepi_aim3.md"),
+                      width = 4)
+                ),
+                #citations
+                fluidRow(
+                  box(includeMarkdown("socepi_ref.md"),
+                      width = 12
+                  )
+                )
+        ), # ------------------------------------------------------- end Project details tab
         # Data explorer --------------------------------------------------------------
         tabItem(tabName = "indata",
                 fluidRow(
@@ -98,8 +131,9 @@ ui <- bootstrapPage(
                     selectInput('state', label = "State", choices = c("All",state_names), selected = "All"),
                     #select year
                     # -> source - parent of:
-                    sliderInput('year', label = "Year", value = 2007, min = 2007, max = 2017, step=1, sep = "",
-                                animate = animationOptions(interval = 750)),
+                    sliderInput('year', label = "Year", value = 2007, min = 2007, max = 2017, step=1, sep = ""
+                                #,animate = animationOptions(interval = 750) #too slow with animation
+                    ),
                     #select xvar
                     # -> endpoint - child of: renderUI -- not currently
                     # -> source - parent of:
@@ -157,8 +191,9 @@ ui <- bootstrapPage(
                     #select year
                     # -> source - parent of:
                     sliderInput('mod_year', label = "Year", value = 2012, min = 2012, max = 2016, 
-                                step=4, sep = "",
-                                animate = animationOptions(interval = 750)),
+                                step=4, sep = ""
+                                #, animate = animationOptions(interval = 750) #currently does not make sense
+                    ),
                     #select xvar
                     # -> endpoint - child of: renderUI -- not currently
                     # -> source - parent of:
@@ -200,45 +235,13 @@ ui <- bootstrapPage(
                       width = 3, status = 'warning')
                 ) #end model fluidrow 2
                 
-        ), # ------------------------------------------------- end Model output explorer
-        
-        # social epi of preterm birth ------------------------------------------------------
-        tabItem(tabName = "socepi",
-                fluidRow(
-                  box(includeHTML("socepi_pretermbirth.html"), 
-                      status = "success",
-                      width = 9
-                  ),
-                  box(width = 3)
-                ),
-                fluidRow(
-                  box(includeHTML("socepi_aim1.html"),
-                      status = "primary", solidHeader = TRUE,
-                      width = 4),
-                  box(includeHTML("socepi_aim2.html"),
-                      status = "warning", solidHeader = TRUE, 
-                      width = 4),
-                  box(includeHTML("socepi_aim3.html"),
-                      status = "danger", solidHeader = TRUE, 
-                      width = 4)
-                  
-                ),
-                fluidRow(
-                  box(includeHTML("socepi_ref.html"))
-                )
-        )
+        ) # ------------------------------------------------- end Model output explorer
         
       ) #close tabitems
     ) #close dashboard body
   ) #close dashboard page
 ) #close bootstrap page
 
-
-############################################
-# code author: erin stearns
-# script objective: spatial app server elements (separated out for testing)
-# date: 5 march 2019
-###########################################
 
 ######################################################################################################
 # -------------------------------------- server function ------------------------------------------- #

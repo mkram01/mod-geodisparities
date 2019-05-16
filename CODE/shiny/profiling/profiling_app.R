@@ -17,7 +17,7 @@ source('functions/utility_fxns.R')
 today <- make_time_stamp()
 
 # Run profiler on shiny app with optional arg to save output
-profvis({ runApp('app/app.R')},  
+profvis({ runApp('mod_geo_mockup/app.R')},  
         prof_output = paste0('profiling/profvis_outdir/', today, "_app.Rprof"))
 
 
