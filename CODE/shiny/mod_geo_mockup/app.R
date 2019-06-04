@@ -26,8 +26,10 @@ library(ggvis)
 library(shinydashboard)
 library(dplyr)
 library(fontawesome)
+library(OneR)
 require(raster)
 require(gstat)
+
 
 # -------------------------------------- load data ------------------------------------------------- 
 #load spatial data
