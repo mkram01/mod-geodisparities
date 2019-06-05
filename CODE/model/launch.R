@@ -31,12 +31,16 @@ setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
 
 # load central functions
-source('CODE/model/prep_functions.R')
+source('CODE/central_functions/utility_fxns.R')
+
+# load model prep functions
+source('CODE/model/model_prep/prep_fxns.R')
 
 # load config
-source("CODE/model/load_config.R")
+source("CODE/model/model_prep/load_config.R")
 
-#source 
+#load modeling functions
+source("CODE/model/model_prep/model_functions.R")
 
 
 
@@ -44,6 +48,21 @@ source("CODE/model/load_config.R")
 # ---------------------------------- Data load ----------------------------------------------------- #
 ######################################################################################################
 source("CODE/load_data.R")
+
+
+######################################################################################################
+# ---------------------------------- Create directory structure ------------------------------------ #
+######################################################################################################
+#Create model name
+
+#Create output folder directory if does not exist already
+create_dirs(outdir = data_repo,
+            model_type = model_type,
+            family = family,
+            outcome = outcome,
+            model = model_name
+            geography = geography
+            )
 
 ######################################################################################################
 # ---------------------------------- Run models ---------------------------------------------------- #

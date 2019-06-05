@@ -1,8 +1,11 @@
 ##############################################
-# Code author: Michael Kramer, Kevin Weiss, Erin Stearns
+# Code author: Erin Stearns
 # Code objective: Functions for loading config and calling that function
 # Date: 5.7.2019
 #############################################
+
+#Message code:
+message("From load_config.R script: Loading config file now")
 
 
 # ----------------------------------------------- config function -------------------------------------------
@@ -18,6 +21,17 @@ load_config <- function(data_repo) {
   return(config)  
 }
 
+# ----------------------------------------------- calling config function ------------------------------------
+
 # Read config file and save all parameters in memory
 config <- load_config(data_repo = data_repo)
 
+# ----------------------------------------------- setting config defaults ------------------------------------
+#Create defaults
+#Message code:
+message("From load_config.R script: Setting config defaults if any left empty")
+
+# ----------------------------------------------- validating config args -------------------------------------
+#Validate that year_end comes after year_start
+
+message("From load_config.R script: Validating config args")

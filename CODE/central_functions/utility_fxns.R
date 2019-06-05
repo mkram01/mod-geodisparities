@@ -1,12 +1,11 @@
 ##############################################
-# Code author: Michael Kramer, Kevin Weiss, Erin Stearns
-# Code objective: Functions for setting up a model run
+# Code author: Erin Stearns
+# Code objective: Utility functions that can be used across scenarios
 # Date: 5.7.2019
 #############################################
 
 ## Functions contained in this script:
 # -- time stamp
-# -- directory creation function
 # -- timer functions
 
 
@@ -32,28 +31,6 @@ make_time_stamp <- function(time_stamp = TRUE) {
   return(run_date)
   
 }
-
-
-# ----------------------------------------------- directory creation function -------------------------------------------
-
-create_dirs <- function(outdir, model_type, family, model, geography, save = TRUE) {
-  ## Create directory structure
-  #   Arguments:
-  #     outdir          = Location where you want output to be written
-  #     model         = name of model being run
-  #     region        = name of region being modeled  
-  dir.create(paste0(outdir, '/', model_type,'/',family,'/',model,'/',geography, '/Output/'))
-  
-  geography_out_dir <- paste0(outdir, '/', model_type,'/',family,'/',model,'/',geography, '/Output/')
-  
-  for(dir in c('output','model_image_history')) {
-    dir.create(paste0(geography_out_dir,'/',dir), showWarnings = FALSE)
-  }
-  if(save == TRUE){
-    save(config, file=paste0(geography_out_dir, '/model_image_history/', run_date, '_',model, '_', region, '.RData'))
-  } 
-}
-
 
 # ----------------------------------------------- timer functions -------------------------------------------
 generate_time_log <- function(ticlog) {
