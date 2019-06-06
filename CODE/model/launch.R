@@ -37,7 +37,17 @@ source('CODE/central_functions/utility_fxns.R')
 source('CODE/model/model_prep/prep_fxns.R')
 
 # load config
-source("CODE/model/model_prep/load_config.R")
+source('CODE/model/model_prep/load_config.R')
+
+# format config args
+source('CODE/model/model_prep/format_config_args.R')
+
+# load predefined objects
+source('CODE/model/model_prep/predefined_key.R')
+
+
+
+
 
 #load modeling functions
 source("CODE/model/model_prep/model_functions.R")

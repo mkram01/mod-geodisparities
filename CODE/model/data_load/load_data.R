@@ -4,37 +4,20 @@
 # Date: 5.7.2019
 #############################################
 
-#Objects defined in config:
-#   census_division
-
-######################################################################################################
-# ---------------------------------- Assign FIPS Code lists ---------------------------------------- #
-######################################################################################################
-# Census Regions
-southfips <- c('10', '11', '12','13', '24', '37', '45', '51', '54', '01', '21', '28', '47', '05', '22', '40', '48')
-westfips <- c('04', '08', '16', '30', '32', '35', '49', '56', '02', '06', '15', '41', '53')
-midwest <- c('17', '18', '26', '39', '55', '19', '20', '27', '29', '31', '38', '46')
-northeastfips <- c('09', '23', '25', '33', '44', '50', '34', '36', '42')
-
-# Census Divisions
-newenglandfips <- c('09', '23', '25', '33', '44', '50')
-midatlanticfips <- c('34', '36', '42')
-southatlanticfips <- c('10', '11', '12','13', '24', '37', '45', '51', '54')
-escfips <- c('01', '21', '28', '47')
-wscfips <- c('05', '22', '40', '48')
-encfips <- c('17', '18', '26', '39', '55')
-wncfips <- c('19', '20', '27', '29', '31', '38', '46')
-pacfips <- c('02', '06', '15', '41', '53')
-mountainfips <- c('04', '08', '16', '30', '32', '35', '49', '56')
-
 ######################################################################################################
 # ---------------------------------- Create summarized dataset ------------------------------------- #
 ######################################################################################################
+message("From load_data.R script: Loading aspatial data and prepping for model.")
 
+# ---- load and summarize ----
 smry_data <- readRDS(paste0(data_repo, '/nchs_births/R/Data/model1.rda')) %>%
-  filter(racehisp_recode %in% c(2,3),
-         substr(combfips,1,2) %in% (census_division),
-         dob_yy %in% 2007:2016) %>%
+  #subsetting to pre-specified model race/ethnicity population defined in  model_prep/load_config.R & formatted in format_config_args.R script
+  filter(racehisp_recode %in% (race_eth),
+         #subsetting to pre-specified model geography defined in model_prep/predefined_key.R
+         substr(combfips,1,2) %in% (geography), 
+         #subsetting to pre-specified model year span defined in model_prep/load_config.R & formatted in format_config_args.R script)
+         dob_yy %in% (year_span)) %>%   
+  #re-coding race/ethnicity to be binary *
   mutate(black = ifelse(racehisp_recode == 3, 1, 0),
          combfips = factor(combfips)) %>%
   group_by(dob_yy, combfips, black) %>%
@@ -48,11 +31,11 @@ smry_data <- readRDS(paste0(data_repo, '/nchs_births/R/Data/model1.rda')) %>%
 
 # ---- Prep spatial data for region only ----
 #creating save file name based on census division defined in config
-cty_sf_name <- paste0(str_sub(census_division, start = 1, end = -5), '_county.gpkg')
+cty_sf_name <- paste0(str_sub(geography, start = 1, end = -5), '_county.gpkg')
   
 #Read in national county shapefile and save in MOD folder as `.gpkg`.
 cty_sf <- st_read(paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')) %>%
-  filter(STATEFP %in% (census_division)) %>%
+  filter(STATEFP %in% (geography)) %>%
   st_transform(102003) # Albers Equal Area
 st_write(cty_sf, paste0(data_repo, '/spatial/', cty_sf_name), delete_dsn = T)
 # ------------------------------------------------------------------------------------- START HERE
