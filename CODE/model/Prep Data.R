@@ -17,7 +17,7 @@ pacfips <- c('02', '06', '15', '41', '53')
 mountainfips <- c('04', '08', '16', '30', '32', '35', '49', '56')
 
 # Create summarized dataset
-southatlantic <- readRDS('../../data/nchs_births/R/Data/model1.rda') %>%
+southatlantic <- readRDS(paste0(data_repo, '/nchs_births/R/Data/model1.rda')) %>%
   filter(racehisp_recode %in% c(2,3),
          substr(combfips,1,2) %in% southatlanticfips,
          dob_yy %in% 2007:2016) %>%

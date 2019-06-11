@@ -16,14 +16,24 @@ smry_data <- readRDS(paste0(data_repo, '/nchs_births/R/Data/model1.rda')) %>%
          #subsetting to pre-specified model geography defined in model_prep/predefined_key.R
          substr(combfips,1,2) %in% (geography), 
          #subsetting to pre-specified model year span defined in model_prep/load_config.R & formatted in format_config_args.R script)
-         dob_yy %in% (year_span)) %>%   
-  #re-coding race/ethnicity to be binary *
-  mutate(black = ifelse(racehisp_recode == 3, 1, 0),
-         combfips = factor(combfips)) %>%
-  group_by(dob_yy, combfips, black) %>%
+         dob_yy %in% (year_span))
+
+#re-coding race/ethnicity to be binary if not false
+if (recode_binary != "FALSE"){
+  #recode_binary <- recode_binary
+  smry_data <- smry_data %>%
+    mutate((!!recode_binary) := ifelse(racehisp_recode == (binary_code), 1, 0),
+           combfips = factor(combfips)) %>%
+    group_by(dob_yy, combfips, (recode_binary)) 
+  
+}
+
+#Summarise data
+smry_data <- smry_data %>%
   summarise(vptb = sum(vptb) + 1,
-            ptb = sum(ptb) + 1,
-            births = sum(births) + 1)
+                       ptb = sum(ptb) + 1,
+                       births = sum(births) + 1)
+  
 
 ######################################################################################################
 # ---------------------------------- Load spatial data --------------------------------------------- #

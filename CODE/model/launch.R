@@ -63,7 +63,7 @@ source("CODE/load_data.R")
 ######################################################################################################
 # ---------------------------------- Create directory structure ------------------------------------ #
 ######################################################################################################
-#Create model name
+#Create model name (function found in 'prep_fxns.R')
 
 #Create output folder directory if does not exist already
 create_dirs(outdir = data_repo,
