@@ -45,32 +45,26 @@ source('CODE/model/model_prep/format_config_args.R')
 # load predefined objects
 source('CODE/model/model_prep/predefined_key.R')
 
-
-
-
-
 #load modeling functions
-source("CODE/model/model_prep/model_functions.R")
-
+#source("CODE/model/model_prep/model_functions.R")
 
 
 ######################################################################################################
 # ---------------------------------- Data load ----------------------------------------------------- #
 ######################################################################################################
-source("CODE/load_data.R")
-
+source("CODE/model/data_load/load_data.R")
 
 ######################################################################################################
 # ---------------------------------- Create directory structure ------------------------------------ #
 ######################################################################################################
 #Create model name (function found in 'prep_fxns.R')
 
-#Create output folder directory if does not exist already
+#Create output folder directory if does not exist already (function found in 'prep_fxns.R')
 create_dirs(outdir = data_repo,
             model_type = model_type,
             family = family,
             outcome = outcome,
-            model = model_name
+            model = model_name,
             geography = geography
             )
 

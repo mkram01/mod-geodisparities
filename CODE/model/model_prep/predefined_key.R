@@ -13,7 +13,7 @@ message("From predefined_key.R script: Assigning FIPS codes to geography specifi
 # ---- National
 if(geography == "all"){
   message("From predefined_key.R script: You have selected all of the US as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c("01", "02", "04", "05", "06", "08", "09", "10", "11", "12", "13", "15", "16",
+  geo_fips <- c("01", "02", "04", "05", "06", "08", "09", "10", "11", "12", "13", "15", "16",
                  "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
                  "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42",
                  "44", "45", "46", "47", "48", "49", "50", "51", "53", "54", "55", "56", "72")
@@ -21,95 +21,95 @@ if(geography == "all"){
 
 # ---- Census Regions
 suppressWarnings(
-if(geography == "southfips"){
+if(geography == "south"){
   message("From predefined_key.R script: You have selected the South as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('10', '11', '12','13', '24', '37', '45', '51', '54', '01', '21', '28', '47', '05', '22', '40', '48')
+  geo_fips <- c('10', '11', '12','13', '24', '37', '45', '51', '54', '01', '21', '28', '47', '05', '22', '40', '48')
   }
 )
 
 suppressWarnings(
-if(geography == "westfips"){
+if(geography == "west"){
   message("From predefined_key.R script: You have selected the West as your model geography. Assigning vector of FIPS codes now!")
-  geography <-  c('04', '08', '16', '30', '32', '35', '49', '56', '02', '06', '15', '41', '53')
+  geo_fips <-  c('04', '08', '16', '30', '32', '35', '49', '56', '02', '06', '15', '41', '53')
   }
 )
 
 suppressWarnings(
-if(geography == "midwestfips"){
+if(geography == "midwest"){
   message("From predefined_key.R script: You have selected the Midwest as your model geography. Assigning vector of FIPS codes now!")
-  geography <-  c('17', '18', '26', '39', '55', '19', '20', '27', '29', '31', '38', '46')
+  geo_fips <-  c('17', '18', '26', '39', '55', '19', '20', '27', '29', '31', '38', '46')
   }
 )
 
 suppressWarnings(
-if(geography == "northeastfips"){
+if(geography == "northeast"){
   message("From predefined_key.R script: You have selected the Northeast as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('09', '23', '25', '33', '44', '50', '34', '36', '42')
+  geo_fips <- c('09', '23', '25', '33', '44', '50', '34', '36', '42')
 }
 )
 
 
 # ---- Census Divisions
 suppressWarnings(
-if(geography == "newenglandfips"){
+if(geography == "newengland"){
   message("From predefined_key.R script: You have selected New England as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('09', '23', '25', '33', '44', '50')
+  geo_fips <- c('09', '23', '25', '33', '44', '50')
   }
 )
 
 suppressWarnings(
-if(geography == "midatlanticfips"){
+if(geography == "midatlantic"){
   message("From predefined_key.R script: You have selected the Mid-Altantic as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('34', '36', '42')
+  geo_fips <- c('34', '36', '42')
   }
 )
 
 suppressWarnings(
-if(geography == "southatlanticfips"){
+if(geography == "southatlantic"){
   message("From predefined_key.R script: You have selected the South Altantic as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('10', '11', '12','13', '24', '37', '45', '51', '54')
+  geo_fips <- c('10', '11', '12','13', '24', '37', '45', '51', '54')
   }
 )
 
 suppressWarnings(
-if(geography == "escfips"){
+if(geography == "esc"){
   message("From predefined_key.R script: You have selected the ESC as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('01', '21', '28', '47')
+  geo_fips <- c('01', '21', '28', '47')
   }
 )
 
 suppressWarnings(
-if(geography == "wscfips"){
+if(geography == "wsc"){
   message("From predefined_key.R script: You have selected the WSC as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('05', '22', '40', '48')
+  geo_fips <- c('05', '22', '40', '48')
   }
 )
 
 suppressWarnings(
-if(geography == "encfips"){
+if(geography == "enc"){
   message("From predefined_key.R script: You have selected the ENC as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('17', '18', '26', '39', '55')
+  geo_fips <- c('17', '18', '26', '39', '55')
   }
 )
 
 suppressWarnings(
-if(geography == "wncfips"){
+if(geography == "wnc"){
   message("From predefined_key.R script: You have selected the WNC as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('19', '20', '27', '29', '31', '38', '46')
+  geo_fips <- c('19', '20', '27', '29', '31', '38', '46')
   }
 )
 
 suppressWarnings(
-if(geography == "pacfips"){
+if(geography == "pac"){
   message("From predefined_key.R script: You have selected the PAC as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('02', '06', '15', '41', '53')
+  geo_fips <- c('02', '06', '15', '41', '53')
   }
 )
 
 suppressWarnings(
-if(geography == "mountainfips"){
+if(geography == "mountain"){
   message("From predefined_key.R script: You have selected the PAC as your model geography. Assigning vector of FIPS codes now!")
-  geography <- c('04', '08', '16', '30', '32', '35', '49', '56')
+  geo_fips <- c('04', '08', '16', '30', '32', '35', '49', '56')
   }
 )
 
