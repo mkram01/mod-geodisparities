@@ -58,13 +58,13 @@ source("CODE/model/data_load/load_data.R")
 # ---------------------------------- Create directory structure ------------------------------------ #
 ######################################################################################################
 #Create model name (function found in 'prep_fxns.R')
-
+modname <- create_modelname()
 #Create output folder directory if does not exist already (function found in 'prep_fxns.R')
 create_dirs(outdir = data_repo,
             model_type = model_type,
             family = family,
             outcome = outcome,
-            model = model_name,
+            model = modname,
             geography = geography
             )
 
