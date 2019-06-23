@@ -18,7 +18,7 @@ rm(list = ls())
 # ---------------------------------- Set up -------------------------------------------------------- #
 ######################################################################################################
 # load packages
-x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr")
+x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "Rgraphviz")
 lapply(x, require, character.only = TRUE)
 
 # set code repo
