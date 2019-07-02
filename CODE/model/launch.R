@@ -21,6 +21,11 @@ rm(list = ls())
 x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "Rgraphviz")
 lapply(x, require, character.only = TRUE)
 
+#if you do not have Rgraphviz and your R version is too new to use CRAN distribution:
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("Rgraphviz")
+
 # set code repo
 repo <- Sys.getenv('mod_repo')
 # set data repo
