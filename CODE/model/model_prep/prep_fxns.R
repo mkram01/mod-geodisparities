@@ -15,26 +15,24 @@ create_modelname <- function(){
   #     
   
   #create model name
-  model_name <- paste0(recode_binary, "_" )
+  model_name <- paste0(year_start, "_", year_end,"_", ran_slope, ran_int, run_date)
 
   }
 
 
 # ----------------------------------------------- directory creation function -------------------------------------------
 
-create_dirs <- function(outdir, model_type, family, outcome, model, geography, save = TRUE) {
+create_dirs <- function(outdir, model_type, family, outcome, save = TRUE) {
   ## Create directory structure
   #   Arguments:
   #     outdir        = Location where you want output to be written
   #     model_type    = inla?
   #     family        = poisson?
   #     outcome       = outcome var
-  #     model         = name of model being run, created in function above
-  #     geography     = name of geography being modeled 
   #     save          = would you like to save the config as part of the model image history?
-  dir.create(paste0(outdir, '/', model_type,'/',family,'/', outcome, '/',model,'/',geography))
+  dir.create(paste0(outdir, '/', model_type,'/',family,'/', outcome,'/', geography))
   
-  out_dir <- paste0(outdir, '/', model_type,'/',family,'/', outcome, '/', model,'/',geography)
+  out_dir <- paste0(outdir, '/', model_type,'/',family,'/', outcome, '/',geography)
   
   for(dir in c('output','model_image_history')) {
     dir.create(paste0(out_dir,'/',dir), showWarnings = FALSE)

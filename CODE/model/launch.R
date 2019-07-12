@@ -22,9 +22,9 @@ x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr"
 lapply(x, require, character.only = TRUE)
 
 #if you do not have Rgraphviz and your R version is too new to use CRAN distribution:
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("Rgraphviz")
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#  install.packages("BiocManager")
+#BiocManager::install("Rgraphviz")
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
@@ -37,6 +37,9 @@ message(paste0("You have specified ", data_repo, " as the location of your data.
 
 # load central functions
 source('CODE/central_functions/utility_fxns.R')
+
+# time stamp
+run_date <- make_time_stamp()
 
 # load model prep functions
 source('CODE/model/model_prep/prep_fxns.R')
@@ -64,6 +67,7 @@ source("CODE/model/data_load/load_data.R")
 ######################################################################################################
 #Create model name (function found in 'prep_fxns.R')
 modname <- create_modelname()
+
 #Create output folder directory if does not exist already (function found in 'prep_fxns.R')
 create_dirs(outdir = data_repo,
             model_type = model_type,

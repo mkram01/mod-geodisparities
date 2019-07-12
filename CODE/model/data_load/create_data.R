@@ -6,13 +6,7 @@
 
 ###################################3
 # To-do items:
-#   - Make code dynamic for specifying outcome var in the config (lines 36 & 37)
-#         - any reformatting of the config arg should take place in 'format_config_args.R'
-#   - Aspatial data contains years in a span as specified in the config, however when joining to the sp object spatial data, 
-#         year is not taken into account. Either aspatial data needs to be reduced to one year or the spatial 
-#         object needs to be joined to the aspatial data and year preserved
-#   - create sp objects in advance
-#   - output raw data map (need to finish model name composition)
+
 
 ######################################################################################################
 # ---------------------------------- Create summarized dataset ------------------------------------- #
@@ -91,63 +85,14 @@ spatdata_sf <- spatdata_sp %>%
          year_c = dob_yy - (year_start))  %>% # scale year using start year in config so intercept interpretable
   arrange(ID)
 
-######################################################################################################
-# ---------------------------------- Create Adjacency matrix --------------------------------------- #
-######################################################################################################
-## Create adjacency matrix using k-nearest neighbors if so specifie
-## I'm going to use k-nearest neighbors, with $k=6$ as default. I will force symmetry so
-## that if $a$ is neighbors with $b$, then $b$ must also be neighbors with $a$.
 
-#name the adjacency file
-adjfilename <- paste0(geography, "_knn", k_numneighbors, '.adj')
+# Create knn neighbor object
+model_knn <- spatdata_sp %>%
+  coordinates() %>%  # get centroids
+  knearneigh(k = (k_numneighbors)) %>% # calculate the k nearest neighbors 
+  knn2nb(sym = T)  # knn neighbor object
 
-#Conditionally load or create KNN
-if (file.exists(paste0(data_repo, '/spatial/', adjfilename)) & create_knn_obj == FALSE){
-  message(paste0("From create_data.R script: The KNN adjacency matrix for your geography already exists and you have elected not to recreate it. Loading it now!"))
-  #load adjacency matrix
-  model_knn <- inla.read.graph(paste0(data_repo, '/spatial/', adjfilename))
-} else {
-  message(paste0("From create_data.R script: Either the KNN adjacency matrix for your geography does not exist or you have elected to recreate it. Creating it now!"))
-  # Create knn neighbor object
-  model_knn <- spatdata_sp %>%
-    coordinates() %>%  # get centroids
-    knearneigh(k = (k_numneighbors)) %>% # calculate the k nearest neighbors 
-    knn2nb(sym = T)  # knn neighbor object
-  
-  # Write an INLA adjacency file
-  nb2INLA(paste0(data_repo, '/spatial/', adjfilename), model_knn)
-  
-}
+# Write an INLA adjacency file
+nb2INLA(paste0(data_repo, '/spatial/', adjfilename), model_knn)
 
-#View INLA object
-#summary(model_knn)
-#plot(model_knn, coords = coordinates(as(spatdata_sf, 'Spatial')))
-
-# Summary of object
-# * n is the size of the graph (e.g. the number of areal units)
-# * nnbs are the number of neighbors for each node.
-# The summary (names) tells us that there are either $4, 5, 6$ or $7$
-# neighbors per node
-# (count) says how many counties have each number of neighbors. __Note that
-# the * symmetry = T above is what forced some counties to have > 4 neighbors__
-# * ncc is about _connected components_ of the graph and this tells us how many are in the list (e.g. only 1)
-
-
-# Create basemap of raw (pooled) rates
-# These are rates pooled across all years and simply serve a reference for
-# when we start getting modeled estimates.
-# raw_outcome <- tm_shape(spatdata_sp) +
-#   tm_fill('rawptb',
-#           style = 'quantile') +
-#   tm_borders()
-# 
-# #save
-# save_tmap(raw_outcome, paste0())
-
-# INLA Models
-# Use regional object object as input data (`nrow(region)`
-# rows = `length(unique(region$combfips))` # counties x
-# `length(unique(region$dob_yy))` years x
-# `length(unique(southatlantic$black))` race groups age categories).
-
-message("From create_data.R script: Finished loading and prepping data!")
+message("From create_data.R script: Finished creating adjacency matrix!")

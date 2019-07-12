@@ -64,6 +64,23 @@ message("From format_config_args.R script: Formatting KNN k arg")
 k_numneighbors <- as.numeric(k)
 
 ######################################################################################################
+# ----------------------------------------------- formatting random intercept and slope --------------
+######################################################################################################
+#formatting for model naming
+if (random_slope == FALSE){
+  ran_slope <- ""
+} else {
+  ran_slope <- "rs_"
+}
+
+if (random_intercept == FALSE){
+  ran_int <- ""
+} else {
+  ran_int <- "ri_"
+}
+
+
+######################################################################################################
 # ----------------------------------------------- formatting model predictors ------------------------
 ######################################################################################################
 message("From format_config_args.R script: Formatting model formula from config predictors")

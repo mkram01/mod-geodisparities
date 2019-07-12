@@ -86,6 +86,7 @@ f3 <- ptb ~ year_c + black +
     hyper = list(prec.unstruct = list(prior = 'loggamma', param = c(1,0.001)),
                  prec.spatial = list(prior = 'loggamma', param = c(1,0.001))),
     scale.model = T) +
+  #random slope
   f(ID2, black, model = 'iid')
 
 m3 <- inla(f3, family = 'poisson',

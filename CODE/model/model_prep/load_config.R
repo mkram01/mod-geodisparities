@@ -34,6 +34,7 @@ config <- load_config(data_repo = data_repo)
 #Create defaults
 #Message code:
 message("From load_config.R script: Setting config defaults if any left empty")
+
 ######################################################################################################
 # ----------------------------------------------- validating config args -----------------------------
 ######################################################################################################
