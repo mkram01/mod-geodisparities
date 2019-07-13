@@ -19,15 +19,17 @@ library(shiny)
 library(leaflet)
 library(leaflet.extras)
 library(RColorBrewer)
-#library(rgdal)
+library(rgdal)
 library(sf)
 library(ggplot2)
 library(ggvis)
 library(shinydashboard)
 library(dplyr)
 library(fontawesome)
+library(OneR)
 require(raster)
 require(gstat)
+
 
 # -------------------------------------- load data ------------------------------------------------- 
 #load spatial data
@@ -150,6 +152,10 @@ ui <- bootstrapPage(
                     uiOutput('cvar'),
                     #selectInput('cvar',label = 'Color Var', choices = var_choices, selected = "blackwhite_ratio"),
                     
+                    #select number of quantiles
+                    sliderInput('quantiles', label = "Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
+                    ),
+                    
                     #grab ui output
                     uiOutput("ui"),
                     width = 3
@@ -210,6 +216,10 @@ ui <- bootstrapPage(
                     uiOutput('mod_cvar'),
                     #selectInput('cvar',label = 'Color Var', choices = var_choices, selected = "blackwhite_ratio"),
                     
+                    #select number of quantiles
+                    sliderInput('mod_quantiles', label = "Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
+                    ),
+                    
                     #grab ui output
                     uiOutput("mod_ui"),
                     width = 3
@@ -242,6 +252,12 @@ ui <- bootstrapPage(
   ) #close dashboard page
 ) #close bootstrap page
 
+
+############################################
+# code author: erin stearns
+# script objective: spatial app server elements (separated out for testing)
+# date: 5 march 2019
+###########################################
 
 ######################################################################################################
 # -------------------------------------- server function ------------------------------------------- #
@@ -436,13 +452,15 @@ server <- function(input, output, session) {
     df1 <- df
     df1$geometry <- NULL
     df1[,colorVar()]
+    df1$quantile <- bin(df1[,colorVar()], nbins = input$quantiles, method = "content")
+    df1[,"quantile"]
   })
   
   #creating palette for colorvar
   #creating color palette
   colorpal <- reactive({
     print('reactive: create color palette')
-    colorNumeric("YlOrRd", colorData())
+    colorFactor("YlOrRd", colorData())
   })
   pal <- reactive({
     print('reactive: create palette for leaflet arg')
@@ -471,7 +489,7 @@ server <- function(input, output, session) {
       "%s<br/>%s<br/>%s",
       paste0(input$xvar,": ", round(xData(),digits = 2)),
       paste0(input$yvar, ": ", round(yData(),digits = 2)),
-      paste0(input$color, ": ", round(colorData(),digits = 2))
+      paste0(input$color, ": ", colorData())
     ) %>% lapply(htmltools::HTML)
     
   })
@@ -694,13 +712,19 @@ server <- function(input, output, session) {
     df1 <- mod_df
     df1$geometry <- NULL
     df1[,mod_colorVar()]
+    df1$quantile <- bin(df1[,mod_colorVar()], nbins = input$mod_quantiles, method = "content")
+    df1[,"quantile"]
   })
   
   #creating palette for colorvar
   #creating color palette
   mod_colorpal <- reactive({
     print('reactive: create mod color palette')
-    colorNumeric("YlOrRd", mod_colorData())
+    if (mod_colorVar() %in% c("Black_White_Rate_Ratio", "Black_White_Rate_Difference")) {
+      colorFactor("RdBu", mod_colorData())
+    } else {
+      colorFactor("YlOrRd", mod_colorData()) 
+    }
   })
   mod_pal <- reactive({
     print('reactive: create mod palette for leaflet arg')
@@ -728,7 +752,7 @@ server <- function(input, output, session) {
       "%s<br/>%s<br/>%s",
       paste0(input$mod_xvar,": ", round(mod_xData(), digits = 2)),
       paste0(input$mod_yvar, ": ", round(mod_yData(), digits = 2)),
-      paste0(input$mod_color, ": ", round(mod_colorData(),digits = 2))
+      paste0(input$mod_color, ": ", mod_colorData())
     ) %>% lapply(htmltools::HTML)
     
   })
