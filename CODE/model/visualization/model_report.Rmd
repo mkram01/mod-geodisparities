@@ -38,8 +38,6 @@ summary(model_knn)
 #plot(g)
 
 
-
-
 # Model outputs
 
 ## Model output: INLA Object summary

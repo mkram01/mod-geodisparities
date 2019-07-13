@@ -4,42 +4,22 @@
 # Date: 5.7.2019
 #############################################
 
-###################################3
-# To-do items:
-
+#source create data script containing data creation functions
+source("CODE/model/data_load/create_data.R")
 
 ######################################################################################################
 # ---------------------------------- Create summarized dataset ------------------------------------- #
 ######################################################################################################
-message("From create_data.R script: Loading aspatial data and prepping for model.")
+message("From load_data.R script: Loading aspatial data and prepping for model.")
 
 # ---- load and summarize ----
-smry_data <- readRDS(paste0(data_repo, '/nchs_births/R/Data/model1.rda')) %>% 
-  #subsetting to pre-specified model race/ethnicity population defined in  model_prep/load_config.R & formatted in format_config_args.R script
-  filter(racehisp_recode %in% (race_eth),
-         #subsetting to pre-specified model geography defined in model_prep/predefined_key.R
-         substr(combfips,1,2) %in% (geo_fips), 
-         #subsetting to pre-specified model year span defined in model_prep/load_config.R & formatted in format_config_args.R script)
-         dob_yy %in% (year_span))
-
-#re-coding race/ethnicity to be binary if not false
-if (recode_binary != "nonbinary"){
-  smry_data <- smry_data %>%
-    mutate((!!recode_binary) := ifelse(racehisp_recode == (binary_code), 1, 0),
-           combfips = factor(combfips)) %>%
-    group_by_("dob_yy", "combfips", (recode_binary)) 
-}
-
-#Summarise data
-smry_data <- smry_data %>%
-  summarise(vptb = sum(vptb) + 1, #Outcome var?
-            ptb = sum(ptb) + 1, #Outcome var?
-            births = sum(births) + 1)
+smry_data <- aspatial_smry(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
 
 ######################################################################################################
 # ---------------------------------- Load spatial data --------------------------------------------- #
 ######################################################################################################
 message("From create_data.R script: Loading spatial data and prepping for model.")
+
 # ---- Prep spatial data for region only ----
 #creating save file name based on census division defined in config
 cty_sf_name <- paste0(str_sub(geography), '_county.gpkg')
