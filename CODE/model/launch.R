@@ -13,18 +13,25 @@ rm(list = ls())
 #   mod_repo: this is the code repo/location of your code pertaining to this model
 #   mod_data: this is the file path to where you are storing the model data
 
+#Enter your name -- will be printed on the model run report
+modeler <- 'Erin'
+
+#If you do not have Rgraphviz and your R version is too new to use CRAN distribution:
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#install.packages("BiocManager")
+#BiocManager::install("Rgraphviz")
 
 ######################################################################################################
 # ---------------------------------- Set up -------------------------------------------------------- #
 ######################################################################################################
 # load packages
-x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "tictoc")# , "Rgraphviz")
+x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "tictoc",
+       "plyr", "dplyr", "rmarkdown")# , "Rgraphviz")
+#installing any packages not installed already
+new.packages <- x[!(x %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+#loading all package libraries
 lapply(x, require, character.only = TRUE)
-
-#if you do not have Rgraphviz and your R version is too new to use CRAN distribution:
-#if (!requireNamespace("BiocManager", quietly = TRUE))
-#install.packages("BiocManager")
-#BiocManager::install("Rgraphviz")
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
@@ -58,7 +65,6 @@ source('CODE/model/model_prep/predefined_key.R')
 
 #load modeling functions
 #source("CODE/model/model_prep/model_functions.R")
-
 
 ######################################################################################################
 # ---------------------------------- Data load ----------------------------------------------------- #
@@ -102,8 +108,7 @@ toc(log = T)
 
 #visualizations
 tic("Creating visualizations and final report")
-source()
-rmarkdown::render("CODE/model/model_report.Rmd", output_dir = outdir, output_file = paste0(modname, "_report.html"))
+rmarkdown::render("CODE/model/visualization/model_report.Rmd", output_dir = outdir, output_file = paste0(modname, "_report.html"))
 toc(log = T) #end visualizations timer
 ######################################################################################################
 # ---------------------------------- Finalize timer functions -------------------------------------- #

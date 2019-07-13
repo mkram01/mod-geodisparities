@@ -1,6 +1,6 @@
 ---
 title: "Model run report"
-author: "Erin R Stearns"
+author: "Modeler: `r modeler`"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -11,9 +11,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-#To-do
-# - test out plotting of KNN object once have interwebs again and can load RGraphviz
 
 # Model inputs
 
@@ -35,18 +32,20 @@ summary(model_knn)
 
 **INLA Object Plot:**
 
-#plot(g)
+```{r}
+#plot(model_knn)
+```
 
 
 # Model outputs
 
-## Model output: INLA Object summary
+## INLA Object summary
 
 ```{r}
 summary(m1)
 ```
 
-**Interpretation of model 1:**
+**Interpretation of model output summary:**
 
 + Baseline risk in 2007 for the control group is `r round(exp(m1$summary.fixed$mean[1]), digits = 4) * 1000` *preterm births* per 1,000 live births.
 

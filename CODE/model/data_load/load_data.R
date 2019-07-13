@@ -42,9 +42,9 @@ if (file.exists(paste0(data_repo, '/spatial/', cty_sf_name)) & create_sf_obj == 
 # *long* format (e.g. multiple years), but also want an `sp` object for creating
 # *neighbor* objects and simpler *wide* representations.
 spatdata_sp <- spatdata_sf %>%
-  inner_join(smry_data, by = c('GEOID' = 'combfips')) %>%
-  group_by(GEOID) %>%
-  summarise(vptb = sum(vptb),
+  dplyr::inner_join(smry_data, by = c('GEOID' = 'combfips')) %>%
+  dplyr::group_by(GEOID) %>%
+  dplyr::summarise(vptb = sum(vptb),
             ptb = sum(ptb),
             births = sum(births),
             rawvptb = vptb / births * 1000,
@@ -58,12 +58,12 @@ spatdata_sp$ID <- seq_len(nrow(spatdata_sp))
 # `sf` object useful for facet printing of year x race.
 spatdata_sf <- spatdata_sp %>%
   st_as_sf() %>%
-  select(GEOID, ID) %>%
-  right_join(smry_data, by = c('GEOID' = 'combfips')) %>%
-  mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
+  dplyr::select(GEOID, ID) %>%
+  dplyr::right_join(smry_data, by = c('GEOID' = 'combfips')) %>%
+  dplyr::mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
          ID2 = ID, # ID and ID2 will be for f() in INLA
          year_c = dob_yy - (year_start))  %>% # scale year using start year in config so intercept interpretable
-  arrange(ID)
+  dplyr::arrange(ID)
 
 #######################################################################################################
 # ---------------------------------- Load adjacency matrix ------------------------------------------ #

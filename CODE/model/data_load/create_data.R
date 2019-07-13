@@ -7,8 +7,6 @@
 ######################################################################################################
 # ---------------------------------- Create summarized dataset ------------------------------------- #
 ######################################################################################################
-message("From create_data.R script: Loading aspatial data and prepping for model.")
-
 aspatial_smry <- function(input_data){
   
   # ---- load and summarize ----
@@ -23,14 +21,14 @@ aspatial_smry <- function(input_data){
   #re-coding race/ethnicity to be binary if not false
   if (recode_binary != "Nonbinary"){
     smry_data <- smry_data %>%
-      mutate((!!recode_binary) := ifelse(racehisp_recode == (binary_code), 1, 0),
+      dplyr::mutate((!!recode_binary) := ifelse(racehisp_recode == (binary_code), 1, 0),
              combfips = factor(combfips)) %>%
-      group_by_("dob_yy", "combfips", (recode_binary)) 
+      dplyr::group_by_("dob_yy", "combfips", (recode_binary)) 
   }
   
   #Summarise data
   smry_data <- smry_data %>%
-    summarise(vptb = sum(vptb) + 1, #Outcome var?
+    dplyr::summarise(vptb = sum(vptb) + 1, #Outcome var?
               ptb = sum(ptb) + 1, #Outcome var?
               births = sum(births) + 1)
   
