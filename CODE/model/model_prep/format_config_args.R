@@ -28,13 +28,13 @@ race_eth <- c(as.numeric(race_eth))
 message("From format_config_args.R script: Formatting config recode binary")
 
 suppressWarnings(
-  if (recode_binary == "False"){
-    message("You have chose not to recode race/eth into a binary variable.")
+  if (recode_binary == "FALSE"){
+    message("You have chosen not to recode race/eth into a binary variable.")
   }
 )
 
 suppressWarnings(
-  if (recode_binary == "Black"){
+  if (recode_binary == "black"){
     binary_code <- 3
     message(paste0("You specified ", recode_binary, " as the race/ethnicity to recode as binary. ", binary_code, 
                    " is the assigned race/ethnicity encoding."))
@@ -42,7 +42,7 @@ suppressWarnings(
   
 )
 suppressWarnings(
-  if (recode_binary == "Hispanic"){
+  if (recode_binary == "hispanic"){
     binary_code <- 2
     message(paste0("You specified ", recode_binary, " as the race/ethnicity to recode as binary. ", binary_code, 
                    " is the assigned race/ethnicity encoding."))
@@ -79,12 +79,21 @@ if (random_intercept == FALSE){
   ran_int <- "ri_"
 }
 
+######################################################################################################
+# ----------------------------------------------- formatting model family ---------------------------
+######################################################################################################
+message("From format_config_args.R script: Formatting model formula from config predictors")
+inla_formula <- as.formula(formula)
+
 
 ######################################################################################################
 # ----------------------------------------------- formatting model predictors ------------------------
 ######################################################################################################
 message("From format_config_args.R script: Formatting model formula from config predictors")
+inla_formula <- as.formula(formula)
+if(is.formula(inla_formula) == TRUE){
+  message("Congrats! Your formula is a real formula.")
+} else {
+  message("Eeks. Your aspiring formula appears to still be aspiring. Please check your config formula arg.")
+}
 
-# get selected covs
-#selected_covs <- strsplit(fixed_effects," ")
-#selected_covs <- selected_covs[[1]][selected_covs[[1]] != "+"]

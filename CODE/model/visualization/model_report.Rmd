@@ -1,0 +1,92 @@
+---
+title: "Model run report"
+author: "Erin R Stearns"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#To-do
+# - test out plotting of KNN object once have interwebs again and can load RGraphviz
+
+# Model inputs
+
+## View INLA object
+**Summary of INLA object:**
+
+```{r, echo=FALSE}
+summary(model_knn)
+#plot(model_knn, coords = coordinates(as(spatdata_sf, 'Spatial')))
+```
+
+**Interpretation:**
++ *n* is the size of the graph (e.g. the number of areal units)
++ *nnbs* are the number of neighbors for each node.
++ *ncc* is about connected components of the graph and this tells us how many are in the list (e.g. only 1)
++ The summary (names) tells us the possible number of neighbors per node
++ The summary (count) tells us how many counties have each number of neighbors.
++ **Note** that the `symmetry = T` above is what forced some counties to have > 4 neighbors__
+
+**INLA Object Plot:**
+
+#plot(g)
+
+
+
+
+# Model outputs
+
+## Model output: INLA Object summary
+
+```{r}
+summary(m1)
+```
+
+**Interpretation of model 1:**
+
++ Baseline risk in 2007 for the control group is `r round(exp(m1$summary.fixed$mean[1]), digits = 4) * 1000` *preterm births* per 1,000 live births.
+
+## Mapping model posterior
+
++ These are the relative deviations of each county from the global average preterm birth rate controlling for time trend and race.
+
+```{r}
+tm_shape(spatdata_sp) +
+  tm_fill('m1_iid_re',
+          style = 'quantile',
+          palette = 'div',
+          midpoint = 1) +
+  tm_borders()
+```
+
+
+
+# Observed vs Modeled 
+
+## Raw (pooled) vs modeled rates
+```{r}
+input_map <- tm_shape(spatdata_sf) +
+  tm_fill('ptb',
+          style = 'quantile') +
+  tm_borders() +
+  tm_layout(title = "Raw Pooled Rates")
+
+output_map <- tm_shape(spatdata_sf) +
+  tm_fill('m1_fit',
+          style = 'quantile') +
+  tm_borders() +
+  tm_layout(title = "Modeled Pooled Rates")
+
+#side by side
+tmap_arrange(input_map, output_map, ncol = 2)
+
+
+```
+
+

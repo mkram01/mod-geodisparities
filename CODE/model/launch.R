@@ -18,12 +18,12 @@ rm(list = ls())
 # ---------------------------------- Set up -------------------------------------------------------- #
 ######################################################################################################
 # load packages
-x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "Rgraphviz")
+x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "tictoc")# , "Rgraphviz")
 lapply(x, require, character.only = TRUE)
 
 #if you do not have Rgraphviz and your R version is too new to use CRAN distribution:
 #if (!requireNamespace("BiocManager", quietly = TRUE))
-#  install.packages("BiocManager")
+#install.packages("BiocManager")
 #BiocManager::install("Rgraphviz")
 
 # set code repo
@@ -37,6 +37,9 @@ message(paste0("You have specified ", data_repo, " as the location of your data.
 
 # load central functions
 source('CODE/central_functions/utility_fxns.R')
+
+#start timer for whole script
+tic("Entire script")
 
 # time stamp
 run_date <- make_time_stamp()
@@ -60,29 +63,61 @@ source('CODE/model/model_prep/predefined_key.R')
 ######################################################################################################
 # ---------------------------------- Data load ----------------------------------------------------- #
 ######################################################################################################
+tic("Data loading")
 source("CODE/model/data_load/load_data.R")
-
+toc(log = T) #end data loading timer
 ######################################################################################################
 # ---------------------------------- Create directory structure ------------------------------------ #
 ######################################################################################################
+tic("Naming model & creating directory.")
 #Create model name (function found in 'prep_fxns.R')
 modname <- create_modelname()
 
 #Create output folder directory if does not exist already (function found in 'prep_fxns.R')
-create_dirs(outdir = data_repo,
+outpar <- paste0(data_repo, "/model_output")
+create_dirs(outdir = outpar,
             model_type = model_type,
             family = family,
             outcome = outcome,
-            model = modname,
             geography = geography
             )
+#defining where outputs should be written
+outdir <- paste0(outpar, '/', model_type,'/',family,'/', outcome, '/',geography,"/output/")
 
+toc(log = T) #end model naming and directory creation timer
 ######################################################################################################
 # ---------------------------------- Run models ---------------------------------------------------- #
 ######################################################################################################
+tic("Running model")
+source("CODE/model/model_scripts/run_model.R")
+toc(log = T) #end model run timer
 
 ######################################################################################################
 # ---------------------------------- Analyze outputs ----------------------------------------------- #
 ######################################################################################################
+#process model outputs for analysis
+tic("Processing model outputs")
+source("CODE/model/model_scripts/process_model.R")
+toc(log = T)
+
 #visualizations
+tic("Creating visualizations and final report")
+source()
+rmarkdown::render("CODE/model/model_report.Rmd", output_dir = outdir, output_file = paste0(modname, "_report.html"))
+toc(log = T) #end visualizations timer
+######################################################################################################
+# ---------------------------------- Finalize timer functions -------------------------------------- #
+######################################################################################################
+toc(log = T) #end master timer
+
+#Format timer
+ticlog <- tic.log(format = F)
+df_timer <- generate_time_log(ticlog)
+
+# Pull run time for this run
+run_time_all <- df_timer[step == "Entire script", time]
+
+## Write to a run summary csv file in the output directory -- fix this
+output_file <- paste0(outdir, modname, "_run_summary.csv")
+write.csv(df_timer, output_file)
 

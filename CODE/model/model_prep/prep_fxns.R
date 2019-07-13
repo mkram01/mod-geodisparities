@@ -22,7 +22,7 @@ create_modelname <- function(){
 
 # ----------------------------------------------- directory creation function -------------------------------------------
 
-create_dirs <- function(outdir, model_type, family, outcome, save = TRUE) {
+create_dirs <- function(outdir, model_type, family, outcome, geography, save = TRUE) {
   ## Create directory structure
   #   Arguments:
   #     outdir        = Location where you want output to be written
@@ -30,7 +30,19 @@ create_dirs <- function(outdir, model_type, family, outcome, save = TRUE) {
   #     family        = poisson?
   #     outcome       = outcome var
   #     save          = would you like to save the config as part of the model image history?
-  dir.create(paste0(outdir, '/', model_type,'/',family,'/', outcome,'/', geography))
+  suppressWarnings(
+    dir.create(paste0(outdir, '/', model_type))
+  )
+  suppressWarnings(
+    dir.create(paste0(outdir, '/', model_type,'/',family))
+  )
+  suppressWarnings(
+    dir.create(paste0(outdir, '/', model_type,'/',family, '/', outcome))
+  )
+  
+  suppressWarnings(
+    dir.create(paste0(outdir, '/', model_type,'/',family, '/', outcome, '/', geography))
+  )
   
   out_dir <- paste0(outdir, '/', model_type,'/',family,'/', outcome, '/',geography)
   
@@ -38,7 +50,7 @@ create_dirs <- function(outdir, model_type, family, outcome, save = TRUE) {
     dir.create(paste0(out_dir,'/',dir), showWarnings = FALSE)
   }
   if(save == TRUE){
-    save(config, file=paste0(out_dir, '/model_image_history/', run_date, '_',model, '_', region, '.RData'))
+    save(config, file=paste0(out_dir, '/model_image_history/', run_date, '.RData'))
   } 
 }
 
