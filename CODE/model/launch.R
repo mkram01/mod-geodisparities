@@ -12,14 +12,12 @@ rm(list = ls())
 # Set environment variables for:
 #   mod_repo: this is the code repo/location of your code pertaining to this model
 #   mod_data: this is the file path to where you are storing the model data
-
-#Enter your name -- will be printed on the model run report
-modeler <- 'Erin'
+#   mod_modeler: this is a character string with your name for use in the model report
 
 #If you do not have Rgraphviz and your R version is too new to use CRAN distribution:
-#if (!requireNamespace("BiocManager", quietly = TRUE))
-#install.packages("BiocManager")
-#BiocManager::install("Rgraphviz")
+# if (!requireNamespace("BiocManager", quietly = TRUE))
+# install.packages("BiocManager")
+# BiocManager::install("Rgraphviz")
 
 ######################################################################################################
 # ---------------------------------- Set up -------------------------------------------------------- #
@@ -37,6 +35,8 @@ lapply(x, require, character.only = TRUE)
 repo <- Sys.getenv('mod_repo')
 # set data repo
 data_repo <- Sys.getenv('mod_data')
+#set your modeler name (should be yours!)
+modeler <- Sys.getenv('mod_modeler')
 
 #setting working directory
 setwd(repo)
