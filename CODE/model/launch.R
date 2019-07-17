@@ -15,9 +15,9 @@ rm(list = ls())
 #   mod_modeler: this is a character string with your name for use in the model report
 
 #If you do not have Rgraphviz and your R version is too new to use CRAN distribution:
-if (!requireNamespace("BiocManager", quietly = TRUE))
-install.packages("BiocManager")
-BiocManager::install("Rgraphviz")
+# if (!requireNamespace("BiocManager", quietly = TRUE))
+# install.packages("BiocManager")
+# BiocManager::install("Rgraphviz")
 
 ######################################################################################################
 # ---------------------------------- Set up -------------------------------------------------------- #
