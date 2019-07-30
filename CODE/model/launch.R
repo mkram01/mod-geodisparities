@@ -13,18 +13,12 @@ rm(list = ls())
 #   mod_repo: this is the code repo/location of your code pertaining to this model
 #   mod_data: this is the file path to where you are storing the model data
 #   mod_modeler: this is a character string with your name for use in the model report
-
-#If you do not have Rgraphviz and your R version is too new to use CRAN distribution:
-# if (!requireNamespace("BiocManager", quietly = TRUE))
-# install.packages("BiocManager")
-# BiocManager::install("Rgraphviz")
-
 ######################################################################################################
 # ---------------------------------- Set up -------------------------------------------------------- #
 ######################################################################################################
 # load packages
 x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "tictoc",
-       "plyr", "dplyr", "rmarkdown")# , "Rgraphviz")
+       "plyr", "dplyr", "rmarkdown")
 #installing any packages not installed already
 new.packages <- x[!(x %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)

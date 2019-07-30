@@ -78,13 +78,7 @@ This model relies on 3 global environment variables that need to be set in your 
   
 ### Packages
 
-Any packages not currently in your library will automatically be installed and called with one exception: [Rgraphviz](https://www.bioconductor.org/packages/release/bioc/html/Rgraphviz.html)
-
-`Rgraphviz` provides plotting capabilities for R graph objects, and in this particular case, the adjacency matrices. **Rgraphviz requires R version 3.6 or later.**
-
-  + To install, open the 'launch' script, and uncomment the appropriate code in 'TO-DO ITEMS', as seen below:
-  ![](installRgraphviz.png)
-  + Comment out the code after install and run remainder of code
+Any packages not currently in your library will automatically be installed and called.
 
 ## Config
 
