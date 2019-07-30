@@ -15,3 +15,8 @@ message("From process_model.R script: Joining the posterior of the fitted values
 # This is the posterior of the fitted values.
 spatdata_sf$m1_fit <- unlist(lapply(m1$marginals.fitted.values,
                                          function(x) inla.emarginal(mean, x))) /spatdata_sf$births
+
+#model object of fitted values
+head(m1$summary.fitted.values)
+#use mean to fill fitted value for visualization for counts
+#     - to get rates, join to smry_data and divide by total births
