@@ -6,6 +6,17 @@
 
 message("From process_model.R script: Extracting marginal posterior estimates")
 
+#formatting summary model output
+m1_summ <- as.data.table(m1$summary.fitted.values)
+
+#join to input data
+alldata <- smry_data %>%
+  dplyr::full_join(m1_summ, by = "ID")
+
+# This is the posterior of the fitted values.
+smry_data$m1_fit <- unlist(lapply(m1$marginals.fitted.values,
+                                    function(x) inla.emarginal(mean, x))) /spatdata_sf$births
+
 # Extracting marginal posterior estimates
 # This is the posterior of the (aspatial) random effect for county on the scale of risk ratio/SMR:
 spatdata_sp$m1_iid_re <- unlist(lapply(m1$marginals.random$ID,

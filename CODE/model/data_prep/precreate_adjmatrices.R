@@ -20,6 +20,9 @@ k_numneighbors <- 6
 #  do you want to re-create the base sf object if it doesn't exist? true/false (may want to do this if using new base county spatial layer)
 create_sf_obj <- FALSE
 
+#  what crs would you like?
+crs_proj <- 4269
+
 #  geography -- a character vector containing matching values to pre-defined values, see config_README for more info
 #            -- this vector is what will be looped over to batch-create adjacency matrices
 geography <- c("south","west","midwest","northeast",
@@ -91,7 +94,8 @@ for (g in geography){
   spatdata_sp$ID <- row.names(spatdata_sp)
   
   # Create a key mapping ID to FIPS
-  mapping_key <- as.data.table(spatdata_sp)
+  spwts_key <- as.data.table(spatdata_sp) %>%
+    dplyr::select("GEOID", "ID")
   
   ######################################################################################################
   # ---------------------------------- create adjacency matrix --------------------------------------- #
@@ -101,16 +105,21 @@ for (g in geography){
   adjfilename <- paste0(basefilename,'.adj')
   
   #create object
-  model_spwts <- spatdata_sp %>%
-    coordinates() %>%  # get centroids
-    knearneigh(k = (k_numneighbors)) %>% # calculate the k nearest neighbors 
-    knn2nb(sym = T)  # knn neighbor object
+  if(sp_weights_method == "knn"){
+    model_spwts <- spatdata_sp %>%
+      coordinates() %>%  # get centroids
+      knearneigh(k = (k_numneighbors)) %>% # calculate the k nearest neighbors 
+      knn2nb(sym = T)  # knn neighbor object
+  } else {
+    message("Erm..you have indicated a spatial weighting method not currently possible in this framework...")
+  }
+  
   
   # Write an INLA adjacency file
   nb2INLA(paste0(outpath, adjfilename), model_spwts)
   
   # Write key as csv too
-  write.csv(mapping_key, paste0(outpath, basefilename, ".csv"))
+  write.csv(spwts_key, paste0(outpath, basefilename, ".csv"), row.names = FALSE)
   
 }
 

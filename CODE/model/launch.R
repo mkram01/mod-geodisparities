@@ -101,9 +101,12 @@ source("CODE/model/model_scripts/process_model.R")
 toc(log = T)
 
 #visualizations
-tic("Creating visualizations and final report")
-rmarkdown::render("CODE/model/visualization/model_report.Rmd", output_dir = outdir, output_file = paste0(modname, "_report.html"))
-toc(log = T) #end visualizations timer
+if(visualize == TRUE){
+  tic("Creating visualizations and final report")
+  rmarkdown::render("CODE/model/visualization/model_report.Rmd", output_dir = outdir, output_file = paste0(modname, "_report.html"))
+  toc(log = T) #end visualizations timer
+}
+
 ######################################################################################################
 # ---------------------------------- Finalize timer functions -------------------------------------- #
 ######################################################################################################

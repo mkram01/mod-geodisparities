@@ -30,13 +30,6 @@ summary(model_knn)
 + The summary (count) tells us how many counties have each number of neighbors.
 + **Note** that the `symmetry = T` above is what forced some counties to have > 4 neighbors__
 
-**INLA Object Plot:**
-
-```{r}
-#plot(model_knn)
-```
-
-
 # Model outputs
 
 ## INLA Object summary

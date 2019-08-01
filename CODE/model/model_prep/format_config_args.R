@@ -72,9 +72,11 @@ crs_proj <- as.numeric(projection)
 ######################################################################################################
 # ----------------------------------------------- formatting knn k arg -------------------------------
 ######################################################################################################
-message("From format_config_args.R script: Formatting KNN k arg")
-#converting from character to numeric
-k_numneighbors <- as.numeric(k)
+if(sp_weights_method == "knn"){
+  message("From format_config_args.R script: Formatting KNN k arg")
+  #converting from character to numeric
+  k_numneighbors <- as.numeric(k)
+}
 
 ######################################################################################################
 # ----------------------------------------------- formatting random intercept and slope --------------
