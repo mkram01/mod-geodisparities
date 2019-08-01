@@ -1,19 +1,64 @@
 ##############################################
 # Code author: Michael Kramer, Kevin Weiss, Erin Stearns
-# Code objective: load data
-# Date: 5.7.2019
+# Code objective: Pre-create model input objects
+# Date: 7.30.2019
 #############################################
 
-#source create data script containing data creation functions
+rm(list = ls())
+
+######################################################################################################
+# ---------------------------------- Set up -------------------------------------------------------- #
+######################################################################################################
+# load packages
+x <- c("data.table", "tidyverse", "sf", "sp","spdep","plyr", "dplyr")
+
+#installing any packages not installed already
+new.packages <- x[!(x %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+#loading all package libraries
+lapply(x, require, character.only = TRUE)
+
+# set code repo
+repo <- Sys.getenv('mod_repo')
+# set data repo
+data_repo <- Sys.getenv('mod_data')
+#set your modeler name (should be yours!)
+modeler <- Sys.getenv('mod_modeler')
+
+#setting working directory
+setwd(repo)
+message(paste0("You have specified ", data_repo, " as the location of your data."))
+
+# load config -- need some args here to properly subset the data
+source('CODE/model/model_prep/load_config.R')
+
+# format config args
+source('CODE/model/model_prep/format_config_args.R')
+
+# load predefined objects
+source('CODE/model/model_prep/predefined_key.R')
+
+#source create data prep functions
 source("CODE/model/data_prep/data_prep_fxns.R")
+
+
 
 ######################################################################################################
 # ---------------------------------- Create summarized dataset ------------------------------------- #
 ######################################################################################################
-message("From load_data.R script: Loading aspatial data and prepping for model.")
-
 # ---- load and summarize ----
 smry_data <- aspatial_smry(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
+
+
+
+
+#compare to: ref_tbl
+ref_tbl <- copy(smry_data)
+
+
+
+
+
 
 ######################################################################################################
 # ---------------------------------- Load spatial data --------------------------------------------- #
@@ -45,10 +90,10 @@ spatdata_sp <- spatdata_sf %>%
   dplyr::inner_join(smry_data, by = c('GEOID' = 'combfips')) %>%
   dplyr::group_by(GEOID) %>%
   dplyr::summarise(vptb = sum(vptb),
-            ptb = sum(ptb),
-            births = sum(births),
-            rawvptb = vptb / births * 1000,
-            rawptb = ptb / births * 1000) %>%
+                   ptb = sum(ptb),
+                   births = sum(births),
+                   rawvptb = vptb / births * 1000,
+                   rawptb = ptb / births * 1000) %>%
   as('Spatial')
 
 # Create an ordered ID specific to ordering in sp (e.g. aligns with nb object)
@@ -61,8 +106,8 @@ spatdata_sf <- spatdata_sp %>%
   dplyr::select(GEOID, ID) %>%
   dplyr::right_join(smry_data, by = c('GEOID' = 'combfips')) %>%
   dplyr::mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
-         ID2 = ID, # ID and ID2 will be for f() in INLA
-         year_c = dob_yy - (year_start))  %>% # scale year using start year in config so intercept interpretable
+                ID2 = ID, # ID and ID2 will be for f() in INLA
+                year_c = dob_yy - (year_start))  %>% # scale year using start year in config so intercept interpretable
   dplyr::arrange(ID)
 
 #######################################################################################################
