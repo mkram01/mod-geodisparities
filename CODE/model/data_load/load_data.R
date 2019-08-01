@@ -13,7 +13,7 @@ source("CODE/model/data_prep/data_prep_fxns.R")
 message("From load_data.R script: Loading aspatial data and prepping for model.")
 
 # ---- load and summarize ----
-smry_data <- aspatial_smry(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
+smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
 
 ######################################################################################################
 # ---------------------------------- Load spatial data --------------------------------------------- #

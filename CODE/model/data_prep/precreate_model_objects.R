@@ -7,6 +7,42 @@
 rm(list = ls())
 
 ######################################################################################################
+# ---------------------------------- To-do! -------------------------------------------------------- #
+######################################################################################################
+# --- Arguments to define:
+
+#  How many neighbors?
+k_numneighbors <- 6
+
+#  race/ethnicity -- a numeric vector containing the race/ethnicity codes to include, see config_README for more info
+race_eth <- c(2,3)
+
+#  do you want to recode race/ethnicity to be binary? options: "black","hispanic", "nonbinary"
+recode_binary <- "black"
+
+#  year span -- a numeric vector of years to include in the data
+year_start <- 2007
+year_end <- 2016
+year_span <- seq(year_start,year_end,1)
+
+#  outcomes -- a character vector of the outcome fields you want to include
+outcome <- c("ptb", "vptb", "births")
+
+#  do you want to re-create the base sf object? true/false
+create_sf_obj <- FALSE
+
+
+#  geography -- a character vector containing matching values to pre-defined values, see config_README for more info
+#            -- this vector is what will be looped over to batch-create adjacency matrices
+geography <- "southatlantic"
+
+# If you would like to run using args you have in your config, un-comment the following (most helpful if only trying to create one object)
+# # load config -- need some args here to properly subset the data
+# source('CODE/model/model_prep/load_config.R')
+# # format config args
+# source('CODE/model/model_prep/format_config_args.R')
+
+######################################################################################################
 # ---------------------------------- Set up -------------------------------------------------------- #
 ######################################################################################################
 # load packages
@@ -29,42 +65,45 @@ modeler <- Sys.getenv('mod_modeler')
 setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
 
-# load config -- need some args here to properly subset the data
-source('CODE/model/model_prep/load_config.R')
-
-# format config args
-source('CODE/model/model_prep/format_config_args.R')
-
 # load predefined objects
 source('CODE/model/model_prep/predefined_key.R')
-
 #source create data prep functions
 source("CODE/model/data_prep/data_prep_fxns.R")
 
-
+#define path to output folder for saving objects
+outpath <- paste0(data_repo, "/model_input/adjacency_matrices/")
 
 ######################################################################################################
-# ---------------------------------- Create summarized dataset ------------------------------------- #
+# ----------------------------------------------- formatting recode_binary ---------------------------
+######################################################################################################
+suppressWarnings(
+  if (recode_binary == "nonbinary"){
+    message("You have chosen not to recode race/eth into a binary variable.")
+  }
+)
+suppressWarnings(
+  if (recode_binary == "black"){
+    binary_code <- 3
+    message(paste0("You specified ", recode_binary, " as the race/ethnicity to recode as binary. ", binary_code, 
+                   " is the assigned race/ethnicity encoding."))
+  }
+)
+suppressWarnings(
+  if (recode_binary == "hispanic"){
+    binary_code <- 2
+    message(paste0("You specified ", recode_binary, " as the race/ethnicity to recode as binary. ", binary_code, 
+                   " is the assigned race/ethnicity encoding."))
+  }
+)
+######################################################################################################
+# ---------------------------------- Create summarized aspatial dataset ---------------------------- #
 ######################################################################################################
 # ---- load and summarize ----
-smry_data <- aspatial_smry(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
-
-
-
-
-#compare to: ref_tbl
-ref_tbl <- copy(smry_data)
-
-
-
-
-
+smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
 
 ######################################################################################################
-# ---------------------------------- Load spatial data --------------------------------------------- #
+# ---------------------------------- Create adjacency matrix --------------------------------------- #
 ######################################################################################################
-message("From create_data.R script: Loading spatial data and prepping for model.")
-
 # ---- Prep spatial data for region only ----
 #creating save file name based on census division defined in config
 cty_sf_name <- paste0(str_sub(geography), '_county.gpkg')
@@ -95,6 +134,7 @@ spatdata_sp <- spatdata_sf %>%
                    rawvptb = vptb / births * 1000,
                    rawptb = ptb / births * 1000) %>%
   as('Spatial')
+
 
 # Create an ordered ID specific to ordering in sp (e.g. aligns with nb object)
 spatdata_sp$ID <- seq_len(nrow(spatdata_sp))

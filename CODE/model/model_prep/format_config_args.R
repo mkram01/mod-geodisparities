@@ -4,6 +4,11 @@
 # Date: 5.7.2019
 #############################################
 
+######################################################################################################
+# ----------------------------------------------- formatting CRS -------------------------------------
+######################################################################################################
+message("From format_config_args.R script: Formatting coordinate reference system")
+crs_proj <- as.numeric(crs_proj)
 
 ######################################################################################################
 # ----------------------------------------------- formatting outcome vars ----------------------------
@@ -36,7 +41,7 @@ race_eth <- c(as.numeric(race_eth))
 message("From format_config_args.R script: Formatting config recode binary")
 
 suppressWarnings(
-  if (recode_binary == "FALSE"){
+  if (recode_binary == "nonbinary"){
     message("You have chosen not to recode race/eth into a binary variable.")
   }
 )

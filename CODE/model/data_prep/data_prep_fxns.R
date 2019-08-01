@@ -8,7 +8,7 @@
 # ---------------------------------- summarizing aspatial dataset ---------------------------------- #
 ######################################################################################################
 
-sum_fxn <- function(x){
+summarise_outcome <- function(x){
   #Function for defining how outcome vars will be summarized
   # Input args:
   #     x: vector or value to apply function over
@@ -18,7 +18,7 @@ sum_fxn <- function(x){
   return(tot)
 }
 
-aspatial_smry <- function(input_data){
+summarise_aspatial <- function(input_data){
   #Function for summarizing aspatial dataset to be used as model input data
   # Input args:
   #     input_data: path to input dataset to use as start point
@@ -34,7 +34,7 @@ aspatial_smry <- function(input_data){
              dob_yy %in% (year_span))
     
     #re-coding race/ethnicity to be binary if not false
-    if (recode_binary != "Nonbinary"){
+    if (recode_binary != "nonbinary"){
       smry_data <- smry_data %>%
         dplyr::mutate((!!recode_binary) := ifelse(racehisp_recode == (binary_code), 1, 0),
                       combfips = factor(combfips)) %>%
@@ -44,10 +44,18 @@ aspatial_smry <- function(input_data){
     #Summarise data
     smry_data<- smry_data %>%
       #summarize over vector of outcomes using summary function defined at top
-      dplyr::summarise_at(outcome, sum_fxn)
+      dplyr::summarise_at(outcome, summarise_outcome)
   
 }
 
 ######################################################################################################
 # ---------------------------------- create adjacency matrix --------------------------------------- #
 ######################################################################################################
+create_adjmatrix <- function(){
+  #Function for creating adjacency matrix
+  # Input args:
+  #Output: 
+  
+  #creating save file name based on census division defined in config
+  cty_sf_name <- paste0(str_sub(geography), '_county.gpkg')
+}
