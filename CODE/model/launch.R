@@ -57,6 +57,9 @@ source('CODE/model/model_prep/format_config_args.R')
 # load predefined objects
 source('CODE/model/model_prep/predefined_key.R')
 
+#source data prep function script
+source("CODE/model/data_prep/data_prep_fxns.R")
+
 #load modeling functions
 #source("CODE/model/model_prep/model_functions.R")
 

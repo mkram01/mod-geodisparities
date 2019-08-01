@@ -56,12 +56,17 @@ summarise_aspatial <- function(input_data){
 ######################################################################################################
 # ---------------------------------- create adjacency matrix --------------------------------------- #
 ######################################################################################################
-create_adjmatrix <- function(geography){
+create_adjmatrix <- function(geography, outpath =  paste0(data_repo, "/model_input/adjacency_matrices/"),
+                                        baselayer = paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')){
   #Function for creating adjacency matrix
   # Input args:
-  #           geography: what geography from predefined areas is this for? used to map to geo_fips in predefined_key.R
+  #           geography : what geography from predefined areas is this for? used to map to geo_fips in predefined_key.R
+  #           outpath   : where would you like adjacency matrix outputs saved? default is set
+  #           baselayer : base county shapefile to use, default is set
   #Output: an adjacency matrix for that geography specified
   
+  
+  # ---------------------------------- load base spatial layer --------------------------------------- 
   # ---- Prep spatial data for region only ----
   #creating save file name based on census division defined in config
   cty_sf_name <- paste0(str_sub(geography), '_county.gpkg')
@@ -73,12 +78,13 @@ create_adjmatrix <- function(geography){
   } else {
     message(paste0("From create_data.R script: Either the spatial data for your geography does not exist or you have elected to recreate it. Creating it now!"))
     #Read in national county shapefile and save in MOD folder as `.gpkg`.
-    spatdata_sf <- st_read(paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')) %>%
+    spatdata_sf <- st_read(baselayer) %>%
       filter(STATEFP %in% (geo_fips)) %>%
       st_transform((crs_proj))
     st_write(spatdata_sf, paste0(data_repo, '/spatial/', cty_sf_name), delete_dsn = T)
   }
   
+  # ---------------------------------- wrangle spatial data--------------------------------------------
   #converting GEOID to character for ordering
   spatdata_sf$GEOID <- as.character(spatdata_sf$GEOID)
   
@@ -87,12 +93,25 @@ create_adjmatrix <- function(geography){
     dplyr::arrange(GEOID) %>%
     as('Spatial')
   
+  # ---------------------------------- create key for mapping data to INLA output object --------------
   # Create an ordered ID specific to ordering in sp (e.g. aligns with nb object)
   spatdata_sp$ID <- row.names(spatdata_sp)
   
   # Create a key mapping ID to FIPS
-  spwts_key <- as.data.table(spatdata_sp)
+  spwts_key <- as.data.table(spatdata_sp) %>%
+    dplyr::select("GEOID", "ID")
+  # ---------------------------------- create adjacency matrix ----------------------------------------
+  #create adjacency matrix based on spatial weighting method
+  if(sp_weights_method == "knn"){
+    model_spwts <- spatdata_sp %>%
+      coordinates() %>%  # get centroids
+      knearneigh(k = (k_numneighbors)) %>% # calculate the k nearest neighbors 
+      knn2nb(sym = T)  # knn neighbor object
+  } else {
+    message("Erm..you have indicated a spatial weighting method not currently possible in this framework...")
+  }
   
+  # ---------------------------------- save object & key --------------------------------------------
   #name the adjacency file seeking
   if(sp_weights_method == "knn"){
     basefilename <- paste0("spwts_", geography, "_",sp_weights_method, k_numneighbors)
@@ -101,15 +120,6 @@ create_adjmatrix <- function(geography){
     basefilename <- paste0("spwts_", geography, "_",sp_weights_method)
     adjfilename <- paste0(basefilename,'.adj')
     
-  }
-  #create adjacency matrix 
-  if(sp_weights_method == "knn"){
-    model_spwts <- spatdata_sp %>%
-      coordinates() %>%  # get centroids
-      knearneigh(k = (k_numneighbors)) %>% # calculate the k nearest neighbors 
-      knn2nb(sym = T)  # knn neighbor object
-  } else {
-    message("Erm..you have indicated a spatial weighting method not currently possible in this framework...")
   }
   
   # Write an INLA adjacency file
@@ -121,13 +131,14 @@ create_adjmatrix <- function(geography){
 }
 
 ######################################################################################################
-# ---------------------------------- load spatial data --------------------------------------------- #
+# ---------------------------------- load spatial data for visualization --------------------------- #
 ######################################################################################################
 
-load_spatialdata <- function(geography){
+load_spatialdata <- function(geography, baselayer = paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')){
   # Function for loading and prepping spatial data into modeling framework
   #   Input args:
-  #             geography: what geography from predefined areas is this for? used to map to geo_fips in predefined_key.R
+  #           geography : what geography from predefined areas is this for? used to map to geo_fips in predefined_key.R
+  #           baselayer : base county shapefile to use, default is set
   #   Output:
   
   cty_sf_name <- paste0(str_sub(geography), '_county.gpkg')
@@ -139,7 +150,7 @@ load_spatialdata <- function(geography){
   } else {
     message(paste0("From create_data.R script: Either the spatial data for your geography does not exist or you have elected to recreate it. Creating it now!"))
     #Read in national county shapefile and save in MOD folder as `.gpkg`.
-    spatdata_sf <- st_read(paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')) %>%
+    spatdata_sf <- st_read(baselayer) %>%
       filter(STATEFP %in% (geo_fips)) %>%
       st_transform((crs_proj))
     st_write(spatdata_sf, paste0(data_repo, '/spatial/', cty_sf_name), delete_dsn = T)

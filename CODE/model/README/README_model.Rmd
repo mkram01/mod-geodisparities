@@ -121,7 +121,31 @@ Outputs currently include:
 
 ![Final model outputs](outputs.png)
 
-# About the scripts
+# About the data & scripts
+
+### Important details about the data being used & created:
+  + Currently, the base county geospatial data is from 2016. This layer is being used to create the spatial weights and for visualization.
+      + To change this as the baselayer for creating spatial weights, you can define the `baselayer` arg in the `create_adjmatrix` function (located: `data_prep/data_prep_fxns.R`) called in the `precreate_adjmatrices.R` script
+      + To change this as the baselayer for visualization, you can define the `baselayer` arge in the `load_spatialdata` function (located: `data_prep/data_prep_fxns.R`) called in the `load_data.R` script
+      
+  + FIPS matching issues
+
+
+## Data prep scripts
+
+
+
+### precreate_adjmatrices.R
+
+Currently, spatial weights (term used interchangeably here with adjacency matrices) are pre-created using the `precreate_adjmatrices.R` script inside the data_prep folder. The spatial weighting method used thus far is K-nearest neighbors (KNN) and thus code currently only exists to support that. There is a corresponding config arg, `sp_weights_method` that is used to find the proper adjacency matrix file, so be sure to be consistent with this.
+
+If you want to use a different spatial weighting method, you will need to do the following:
+
+  1.  Define a value to indicate that method (e.g `knn` = K-nearest neighbors)
+  2.  Add this value as an option in the config_README as well as any additional details necessary for other to understand the method.
+  3.  Write the code to calculate the spatial weights using that method in `data_prep/data_prep_fxns.R` in the `create_adjmatrix` function.
+  4.  Create any additional config args or code to accomodate further specification
+  5.  Update this README section accordingly
 
 ## Model prep scripts
 

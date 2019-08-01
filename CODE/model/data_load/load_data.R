@@ -4,9 +4,6 @@
 # Date: 5.7.2019
 #############################################
 
-#source create data script containing data creation functions
-source("CODE/model/data_prep/data_prep_fxns.R")
-
 ######################################################################################################
 # ---------------------------------- Create summarized dataset ------------------------------------- #
 ######################################################################################################
@@ -40,7 +37,7 @@ if (file.exists(paste0(data_repo, "/model_input/adjacency_matrices/", adjfilenam
 
 #Load key for mapping aspatial data to later outputs using id
 spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"))
-spwts_key$GEOID <- as.factor(spwts_key$GEOID)
+spwts_key$GEOID <- as.character(spwts_key$GEOID)
 
 #######################################################################################################
 # ---------------------------------- Wrangling aspatial data ---------------------------------------- #
