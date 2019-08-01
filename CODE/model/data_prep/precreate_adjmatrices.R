@@ -9,6 +9,16 @@ rm(list = ls())
 ######################################################################################################
 # ---------------------------------- To-do! -------------------------------------------------------- #
 ######################################################################################################
+
+
+# USER!! WARNING!
+
+# the following is the base county shapefile being used, so if you would like another year, you will need to change
+#   your base shapefile being loaded 'load base shapefile' 
+#   currently using: 'cb_2016_us_county_500k.shp'
+
+# if having any FIPS matching issues, 
+
 # --- Arguments to define:
 
 #  What method will you use for calculating spatial weights?
@@ -89,13 +99,12 @@ for (g in geography){
   #converting GEOID to character for ordering
   spatdata_sf$GEOID <- as.character(spatdata_sf$GEOID)
   
-  #transform to sp object
+  #transform to sp object & ordering on FIPS
   spatdata_sp <- spatdata_sf %>%
     dplyr::arrange(GEOID) %>%
     as('Spatial')
   
-  
-  #old code
+  #old code - for reference
   #Prep spatial data
   # The data was created as an `sf` object which is useful for
   # *long* format (e.g. multiple years), but also want an `sp` object for creating
@@ -120,10 +129,15 @@ for (g in geography){
   ######################################################################################################
   # ---------------------------------- create adjacency matrix --------------------------------------- #
   ######################################################################################################
-  #name the adjacency file seeking
-  basefilename <- paste0("spwts_", g, "_",sp_weights_method, k_numneighbors)
-  adjfilename <- paste0(basefilename,'.adj')
-  
+  #define name of the adjacency file seeking -- if using KNN 
+  if(sp_weights_method == "knn"){
+    basefilename <- paste0("spwts_", geography, "_",sp_weights_method, k_numneighbors)
+    adjfilename <- paste0(basefilename,'.adj')
+  } else {
+    basefilename <- paste0("spwts_", geography, "_",sp_weights_method)
+    adjfilename <- paste0(basefilename,'.adj')
+    
+  }
   #create object
   if(sp_weights_method == "knn"){
     model_spwts <- spatdata_sp %>%

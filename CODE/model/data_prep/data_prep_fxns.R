@@ -8,7 +8,7 @@
 # ---------------------------------- summarizing aspatial dataset ---------------------------------- #
 ######################################################################################################
 
-summarise_outcome <- function(x){
+summarise_denominator <- function(x){
   #Function for defining how outcome vars will be summarized
   # Input args:
   #     x: vector or value to apply function over
@@ -41,10 +41,15 @@ summarise_aspatial <- function(input_data){
         dplyr::group_by_("dob_yy", "combfips", (recode_binary)) 
     }
     
-    #Summarise data
+    #Summarise data -- outcome
     smry_data<- smry_data %>%
       #summarize over vector of outcomes using summary function defined at top
-      dplyr::summarise_at(outcome, summarise_outcome)
+      dplyr::summarise_at(outcome, sum)
+    
+    #Summarise data -- denominator
+    smry_data<- smry_data %>%
+      #summarize over vector of outcomes using summary function defined at top
+      dplyr::summarise_at(denominator, summarise_denominator)
   
 }
 
@@ -74,8 +79,12 @@ create_adjmatrix <- function(geography){
     st_write(spatdata_sf, paste0(data_repo, '/spatial/', cty_sf_name), delete_dsn = T)
   }
   
-  #transform to sp object
+  #converting GEOID to character for ordering
+  spatdata_sf$GEOID <- as.character(spatdata_sf$GEOID)
+  
+  #transform to sp object & ordering on FIPS
   spatdata_sp <- spatdata_sf %>%
+    dplyr::arrange(GEOID) %>%
     as('Spatial')
   
   # Create an ordered ID specific to ordering in sp (e.g. aligns with nb object)
@@ -85,9 +94,14 @@ create_adjmatrix <- function(geography){
   spwts_key <- as.data.table(spatdata_sp)
   
   #name the adjacency file seeking
-  basefilename <- paste0("spwts_", geography, "_",sp_weights_method, k_numneighbors)
-  adjfilename <- paste0(basefilename,'.adj')
-  
+  if(sp_weights_method == "knn"){
+    basefilename <- paste0("spwts_", geography, "_",sp_weights_method, k_numneighbors)
+    adjfilename <- paste0(basefilename,'.adj')
+  } else {
+    basefilename <- paste0("spwts_", geography, "_",sp_weights_method)
+    adjfilename <- paste0(basefilename,'.adj')
+    
+  }
   #create adjacency matrix 
   if(sp_weights_method == "knn"){
     model_spwts <- spatdata_sp %>%
@@ -107,7 +121,7 @@ create_adjmatrix <- function(geography){
 }
 
 ######################################################################################################
-# ---------------------------------- create adjacency matrix --------------------------------------- #
+# ---------------------------------- load spatial data --------------------------------------------- #
 ######################################################################################################
 
 load_spatialdata <- function(geography){

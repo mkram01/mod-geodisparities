@@ -19,8 +19,14 @@ smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/nchs_births/R/D
 # ---------------------------------- Load adjacency matrix ------------------------------------------ #
 #######################################################################################################
 #define name of the adjacency file seeking
-basefilename <- paste0("spwts_", geography, "_",sp_weights_method, k_numneighbors)
-adjfilename <- paste0(basefilename,'.adj')
+if(sp_weights_method == "knn"){
+  basefilename <- paste0("spwts_", geography, "_",sp_weights_method, k_numneighbors)
+  adjfilename <- paste0(basefilename,'.adj')
+} else {
+  basefilename <- paste0("spwts_", geography, "_",sp_weights_method)
+  adjfilename <- paste0(basefilename,'.adj')
+  
+}
 
 #Conditionally load or create spatial weights adjacency matrix
 if (file.exists(paste0(data_repo, "/model_input/adjacency_matrices/", adjfilename)) & create_spwts == FALSE){
