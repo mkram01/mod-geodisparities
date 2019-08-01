@@ -31,3 +31,11 @@ spatdata_sf$m1_fit <- unlist(lapply(m1$marginals.fitted.values,
 head(m1$summary.fitted.values)
 #use mean to fill fitted value for visualization for counts
 #     - to get rates, join to smry_data and divide by total births
+
+
+#saving outputs for comparison
+model_out <- as.data.table(m1$summary.fitted.values)
+model_in <- as.data.table(smry_data)
+
+write.csv(model_out, file = paste0(data_repo, "/model_output/model_compare/new_model_output.csv"))
+write.csv(model_in, file = paste0(data_repo, "/model_output/model_compare/new_model_input.csv"))

@@ -86,9 +86,29 @@ for (g in geography){
     st_write(spatdata_sf, paste0(data_repo, '/spatial/', cty_sf_name), delete_dsn = T)
   }
   
+  #converting GEOID to character for ordering
+  spatdata_sf$GEOID <- as.character(spatdata_sf$GEOID)
+  
   #transform to sp object
   spatdata_sp <- spatdata_sf %>%
+    dplyr::arrange(GEOID) %>%
     as('Spatial')
+  
+  
+  #old code
+  #Prep spatial data
+  # The data was created as an `sf` object which is useful for
+  # *long* format (e.g. multiple years), but also want an `sp` object for creating
+  # *neighbor* objects and simpler *wide* representations.
+  # spatdata_sp <- spatdata_sf %>%
+  #   dplyr::inner_join(smry_data, by = c('GEOID' = 'combfips')) %>%
+  #   dplyr::group_by(GEOID) %>%
+  #   dplyr::summarise(vptb = sum(vptb),
+  #                    ptb = sum(ptb),
+  #                    births = sum(births),
+  #                    rawvptb = vptb / births * 1000,
+  #                    rawptb = ptb / births * 1000) %>%
+  #   as('Spatial')
   
   # Create an ordered ID specific to ordering in sp (e.g. aligns with nb object)
   spatdata_sp$ID <- row.names(spatdata_sp)
