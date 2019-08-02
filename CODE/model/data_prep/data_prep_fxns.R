@@ -9,9 +9,9 @@
 ######################################################################################################
 
 summarise_denominator <- function(x){
-  #Function for defining how outcome vars will be summarized
+  #Function for defining how denominator var will be summarized
   # Input args:
-  #     x: vector or value to apply function over
+  #     x: character var to apply function over
   # Output: value of formula applied to x
   
   tot <- sum(x) + 1
@@ -42,14 +42,18 @@ summarise_aspatial <- function(input_data){
     }
     
     #Summarise data -- outcome
-    smry_data<- smry_data %>%
+    smry_outcome <- smry_data %>%
       #summarize over vector of outcomes using summary function defined at top
       dplyr::summarise_at(outcome, sum)
     
     #Summarise data -- denominator
-    smry_data<- smry_data %>%
+    smry_denom <- smry_data %>%
       #summarize over vector of outcomes using summary function defined at top
       dplyr::summarise_at(denominator, summarise_denominator)
+    
+    #Join into one summary data frame
+    smry_data <- smry_outcome %>%
+      inner_join(smry_denom)
   
 }
 

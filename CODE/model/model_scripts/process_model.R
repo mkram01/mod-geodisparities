@@ -19,44 +19,32 @@ alldata <- alldata %>%
   dplyr::mutate(
     raw_rate = (ptb/births),
     model_rate = (mean/births),
+    rate_diff = (raw_rate - model_rate), #Deviation from truth
     model_lci = (`0.025quant`/births),
     model_uci = (`0.975quant`/births),
-    cred_int = (model_uci - model_lci) #if this is larger than model_rate, then estimate unreliable
+    cred_int = (model_uci - model_lci), #if this is larger than model_rate, then estimate unreliable
+    unreliabele = if(cred_int > model_rate){1}else{0} #if credible interval greater than model rate, flag with a 1
   )
-
-#width of credible interval greater than rate itself?
-#numeric suppression by denominator
 
 
 #save outputs
+write.csv(alldata, paste0(outdir, modname, "_fittedvals.csv"), row.names = FALSE)
+
 #save model as rds file -- make this togglable in config
+if(save_mod == TRUE){
+  saveRDS(m1, file = paste0(outdir, modname, "_model.rds"))
+}
 
-#save output table as csv
+# Old code -- delete when sure not going to use
+# # Extracting marginal posterior estimates
+# # This is the posterior of the (aspatial) random effect for county on the scale of risk ratio/SMR:
+# spatdata_sp$m1_iid_re <- unlist(lapply(m1$marginals.random$ID,
+#                                             function(x) inla.emarginal(exp, x)))
+# 
+# message("From process_model.R script: Joining the posterior of the fitted values to spatial data.")
+# 
+# #model object of fitted values
+# head(m1$summary.fitted.values)
+# #use mean to fill fitted value for visualization for counts
+# #     - to get rates, join to smry_data and divide by total births
 
-
-# This is the posterior of the (aspatial) random effect for county on the scale of risk ratio/SMR:
-
-
-
-
-
-
-# Extracting marginal posterior estimates
-# This is the posterior of the (aspatial) random effect for county on the scale of risk ratio/SMR:
-spatdata_sp$m1_iid_re <- unlist(lapply(m1$marginals.random$ID,
-                                            function(x) inla.emarginal(exp, x)))
-
-message("From process_model.R script: Joining the posterior of the fitted values to spatial data.")
-
-#model object of fitted values
-head(m1$summary.fitted.values)
-#use mean to fill fitted value for visualization for counts
-#     - to get rates, join to smry_data and divide by total births
-
-
-#saving outputs for comparison
-model_out <- as.data.table(m1$summary.fitted.values)
-model_in <- as.data.table(smry_data)
-
-write.csv(model_out, file = paste0(data_repo, "/model_output/model_compare/new_model_output.csv"))
-write.csv(model_in, file = paste0(data_repo, "/model_output/model_compare/new_model_input.csv"))

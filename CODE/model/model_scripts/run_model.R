@@ -9,6 +9,11 @@ message("From run_model.R script: Running INLA model")
 #define inla formula
 f1 <- inla_formula
 
+#attempts at getting the denominator arg to work in inla call:
+# denom <- paste0('log(',as.name(denominator),')')
+# offset_formula <- as.formula(denom)
+
+
 #inla model run
 m1 <- inla(f1, family = (family),
            data = smry_data,

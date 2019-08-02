@@ -92,7 +92,7 @@ An example of how your config file might look:
 
 ![Config example](config_example.png)
 
-To fill in your arguments, please refer to the config_README.xlsx document in the same folder as the csv.
+To fill in your arguments, please refer to the `config_README.xlsx` document in the same folder as the csv.
 
 ## Launch
 
@@ -114,10 +114,15 @@ The model name is a concatenation of the following config arguments:
   + random_intercept
   + run date
   
-Outputs currently include:
+Automatic outputs currently include:
 
-  + Model report (.html)
+  + Model fitted value estimates in a table with raw data inputs ('..._fittedvals.csv')
   + Timed summary of how long each component took to run ('..._run_summary.csv')
+  
+Conditional outputs currently include:
+
+  + If the config arg `save_mod` is toggled on: Model object (.rds)
+  + If the config arg `visualize` is toggled on: Model report (.html)
 
 ![Final model outputs](outputs.png)
 
@@ -127,15 +132,36 @@ Outputs currently include:
   + Currently, the base county geospatial data is from 2016. This layer is being used to create the spatial weights and for visualization.
       + To change this as the baselayer for creating spatial weights, you can define the `baselayer` arg in the `create_adjmatrix` function (located: `data_prep/data_prep_fxns.R`) called in the `precreate_adjmatrices.R` script
       + To change this as the baselayer for visualization, you can define the `baselayer` arge in the `load_spatialdata` function (located: `data_prep/data_prep_fxns.R`) called in the `load_data.R` script
-      
-  + FIPS matching issues
+  + FIPS matching issues: because our aspatial data is time-varying and our spatial data is time invariant, there may be some FIPS code matching issues. These have been documented for the current spatial dataset in the `data/spatial/FIPS Matching Issues.cs` file.
 
+## `launch.R`
+
+The launch does as its eponymous title implies -- launches the model. From this script, all scripts are called. 
+
+## `utility_fxns.R`
+
+This script exists outside the model-code framework and lives elsewhere in the repo, `CODE/central_functions/`, because the functions are not model-specific. Functions include:
+
+  + `make_time_stamp` - used in naming the model output files
+  + `generate_time_log` - used to time model runs and identify potential areas for efficiency improvement
+
+## Data load scripts
+
+This folder contains scripts relating to loading data into the modeling environment.
+
+### `load_data.R`
+
+This script loads, summarises and orders the aspatial data, loads or creates the adjacency matrix (based on config args), then conditionally loads the spatial data. 
 
 ## Data prep scripts
 
+This folder contains scripts specific to data wrangling to prepare inputs for the model.
 
+### `data_prep_fxns.R`
 
-### precreate_adjmatrices.R
+This script contains functions used for wrangling the aspatial data, creating the adjacency matrices (called in script below and also `load_data.R` if spatial object does not exist or you have specified in your config to create), and loading spatial data as an sf object for visualization purposes (loads spatial data and joins to already formatted aspatial data).
+
+### `precreate_adjmatrices.R`
 
 Currently, spatial weights (term used interchangeably here with adjacency matrices) are pre-created using the `precreate_adjmatrices.R` script inside the data_prep folder. The spatial weighting method used thus far is K-nearest neighbors (KNN) and thus code currently only exists to support that. There is a corresponding config arg, `sp_weights_method` that is used to find the proper adjacency matrix file, so be sure to be consistent with this.
 
@@ -149,16 +175,50 @@ If you want to use a different spatial weighting method, you will need to do the
 
 ## Model prep scripts
 
-## Data load scripts
+Folder containing scripts that help set up the model environment.
 
-## Model run scripts
+### `prep_fxns.R`
+
+This script contains 2 functions:
+
+  + `create_modelname` - creates model run-specific model names to be used for saving outputs
+  + `create_dirs` - creates and/or defines the model output hierarchy
+
+
+### `load_config.R`
+
+This script contains the function for loading the config and the args it contains into the global environment and calls that function as well. This is also where config defaults will eventually be set and config args will be validated as well (e.g. year end should not be before year start)
+
+### `format_config_args.R`
+
+This script formats and translates config args into the state they need to be in to be used in the model. When adding new config args to the model framework, this is an important consideration -- will these args need to be formatted or transformed?
+
+### `predefined_key.R`
+
+This script specifically pertains to geographies at the moment. Using your `geography` arg in your config, a set of 2-digit state FIPS codes will be mapped to a dynamic variable (`geo_fips`) that will be used throughout the modeling framework.
+
+### `model_functions.R`
+
+This script is not currently being used since the model formula is being written in full in the config, however if the model were to be made more dynamic, this script contains the start of some functions.
+
+## Model scripts
+
+This folder contains two scripts:
+
+  + `run_model.R` - this script is very simple and just calls the `inla` function
+  + `process_model.R` - this script processes the model outputs and joins back to the input data, calculates some new fields and saves the fitted values to a csv. If `save_mod` is set to `TRUE` in your config, the model object is saved as an `.rds` file as well. 
 
 ## Model visualization scripts
+
+Currently this folder contains an RMarkdown document (`model_report.Rmd`) that serves as a model report by summarising and visualizing select model outputs This is conditionally run based on the `visualize` arg in the config file.
 
 # Development pipeline
 
   + Setting all defaults in `model_prep/load_config.R` -- currently, if you do not fill out all fields, there will be issues running the code
+  
+  + Writing some config arg validation code (e.g. year_end is after year_start)
+  
+  + Conditionally load the adjacency matrix based upon INLA formula specification
 
-# Areas for improvement
 
 
