@@ -4,6 +4,19 @@
 # Date: 5.7.2019
 #############################################
 
+######################################################################################################
+# ----------------------------------------------- formatting CRS -------------------------------------
+######################################################################################################
+message("From format_config_args.R script: Formatting coordinate reference system")
+crs_proj <- as.numeric(crs_proj)
+
+######################################################################################################
+# ----------------------------------------------- formatting outcome vars ----------------------------
+######################################################################################################
+message("From format_config_args.R script: Formatting outcome(s)")
+outcome <- strsplit(outcome, " ")
+outcome <- outcome[[1]][outcome[[1]] != "+"]
+outcome <- c(as.character(outcome))
 
 ######################################################################################################
 # ----------------------------------------------- formatting years for model -------------------------
@@ -28,7 +41,7 @@ race_eth <- c(as.numeric(race_eth))
 message("From format_config_args.R script: Formatting config recode binary")
 
 suppressWarnings(
-  if (recode_binary == "FALSE"){
+  if (recode_binary == "nonbinary"){
     message("You have chosen not to recode race/eth into a binary variable.")
   }
 )
@@ -59,13 +72,17 @@ crs_proj <- as.numeric(projection)
 ######################################################################################################
 # ----------------------------------------------- formatting knn k arg -------------------------------
 ######################################################################################################
-message("From format_config_args.R script: Formatting KNN k arg")
-#converting from character to numeric
-k_numneighbors <- as.numeric(k)
+if(sp_weights_method == "knn"){
+  message("From format_config_args.R script: Formatting KNN k arg")
+  #converting from character to numeric
+  k_numneighbors <- as.numeric(k)
+}
 
 ######################################################################################################
 # ----------------------------------------------- formatting random intercept and slope --------------
 ######################################################################################################
+message("From format_config_args.R script: Formatting model namimg descriptors")
+
 #formatting for model naming
 if (random_slope == FALSE){
   ran_slope <- ""

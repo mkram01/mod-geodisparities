@@ -4,89 +4,57 @@
 # Date: 5.7.2019
 #############################################
 
-#source create data script containing data creation functions
-source("CODE/model/data_load/create_data.R")
-
 ######################################################################################################
 # ---------------------------------- Create summarized dataset ------------------------------------- #
 ######################################################################################################
 message("From load_data.R script: Loading aspatial data and prepping for model.")
 
 # ---- load and summarize ----
-smry_data <- aspatial_smry(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
-
-######################################################################################################
-# ---------------------------------- Load spatial data --------------------------------------------- #
-######################################################################################################
-message("From create_data.R script: Loading spatial data and prepping for model.")
-
-# ---- Prep spatial data for region only ----
-#creating save file name based on census division defined in config
-cty_sf_name <- paste0(str_sub(geography), '_county.gpkg')
-
-#Load spatial data directly or create based upon file existence and/or config preference
-if (file.exists(paste0(data_repo, '/spatial/', cty_sf_name)) & create_sf_obj == FALSE){
-  message(paste0("From create_data.R script: The spatial data for your geography already exists and you have elected not to recreate it. Loading it now!"))
-  spatdata_sf <- st_read(paste0(data_repo, '/spatial/', cty_sf_name))
-} else {
-  message(paste0("From create_data.R script: Either the spatial data for your geography does not exist or you have elected to recreate it. Creating it now!"))
-  #Read in national county shapefile and save in MOD folder as `.gpkg`.
-  spatdata_sf <- st_read(paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')) %>%
-    filter(STATEFP %in% (geo_fips)) %>%
-    st_transform((crs_proj))
-  st_write(spatdata_sf, paste0(data_repo, '/spatial/', cty_sf_name), delete_dsn = T)
-}
-
-#Prep spatial data
-# The data was created as an `sf` object which is useful for
-# *long* format (e.g. multiple years), but also want an `sp` object for creating
-# *neighbor* objects and simpler *wide* representations.
-spatdata_sp <- spatdata_sf %>%
-  dplyr::inner_join(smry_data, by = c('GEOID' = 'combfips')) %>%
-  dplyr::group_by(GEOID) %>%
-  dplyr::summarise(vptb = sum(vptb),
-            ptb = sum(ptb),
-            births = sum(births),
-            rawvptb = vptb / births * 1000,
-            rawptb = ptb / births * 1000) %>%
-  as('Spatial')
-
-# Create an ordered ID specific to ordering in sp (e.g. aligns with nb object)
-spatdata_sp$ID <- seq_len(nrow(spatdata_sp))
-
-# Create long version (e.g. repeated rows for each year within county) as an
-# `sf` object useful for facet printing of year x race.
-spatdata_sf <- spatdata_sp %>%
-  st_as_sf() %>%
-  dplyr::select(GEOID, ID) %>%
-  dplyr::right_join(smry_data, by = c('GEOID' = 'combfips')) %>%
-  dplyr::mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
-         ID2 = ID, # ID and ID2 will be for f() in INLA
-         year_c = dob_yy - (year_start))  %>% # scale year using start year in config so intercept interpretable
-  dplyr::arrange(ID)
+smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
 
 #######################################################################################################
 # ---------------------------------- Load adjacency matrix ------------------------------------------ #
-######################################################################################################
-
-#name the adjacency file seeking
-adjfilename <- paste0("knn_", geography, "_", k_numneighbors, '.adj')
-
-#Conditionally load or create KNN
-if (file.exists(paste0(data_repo, '/spatial/', adjfilename)) & create_knn_obj == FALSE){
-  message(paste0("From load_data.R script: The KNN adjacency matrix for your geography already exists and you have elected not to recreate it. Loading it now!"))
-  #load adjacency matrix
-  model_knn <- inla.read.graph(paste0(data_repo, '/spatial/', adjfilename))
+#######################################################################################################
+#define name of the adjacency file seeking
+if(sp_weights_method == "knn"){
+  basefilename <- paste0("spwts_", geography, "_",sp_weights_method, k_numneighbors)
+  adjfilename <- paste0(basefilename,'.adj')
 } else {
-  message(paste0("From load_data.R script: Either the KNN adjacency matrix for your geography does not exist or you have elected to recreate it. Creating it now!"))
-  # Create knn neighbor object
-  model_knn <- spatdata_sp %>%
-    coordinates() %>%  # get centroids
-    knearneigh(k = (k_numneighbors)) %>% # calculate the k nearest neighbors 
-    knn2nb(sym = T)  # knn neighbor object
-  # Write an INLA adjacency file
-  nb2INLA(paste0(data_repo, '/spatial/', adjfilename), model_knn)
+  basefilename <- paste0("spwts_", geography, "_",sp_weights_method)
+  adjfilename <- paste0(basefilename,'.adj')
+  
 }
 
+#Conditionally load or create spatial weights adjacency matrix
+if (file.exists(paste0(data_repo, "/model_input/adjacency_matrices/", adjfilename)) & create_spwts == FALSE){
+  message(paste0("From load_data.R script: The adjacency matrix for your geography already exists and you have elected not to recreate it. Loading it now!"))
+  #load adjacency matrix
+  model_spwts <- inla.read.graph(paste0(data_repo, "/model_input/adjacency_matrices/", adjfilename))
+} else {
+  message(paste0("From load_data.R script: Either the adjacency matrix for your geography does not exist or you have elected to recreate it. Creating it now!"))
+  model_spwts <- create_adjmatrix(geography)
+}
+
+#Load key for mapping aspatial data to later outputs using id
+spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"))
+spwts_key$GEOID <- as.character(spwts_key$GEOID)
+
+#######################################################################################################
+# ---------------------------------- Wrangling aspatial data ---------------------------------------- #
+#######################################################################################################
+#Join aspatial data to spatial weights key & order by key ID
+smry_data <- smry_data %>%
+  dplyr::left_join(spwts_key, by = c('combfips' = 'GEOID')) %>%
+  dplyr::mutate(year_c = dob_yy - (year_start)) %>%  #scale year using start year in config so intercept interpretable
+  dplyr:: arrange(ID, dob_yy) #order by ID from spatial weigts key to match to outputs
+  
+
+#######################################################################################################
+# ---------------------------------- Load spatial data conditionally -------------------------------- #
+#######################################################################################################
+if (visualize == TRUE){
+ message("From load_data.R: You have indicated that you want visualizations so loading in the spatial data now!")
+  spatdata_sf <- load_spatialdata(geography)
+}
 
 message("From load_data.R script: Finished loading and prepping data!")

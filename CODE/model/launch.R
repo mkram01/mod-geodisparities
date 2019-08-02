@@ -13,18 +13,12 @@ rm(list = ls())
 #   mod_repo: this is the code repo/location of your code pertaining to this model
 #   mod_data: this is the file path to where you are storing the model data
 #   mod_modeler: this is a character string with your name for use in the model report
-
-#If you do not have Rgraphviz and your R version is too new to use CRAN distribution:
-# if (!requireNamespace("BiocManager", quietly = TRUE))
-# install.packages("BiocManager")
-# BiocManager::install("Rgraphviz")
-
 ######################################################################################################
 # ---------------------------------- Set up -------------------------------------------------------- #
 ######################################################################################################
 # load packages
 x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "tictoc",
-       "plyr", "dplyr", "rmarkdown")# , "Rgraphviz")
+       "plyr", "dplyr", "rmarkdown")
 #installing any packages not installed already
 new.packages <- x[!(x %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -62,6 +56,9 @@ source('CODE/model/model_prep/format_config_args.R')
 
 # load predefined objects
 source('CODE/model/model_prep/predefined_key.R')
+
+#source data prep function script
+source("CODE/model/data_prep/data_prep_fxns.R")
 
 #load modeling functions
 #source("CODE/model/model_prep/model_functions.R")
@@ -107,9 +104,12 @@ source("CODE/model/model_scripts/process_model.R")
 toc(log = T)
 
 #visualizations
-tic("Creating visualizations and final report")
-rmarkdown::render("CODE/model/visualization/model_report.Rmd", output_dir = outdir, output_file = paste0(modname, "_report.html"))
-toc(log = T) #end visualizations timer
+if(visualize == TRUE){
+  tic("Creating visualizations and final report")
+  rmarkdown::render("CODE/model/visualization/model_report.Rmd", output_dir = outdir, output_file = paste0(modname, "_report.html"))
+  toc(log = T) #end visualizations timer
+}
+
 ######################################################################################################
 # ---------------------------------- Finalize timer functions -------------------------------------- #
 ######################################################################################################
