@@ -1,6 +1,6 @@
 ##############################################
 # Code author: erin r stearns
-# Code objective: MoD GeoDisparities web tool - User interfaces
+# Code objective: MoD GeoDisparities web tool - User interface
 # Date created: 8.15.2019
 #############################################
 
