@@ -5,8 +5,8 @@ account: erstearns
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 846750
-bundleId: 2087901
+bundleId: 2146209
 url: https://erstearns.shinyapps.io/mod_geo_mockup/
-when: 1557970338.89748
+when: 1560278031.37224
 asMultiple: FALSE
 asStatic: FALSE
