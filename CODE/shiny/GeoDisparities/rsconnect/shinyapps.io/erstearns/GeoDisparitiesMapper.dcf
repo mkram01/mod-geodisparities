@@ -1,0 +1,12 @@
+name: GeoDisparitiesMapper
+title: GeoDisparitiesMapper
+username:
+account: erstearns
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1093479
+bundleId: 2329579
+url: https://erstearns.shinyapps.io/GeoDisparitiesMapper/
+when: 1566067593.74755
+asMultiple: FALSE
+asStatic: FALSE

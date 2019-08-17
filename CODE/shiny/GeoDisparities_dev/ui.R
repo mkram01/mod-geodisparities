@@ -29,7 +29,7 @@ library(DT) #provides an R interface to the JavaScript library DataTables. R dat
 library(rintrojs)
 
 # Calling carousel script -- not sure how this is being used
-#source("carouselPanel.R")
+source("carouselPanel.R")
 
 # Panel div for visualization
 # override the currently broken definition in shinyLP version 1.1.0
@@ -40,7 +40,7 @@ panel_div <- function(class_type, content) {
 }
 
 shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
-                   theme = "paper.css",
+                   theme = "paper.css",  # in this script, the banner image is set
                    collapsible = TRUE,
                    inverse = TRUE,
                    windowTitle = "March of Dimes GeoDisparities Mapper",
@@ -55,7 +55,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                    # -------------------------------------- "Home" page - landing page ------------------------------------------- #
                    
                    
-                   tabPanel("HOME", value = "home",
+                   tabPanel("Home", value = "home",
                             
                             shinyjs::useShinyjs(),
                             
@@ -72,11 +72,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                        '))),
                             fluidRow(
                               HTML("
-                                   
                                    <section class='banner'>
                                    <h2 class='parallax'>GeoDisparities Mapper</h2>
-                                   <p class='parallax_description'>Explore associations between family economic and social opportunity and stress and
-                                   preterm birth.</p>
+                                   <p class='parallax_description'>Explore associations between socio-economic stress and preterm birth.</p>
                                    </section>
                                    ")
                               ),
@@ -157,7 +155,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                  Disparities project compendium.</h5>
                                                  <br>
                                                  <h5>You will see these ecological and modeled variables in the GeoDisparities 
-                                                 Mapper.</h5")
+                                                 Mapper.</h5>")
                                      ),
                               column(3)
                                      ),
@@ -180,8 +178,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3)
                                      ),
                             
-                            # ---------------- buttons to start; About - about; GeoDisparities Mapper - geomapper, 
-                            # ------------------------------------------------------------------------------------- start back here, need to make sure a link exists to the about page similar to geomapper
+                            # ---------------- how to get started: buttons; About - about; GeoDisparities Mapper - geomapper, 
+                            # ------------------------------------------------------------------------------------- need to make sure a link exists to the about page similar to geomapper
                             fluidRow(
                               column(3),
                               column(6,
@@ -214,9 +212,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             # PAGE BREAK
                             tags$hr(),
                             
-                            # ---------------- instructional section
+                            # ---------------- Understanding the drivers of disparate adverse birth outcomes (Instructional overview)
                             fluidRow(
-                              shiny::HTML("<br><br><center> <h1>Career Planning Made Easy.</h1> </center>
+                              shiny::HTML("<br><br><center> <h1>Understanding the drivers of disparate adverse birth outcomes.</h1> </center>
                                           <br>")
                               ),
                             
@@ -233,7 +231,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              ),
                                              div(
                                                h5(
-                                                 "Pick a job to start your path. You may use your current job, or a job you're interested in exploring."
+                                                 "Pick a modeled outcome you would like to see visualized as a map and univariate scatter plot."
                                                )
                                              )
                                          )
@@ -249,7 +247,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              ),
                                              div(
                                                h5(
-                                                 "Then from that job, review the set of next jobs that people have moved into during their careers. Review information about these choices and select your next career step."
+                                                 "Pick an ecological predictor you would like to see visualized as a map and univariate scatter plot."
                                                )
                                              )
                                          )
@@ -264,7 +262,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                         width = "50px", height = "50px")),
                                              div(
                                                h5(
-                                                 "Plan up to five steps out in your career. When you're ready, you may save or print out your personalized report."
+                                                 "Review visualizations and bivariate scatter plot comparing the two."
                                                )
                                              )
                                          )
@@ -306,8 +304,59 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3)
                             ),
                             fluidRow(style = "height:25px;"
-                            )
+                                     )
+                   ), # closes home tabPanel
+
+# -------------------------------------- "GeoDisparities Mapper" page - dashboard page ------------------------------- #
                             
-                            ) # Closes the first tabPanel called "Home"
-  )
+                            tabPanel("GeoDisparities Mapper", value = "geomapper",
+                                     
+                                     sidebarLayout( 
+                                       
+                                       sidebarPanel( width = 3,
+                                                     introjsUI(),
+                                                     
+                                                     tags$div(
+                                                       actionButton("help", "Take a Quick Tour"),
+                                                       style = "height:50px;"
+                                                     ),
+                                                     useShinyjs(),
+                                                     
+                                                     tags$div(
+                                                       style = "height:50px;",
+                                                       introBox(
+                                                         tags$div(
+                                                           style = "height:50px;",
+                                                           actionLink("settings", "Settings", 
+                                                                      icon = icon("sliders", class = "fa-2x"))),
+                                                         data.step = 6,
+                                                         data.intro = "Settings is where you can set options that affect the visualization of data as maps and plots."
+                                                       )
+                                                     )
+                                       ),  # Closes sidebarPanel
+                                       mainPanel( width = 8,
+                                                  fluidRow(
+                                                  ),
+                                                  fluidRow(
+                                                    div()
+                                                  )
+                                       )  # Closes the mainPanel
+                                     )  # Closes the sidebarLayout
+                            ),  # Closes the GeoDisparities Mapper dashboard tabPanel
+                            
+# -------------------------------------- "About" page - about MoD & Michael page ------------------------------------- #
+                            
+                            tabPanel("About", value = "about",
+                                     
+                                     fluidRow(
+                                       shiny::HTML("<br><br><center> 
+                                                   <h1>About the GeoDisparities Mapperr</h1> 
+                                                   <h4>What's behind the data.</h4>
+                                                   </center>
+                                                   <br>
+                                                   <br>"),
+                                       style = "height:250px;")
+                                     
+                                     )  # Closes About tab
+          ) #end navbarPage
 )#end UI
