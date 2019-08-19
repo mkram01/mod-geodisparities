@@ -83,7 +83,7 @@ tm_shape(allasp) +
   tm_borders()
 
 #rename vars that got wonky
-newnames <- c("GEOID","state_name","state_code", "year", "source", 
+newnames <- c("GEOID","state_name", "year", "state_code", "source", 
               "NAME", "Black - White Ratio", 
               "Education - College or higher", "Education - High School or GED", "Education - Less than High School",
               "Median Income", 
