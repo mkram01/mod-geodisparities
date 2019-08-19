@@ -41,16 +41,16 @@ panel_div <- function(class_type, content) {
 
 # -------------------------------------- load data -------------------------------------------------
 #load spatial data
-geodata <- readRDS('data/sf_acs5_2007_2017_w2010counties_v.Rds')
+geodata <- readRDS('data/alldata.Rds')
 #transform spatial data to wgs84
 geodata <- st_transform(geodata, crs = 4326)
 
 #load aspatial data
-adata <- readRDS('data/acs5_2007_2017_fin.Rds')
+#adata <- readRDS('data/acs5_2007_2017_fin.Rds')
 
 # -------------------------------------- app inputs defined ----------------------------------------
 #state choices
-state_names <- as.character(unique(adata$state_name))
+state_names <- as.character(unique(geodata$state_name))
 
 ######################################################################################################
 # -------------------------------------- ui -------------------------------------------------------- #
@@ -373,14 +373,14 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               uiOutput('xvar'),
 
                                               #select number of quantiles for left-side data
-                                              sliderInput('xquantiles', label = "Left-side Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
+                                              sliderInput('xquantiles', label = "Input Data Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
                                               ),
 
                                               #select right-side data to be mapped & plotted
                                               uiOutput('yvar'),
 
                                               #select number of quantiles for right-side data
-                                              sliderInput('yquantiles', label = "Right-side Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
+                                              sliderInput('yquantiles', label = "Model Output Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
                                               ),
 
                                               #grab ui output
@@ -392,9 +392,27 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               #Main panel -- Maps & plots controlled by settings in sidebar
                               mainPanel( width = 8,
                                          fluidRow(
+                                           column(6,
+                                                  leafletOutput("mapin")
+                                                  ),
+                                           column(6,
+                                                  leafletOutput("mapmod")
+                                                  )
+                                           
                                          ),
                                          fluidRow(
-                                           div()
+                                           column(6,
+                                                  plotOutput("xscatter")
+                                                  ),
+                                           column(6,
+                                                  plotOutput("yscatter")
+                                           )
+                                         ),
+                                         fluidRow(
+                                           column(12,
+                                                  plotOutput("biscatter",
+                                                             brush = brushOpts(id="bibrush"))
+                                                  )
                                          )
                               )  # Closes the mainPanel
                             )  # Closes the sidebarLayout
