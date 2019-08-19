@@ -199,7 +199,7 @@ shinyServer(function(input, output, session) {
                                       choices = names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
                                       selected =  names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2]))
 
-  # Defining xvar, yvar & color var reactives -------------------------------------------------------
+  # Defining xvar & yvar var reactives -------------------------------------------------------
   xvar_ <- ''
   xVar <- reactive({
     print('reactive: xVar')
@@ -261,122 +261,6 @@ shinyServer(function(input, output, session) {
       geom_density(data=brushed, fill = "red") +
       theme(legend.position = "none")
   })
-  
-  # map updates --------------------------------------------------------------------------------------
-  # ---- create colorData to be able to create palette ----
-  #input data
-  colorData <- reactive({
-    print("reactive: subsetting to colorVar in data")
-    #call aspatial reactive data
-    df1 <- plotdf()[,"x"]
-    df1
-  })
-  
-  #model output data
-  mod_colorData <- reactive({
-    print("reactive: subsetting to colorVar in data")
-    #call aspatial reactive data
-    df1 <- plotdf()[,"y"]
-    df1
-  })
-  
-  # ---- creating palette for colorvar ---- 
-  #input data
-  #creating color palette
-  colorpal <- reactive({
-    print('reactive: create color palette')
-    colorNumeric("YlOrRd", colorData())
-  })
-  pal <- reactive({
-    print('reactive: create palette for leaflet arg')
-    colorpal()(colorData())
-  })
-  #model output data
-  mod_colorpal <- reactive({
-    print('reactive: create color palette')
-    colorNumeric("YlOrRd", mod_colorData())
-  })
-  mod_pal <- reactive({
-    print('reactive: create palette for leaflet arg')
-    colorpal()(mod_colorData())
-  })
-  
-  #get reactive x and y data for html labels
-  xData <- reactive({
-    print("reactive: subsetting to x Var in data")
-    df1 <- plotdf()[,"x"]
-    df1
-  })
-  
-  yData <- reactive({
-    print("reactive: subsetting to y Var in data")
-    df1 <- plotdf()[,"y"]
-    df1
-  })
-  
-  # ---- create html labels ----
-  #input data
-  map.labels <- reactive({
-    sprintf(
-      "%s<br/>%s<br/>%s",
-      paste0(input$xvar,": ", round(xData(),digits = 2),"%")
-    ) %>% lapply(htmltools::HTML)
-    
-  })
-  #model data
-  mod_map.labels <- reactive({
-    sprintf(
-      "%s<br/>%s<br/>%s",
-      paste0(input$yvar, ": ", round(yData(),digits = 2), "%")
-    ) %>% lapply(htmltools::HTML)
-    
-  })
-  
-  
-  
-  # Update map to be chloropleth of colorvar w/legend ---------------------------------------------
-  
-  # update map with polygons
-  # - child of: pal()
-  observe({
-    print('observe: updating map to be chloropleth of colorvar')
-    print(paste0("df class: ",class(df)))
-    leafletProxy('map') %>%
-      addPolygons(
-        data = df,
-        fillColor = pal(),
-        weight = 1,
-        opacity = 1,
-        color = "black",
-        dashArray = "3",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 5,
-          color = "#666",
-          dashArray = "",
-          fillOpacity = 0.7,
-          bringToFront = TRUE),
-        label = map.labels(), popup = map.labels(), #~htmlEscape(input$color)
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto")
-      )
-  })
-  
-  #add legend
-  observe({
-    print("observe: legend")
-    leafletProxy("map") %>%
-      clearControls() %>%
-      addLegend(opacity = 0.99,position = "bottomright",title = colorVar(),
-                pal = colorpal(), values = rev(colorData()))
-  })
-
-  
-  
-
-  
 
 #################################################################################################
 # -------------------------- "TECHNICAL DETAILS" PAGE -------------------------------------------
