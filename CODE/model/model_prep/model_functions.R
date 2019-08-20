@@ -18,7 +18,7 @@ inlamodel <- function(formula, family, dataset, title) {
   #           precise output: "<year>_<month>_<day>_<hour>_<minute>_<second>"
   
   # Read in function
-  func <- formula
+  func <- (formula)
   
   # Run
   model <- inla(func, family = family,
