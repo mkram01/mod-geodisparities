@@ -249,7 +249,7 @@ shinyServer(function(input, output, session) {
     print("reactive: subsetting to colorVar in data")
     df1 <- df
     df1$geometry <- NULL
-    df1[,xVar()]
+    df1[,xVar()] <- round(df1[,xVar()], digits = 2)
     df1$leftquantile <- bin(df1[,xVar()], nbins = input$leftquantiles, method = "content")
     df1[,"leftquantile"]
   })
@@ -259,7 +259,9 @@ shinyServer(function(input, output, session) {
     print("reactive: subsetting to colorVar in data")
     df2 <- df
     df2$geometry <- NULL
-    df2[,yVar()]
+    #rounding values to 2 decimal points
+    df2[,yVar()] <- round(df2[,yVar()], digits = 2)
+    #dividing var into user-specified quantiles
     df2$rightquantile <- bin(df2[,yVar()], nbins = input$rightquantiles, method = "content")
     df2[,"rightquantile"]
   })
