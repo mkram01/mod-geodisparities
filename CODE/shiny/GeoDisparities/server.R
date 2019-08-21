@@ -202,7 +202,7 @@ shinyServer(function(input, output, session) {
   output$biscatter <- renderPlot({
     print('plotting bivariate scatter plot')
     
-    ggplotRegression(lm(x ~ y, data = plotdf())) +
+    ggplotRegression(lm(y ~ x, data = plotdf())) +
       #ggplot(plotdf(),aes(x, y)) +
       geom_point(alpha = 0.5, size = 1.5) +
       geom_line(stat = "smooth", method = "lm", alpha = 0.3, colour = "red") +

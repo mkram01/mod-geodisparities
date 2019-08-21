@@ -305,7 +305,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   style = "height:50px;",
                                                   actionLink("settings", "Settings", 
                                                              icon = icon("sliders", class = "fa-2x"))),
-                                                data.step = 6,
+                                                data.step = 6, #data steps enumerated
                                                 data.intro = "Settings is where you can set options that affect the visualization of data as maps and plots."
                                               ),
                                               
