@@ -45,6 +45,11 @@ geodata <- readRDS('data/alldata.Rds')
 #transform spatial data to wgs84
 geodata <- st_transform(geodata, crs = 4326)
 
+#state boundaries
+state_bounds <- readRDS('data/stateboundaries.Rds')
+#transform spatial data to wgs84
+state_bounds <- st_transform(state_bounds, crs = 4326)
+
 #aspatial data for plots
 # adata <- copy(geodata)
 # adata$geometry <- NULL

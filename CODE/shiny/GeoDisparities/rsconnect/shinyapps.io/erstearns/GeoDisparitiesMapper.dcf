@@ -5,8 +5,8 @@ account: erstearns
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1093479
-bundleId: 2335891
+bundleId: 2345998
 url: https://erstearns.shinyapps.io/GeoDisparitiesMapper/
-when: 1566256895.80261
+when: 1566500068.52452
 asMultiple: FALSE
 asStatic: FALSE
