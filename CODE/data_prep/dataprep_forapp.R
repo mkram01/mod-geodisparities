@@ -27,10 +27,16 @@ message(paste0("You have specified ", data_repo, " as the location of your data.
 #ran object simplification in DATA/acs/prep_for_app, will bring that in once relevant
 acs_smpl <- readRDS(paste0(data_repo,"/acs/simpl_acs_spatial.Rds"))
 mod_smpl <- readRDS(paste0(data_repo,"/model_output/simpl_eb_spatial.Rds"))
+#read in state boundary file
+states <- st_read(paste0(data_repo,"/acs/state_boundaries/tl_2010_us_state10.shp"))
 
 #transform spatial data to wgs84
 acs_smpl_v <- st_transform(acs_smpl, crs = 4326)
 mod_smpl_v <- st_transform(mod_smpl, crs = 4326)
+states <- st_transform(states, crs = 4326)
+
+#remove puerto rico & 
+#states <- states[!states$NAME10 %in% c("Puerto Rico", "") ]
 
 ######################################################################################################
 # -------------------------------------- rename field vars ----------------------------------------- #
@@ -104,6 +110,8 @@ setnames(allasp, names(allasp), newnames)
 #save full dataset
 saveRDS(allasp, file=paste0(data_repo, "/app_inputs/alldata.Rds"))
 
+#Create state boundaries
+
 
 #douglas-peuker
 #saveRDS(smpl_acs_fin, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties.Rds"))
@@ -114,3 +122,7 @@ saveRDS(acs_sub, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties_v.
 #saveRDS(smpl_mod_fin, file=paste0(data_repo, "/model_output/eb_spatial.Rds"))
 #save spatial model data - visvalingam's 
 saveRDS(mod_smpl_v, file=paste0(data_repo, "/model_output/eb_spatial_v.Rds"))
+
+
+#save states as rds
+saveRDS(states, file=paste0(data_repo, "/app_inputs/stateboundaries.Rds"))

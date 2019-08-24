@@ -66,12 +66,14 @@ shinyServer(function(input, output, session) {
   #               - child of: 
   output$leftmap <- renderLeaflet({
     print('render map')
-    leaflet() %>% #addTiles() %>% 
-      addProviderTiles("Esri.OceanBasemap", group = "Esri.OceanBasemap") %>%
-      addProviderTiles("OpenStreetMap.Mapnik", group = "OpenStreetmap") %>%
-      addProviderTiles("Esri.WorldImagery", group = "Esri.WorldImagery") %>%
-      addLayersControl(baseGroups = c("OpenStreetmap","Esri.OceanBasemap", 'Esri.WorldImagery'),
-                       options = layersControlOptions(collapsed = TRUE, autoZIndex = F)) %>%
+    leaflet() %>% 
+      addTiles() %>% 
+      #Optional baselayers:
+      #addProviderTiles("Esri.OceanBasemap", group = "Esri.OceanBasemap") %>%
+      #addProviderTiles("OpenStreetMap.Mapnik", group = "OpenStreetmap") %>%
+      #addProviderTiles("Esri.WorldImagery", group = "Esri.WorldImagery") %>%
+      #addLayersControl(baseGroups = c("OpenStreetmap","Esri.OceanBasemap", 'Esri.WorldImagery'),
+      #                 options = layersControlOptions(collapsed = TRUE, autoZIndex = F)) %>%
       fitBounds(-124.848974, 24.396308, -66.885444, 49.384358) %>% #manually input us centroid
       addScaleBar(position = "bottomleft") %>%
       addEasyButton(easyButton(
@@ -82,12 +84,14 @@ shinyServer(function(input, output, session) {
   # Creating right-side base leaflet map ---------------------------------------------------------------------------
   output$rightmap <- renderLeaflet({
     print('render map')
-    leaflet() %>% #addTiles() %>% 
-      addProviderTiles("Esri.OceanBasemap", group = "Esri.OceanBasemap") %>%
-      addProviderTiles("OpenStreetMap.Mapnik", group = "OpenStreetmap") %>%
-      addProviderTiles("Esri.WorldImagery", group = "Esri.WorldImagery") %>%
-      addLayersControl(baseGroups = c("OpenStreetmap","Esri.OceanBasemap", 'Esri.WorldImagery'),
-                       options = layersControlOptions(collapsed = TRUE, autoZIndex = F)) %>%
+    leaflet() %>% 
+      addTiles() %>% 
+      #Optional baselayers
+      #addProviderTiles("Esri.OceanBasemap", group = "Esri.OceanBasemap") %>%
+      #addProviderTiles("OpenStreetMap.Mapnik", group = "OpenStreetmap") %>%
+      #addProviderTiles("Esri.WorldImagery", group = "Esri.WorldImagery") %>%
+      #addLayersControl(baseGroups = c("OpenStreetmap","Esri.OceanBasemap", 'Esri.WorldImagery'),
+      #                 options = layersControlOptions(collapsed = TRUE, autoZIndex = F)) %>%
       fitBounds(-124.848974, 24.396308, -66.885444, 49.384358) %>% #manually input us centroid
       addScaleBar(position = "bottomleft") %>%
       addEasyButton(easyButton(
@@ -202,7 +206,7 @@ shinyServer(function(input, output, session) {
   output$biscatter <- renderPlot({
     print('plotting bivariate scatter plot')
     
-    ggplotRegression(lm(x ~ y, data = plotdf())) +
+    ggplotRegression(lm(y ~ x, data = plotdf())) +
       #ggplot(plotdf(),aes(x, y)) +
       geom_point(alpha = 0.5, size = 1.5) +
       geom_line(stat = "smooth", method = "lm", alpha = 0.3, colour = "red") +
@@ -249,7 +253,7 @@ shinyServer(function(input, output, session) {
     print("reactive: subsetting to colorVar in data")
     df1 <- df
     df1$geometry <- NULL
-    df1[,xVar()]
+    df1[,xVar()] <- round(df1[,xVar()], digits = 2)
     df1$leftquantile <- bin(df1[,xVar()], nbins = input$leftquantiles, method = "content")
     df1[,"leftquantile"]
   })
@@ -259,7 +263,9 @@ shinyServer(function(input, output, session) {
     print("reactive: subsetting to colorVar in data")
     df2 <- df
     df2$geometry <- NULL
-    df2[,yVar()]
+    #rounding values to 2 decimal points
+    df2[,yVar()] <- round(df2[,yVar()], digits = 2)
+    #dividing var into user-specified quantiles
     df2$rightquantile <- bin(df2[,yVar()], nbins = input$rightquantiles, method = "content")
     df2[,"rightquantile"]
   })
@@ -329,27 +335,41 @@ shinyServer(function(input, output, session) {
   observe({
     print('observe: updating left map to be chloropleth of leftVar')
     print(paste0("df class: ",class(df)))
-    leafletProxy('leftmap') %>%
-      addPolygons(
-        data = df,
-        fillColor = leftpal(),
-        weight = 1,
-        opacity = 1,
-        color = "black",
-        dashArray = "3",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-          weight = 5,
-          color = "#666",
-          dashArray = "",
+      #national level map -- no county boundaries, only state
+      leafletProxy('leftmap') %>%
+      #counties
+        addPolygons(
+          data = df,
+          fillColor = leftpal(),
+          weight = 1,
+          opacity = 1,
+          color = leftpal(),
+          dashArray = "3",
           fillOpacity = 0.7,
-          bringToFront = TRUE),
-        label = leftmap.labels(), popup = leftmap.labels(), #~htmlEscape(input$color)
-        labelOptions = labelOptions(
-          style = list("font-weight" = "normal", padding = "3px 8px"),
-          textsize = "15px",
-          direction = "auto")
-      )
+          highlight = highlightOptions(
+            weight = 5,
+            color = "#666",
+            dashArray = "",
+            fillOpacity = 0.7,
+            bringToFront = TRUE),
+          label = leftmap.labels(), popup = leftmap.labels(), #~htmlEscape(input$color)
+          labelOptions = labelOptions(
+            style = list("font-weight" = "normal", padding = "3px 8px"),
+            textsize = "15px",
+            direction = "auto")
+        ) %>%
+        addPolygons(
+          data = state_bounds,
+          #fillColor = rightpal(),
+          fill = FALSE,
+          #fillOpacity = 1,
+          weight = 1,
+          opacity = 1,
+          color = "black",
+          #dashArray = "3",
+          fillOpacity = 0.7
+        )
+    
   })
   
   #right map
@@ -362,7 +382,7 @@ shinyServer(function(input, output, session) {
         fillColor = rightpal(),
         weight = 1,
         opacity = 1,
-        color = "black",
+        color = rightpal(),
         dashArray = "3",
         fillOpacity = 0.7,
         highlight = highlightOptions(
@@ -376,6 +396,17 @@ shinyServer(function(input, output, session) {
           style = list("font-weight" = "normal", padding = "3px 8px"),
           textsize = "15px",
           direction = "auto")
+      )  %>%
+      addPolygons(
+        data = state_bounds,
+        #fillColor = rightpal(),
+        fill = FALSE,
+        #fillOpacity = 1,
+        weight = 1,
+        opacity = 1,
+        color = "black",
+        #dashArray = "3",
+        fillOpacity = 0.7
       )
   })
   
