@@ -208,9 +208,10 @@ shinyServer(function(input, output, session) {
     
     ggplotRegression(lm(y ~ x, data = plotdf())) +
       #ggplot(plotdf(),aes(x, y)) +
-      geom_point(alpha = 0.5, size = 1.5) +
+      geom_point(alpha = 0.2, size = 1.5) +
       geom_line(stat = "smooth", method = "lm", alpha = 0.3, colour = "red") +
       scale_colour_distiller(palette = "YlOrRd", direction = 1) +
+      theme_bw() +
       theme(legend.position = "none") +
       xlab(input$leftvar) +
       ylab(input$rightvar)
@@ -227,6 +228,7 @@ shinyServer(function(input, output, session) {
     ggplot(plotdf(), aes(x)) +
       geom_density(alpha = 0.2, fill = "blue") +
       geom_density(data=brushed, fill = "red") +
+      theme_bw() +
       theme(legend.position = "none") +
       xlab(input$leftvar)
     
@@ -242,6 +244,7 @@ shinyServer(function(input, output, session) {
     ggplot(plotdf(), aes(y)) +
       geom_density(alpha = 0.2, fill = "blue") +
       geom_density(data=brushed, fill = "red") +
+      theme_bw() + 
       theme(legend.position = "none") +
       xlab(input$rightvar)
   })
