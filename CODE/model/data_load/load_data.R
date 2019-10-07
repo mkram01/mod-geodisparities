@@ -36,7 +36,7 @@ if (file.exists(paste0(data_repo, "/model_input/adjacency_matrices/", adjfilenam
 }
 
 #Load key for mapping aspatial data to later outputs using id
-spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"))
+spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"), colClasses = c("CHARACTER", "CHARACTER"))
 spwts_key$GEOID <- as.character(spwts_key$GEOID)
 
 #######################################################################################################
