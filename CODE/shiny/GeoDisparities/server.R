@@ -212,6 +212,7 @@ shinyServer(function(input, output, session) {
       geom_line(stat = "smooth", method = "lm", alpha = 0.3, colour = "red") +
       scale_colour_distiller(palette = "YlOrRd", direction = 1) +
       theme_bw() +
+      coord_fixed()+
       theme(legend.position = "none") +
       xlab(input$leftvar) +
       ylab(input$rightvar)
