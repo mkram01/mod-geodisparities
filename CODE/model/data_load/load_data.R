@@ -10,7 +10,7 @@
 message("From load_data.R script: Loading aspatial data and prepping for model.")
 
 # ---- load and summarize ----
-smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/nchs_births/R/Data/model1.rda'))
+smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/model_input/nchs_births/model1.rds'))
 
 #######################################################################################################
 # ---------------------------------- Load adjacency matrix ------------------------------------------ #
@@ -47,7 +47,6 @@ smry_data <- smry_data %>%
   dplyr::left_join(spwts_key, by = c('combfips' = 'GEOID')) %>%
   dplyr::mutate(year_c = dob_yy - (year_start)) %>%  #scale year using start year in config so intercept interpretable
   dplyr:: arrange(ID, dob_yy) #order by ID from spatial weigts key to match to outputs
-  
 
 #######################################################################################################
 # ---------------------------------- Load spatial data conditionally -------------------------------- #
