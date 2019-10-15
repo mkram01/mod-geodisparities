@@ -18,7 +18,7 @@ rm(list = ls())
 ######################################################################################################
 # load packages
 x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "tictoc",
-       "plyr", "dplyr", "rmarkdown")
+       "plyr", "dplyr", "rmarkdown", "Rgraphviz")
 #installing any packages not installed already
 new.packages <- x[!(x %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -37,7 +37,7 @@ setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
 
 # load central functions
-source('CODE/central_functions/utility_fxns.R')
+source('CODE/central_functions/utility_fxns.R') #make_time_stamp() & generate_time_log()
 
 #start timer for whole script
 tic("Entire script")
@@ -46,13 +46,14 @@ tic("Entire script")
 run_date <- make_time_stamp()
 
 # load model prep functions
-source('CODE/model/model_prep/prep_fxns.R')
+source('CODE/model/model_prep/prep_fxns.R') #create_modelname() & create_dirs()
 
 # load config
-source('CODE/model/model_prep/load_config.R')
+source('CODE/model/model_prep/load_config.R') #load_config() function defined & function called - config loaded here
+#                                                   - Eventually, this will also be where config defaults will be defined
 
 # format config args
-source('CODE/model/model_prep/format_config_args.R')
+source('CODE/model/model_prep/format_config_args.R') #
 
 # load predefined objects
 source('CODE/model/model_prep/predefined_key.R')

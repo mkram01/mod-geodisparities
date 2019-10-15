@@ -11,14 +11,6 @@ message("From format_config_args.R script: Formatting coordinate reference syste
 crs_proj <- as.numeric(crs_proj)
 
 ######################################################################################################
-# ----------------------------------------------- formatting outcome vars ----------------------------
-######################################################################################################
-message("From format_config_args.R script: Formatting outcome(s)")
-outcome <- strsplit(outcome, " ")
-outcome <- outcome[[1]][outcome[[1]] != "+"]
-outcome <- c(as.character(outcome))
-
-######################################################################################################
 # ----------------------------------------------- formatting years for model -------------------------
 ######################################################################################################
 message("From format_config_args.R script: Formatting config years")

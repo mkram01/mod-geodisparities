@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE}
 summary(model_knn)
-#plot(model_knn, coords = coordinates(as(spatdata_sf, 'Spatial')))
+plot(model_knn, coords = coordinates(as(spatdata_sf, 'Spatial')))
 ```
 
 **Interpretation:**
