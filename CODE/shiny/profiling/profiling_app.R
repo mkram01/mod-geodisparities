@@ -9,6 +9,10 @@ rm(list = ls())
 # Load library
 library(profvis)
 library(shiny)
+library(htmlwidgets)
+
+#set repo path
+repo <- Sys.getenv('mod_repo')
 
 #source utility functions
 source('functions/utility_fxns.R')
@@ -20,8 +24,7 @@ today <- make_time_stamp()
 profvis({ runApp('mod_geo_mockup/app.R')},  
         prof_output = paste0('profiling/profvis_outdir/', today, "_app.Rprof"))
 
-
 #save profvis output to html
-save_profvis2html(input = paste0('profiling/profvis_outdir/', today, "_app.Rprof"),
-                  outdir = 'profiling/profvis_html/')
+save_profvis2html(input = paste0(repo, '/CODE/shiny/profiling/profvis_outdir/', today, "_app.Rprof"),
+                  outdir = paste0(repo,'/CODE/shiny/profiling/profvis_html/'))
 
