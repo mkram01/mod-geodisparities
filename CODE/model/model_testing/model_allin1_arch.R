@@ -1,6 +1,6 @@
 ##############################################
 # Code author: Michael Kramer, Kevin Weiss, Erin Stearns
-# Code objective: Placing all model code in one script for testing -- this one recreates spatial objects & matrices
+# Code objective: Placing all model code in one script for testing -- this one replicates what happens in the larger code architecture
 # Date: 9.15.2019
 #############################################
 
@@ -12,22 +12,16 @@ rm(list = ls())
 # Previously, Kevin was able to run using sf objects as the input data, not aspatial data
 #
 # Most items are defined in the 'To-do!' section except model formulas and INLA model calls
-#    - Hardcoded items: the .gpkg sf object loaded in 'load & wrangle spatial data' section
-#                     - the shapefile being loaded in 'load & wrangle spatial data' section
 #
 # Things to try:
 #   1. Simply put code all in this script and try to run using same objects as previously used in main architecture 
 #                    - Got same error ("Error in inla(f2, family = (family), data = smry_data, offset = log(births),  : 
 #                       In f(ID): 'covariate' must match 'values',  and both must either be 'numeric', or 'factor'/'character'.")
 #   2. Try using path for adjacency matrix
-#                    - M1 ran without error as has done previously
-#                    - M2:Got same error from testing within architecture: 
+#                    - Got same error from testing within architecture: 
 #                          Error in if (n.from.graph <= 0) { : missing value where TRUE/FALSE needed
 #                          In addition: Warning message: In inla.read.graph.ascii.internal(..., size.only = size.only) :
 #   3. Try using an sf object for data instead of aspatial data
-#                   - Noticed that Kevin created 3 different ID columns (ID, ID2, ID3)
-#                   - M1 ran without error as has done previously
-#                   - M2:  
 #   4. Try recreating sf object from data and the adjacency matrix as Kevin did in his original experimental code
 ######################################################################################################
 
@@ -43,7 +37,7 @@ pacman::p_load("data.table", "tidyverse", "plyr", "dplyr", #data management pack
                "spdep",                                    #creates spatial weights matrices
                "Rgraphviz",                                #visualizes graph onjects
                "INLA"                                      #modeling package
-               )
+)
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
@@ -157,15 +151,15 @@ smry_denom <- smry_data %>%
 smry_data <- smry_outcome %>%
   inner_join(smry_denom)
 
-#Load key for mapping aspatial data to later outputs using id -- Dropping this here
-#spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"), colClasses = c("CHARACTER", "CHARACTER"))
-#spwts_key$GEOID <- as.character(spwts_key$GEOID)
+#Load key for mapping aspatial data to later outputs using id
+spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"), colClasses = c("CHARACTER", "CHARACTER"))
+spwts_key$GEOID <- as.character(spwts_key$GEOID)
 
 #scale year and order by ID and year
 smry_data <- smry_data %>%
-  #dplyr::left_join(spwts_key, by = c('combfips' = 'GEOID')) %>%
-  dplyr::mutate(year_c = dob_yy - (year_start)) #%>%  #scale year using start year in config so intercept interpretable
-  #dplyr:: arrange(ID) #removed the dob_yy arrange var
+  dplyr::left_join(spwts_key, by = c('combfips' = 'GEOID')) %>%
+  dplyr::mutate(year_c = dob_yy - (year_start)) %>%  #scale year using start year in config so intercept interpretable
+  dplyr:: arrange(ID) #removed the dob_yy arrange var
 
 ######################################################################################################
 # ---------------------------------- load & wrangle spatial data ----------------------------------- #
@@ -173,33 +167,11 @@ smry_data <- smry_data %>%
 ## Read in spatial data
 #Read in national county shapefile and save in MOD folder as `.gpkg`.
 spatdata_sf <- st_read(paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')) %>%
-  dplyr::filter(STATEFP %in% geo_fips) %>%
-  st_transform(102003) # Albers Equal Area
-
-# Saved as `sf` object which is useful for *long* format (e.g. multiple years), but also want an `sp` object for creating
-# *neighbor* objects and simpler *wide* representations.
-#spatdata_sp <- st_read(paste0(data_repo, '/spatial/southatlantic_county.gpkg')) %>% # this works too, and then you can comment out the sf object creation in code block above
-spatdata_sp <- spatdata_sf %>%
+  dplyr::select(GEOID) %>%
   inner_join(smry_data, by = c('GEOID' = 'combfips')) %>%
-  dplyr::group_by(GEOID) %>%
-  dplyr::summarise(ptb = sum(ptb),
-            births = sum(births),
-            rawptb = ptb / births * 1000) %>%
-  as('Spatial')
-
-# Create an ordered ID specific to ordering in sp (e.g. aligns with nb object)
-spatdata_sp$ID <- seq_len(nrow(spatdata_sp))
-
-# Create long version (e.g. repeated rows for each year within county) as an
-# `sf` object useful for facet printing of year x race.
-spatdata_sf <- spatdata_sp %>%
-  st_as_sf() %>%
-  dplyr::select(GEOID, ID) %>%
-  dplyr::right_join(smry_data, by = c('GEOID' = 'combfips')) %>%
   mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
          ID2 = ID) %>%  # ID and ID2 will be for f() in INLA
   dplyr::arrange(ID)
-
 
 ######################################################################################################
 # ---------------------------------- load adjacency matrix ----------------------------------------- #
@@ -212,7 +184,7 @@ model_spwts <- inla.read.graph(paste0(data_repo, "/model_input/adjacency_matrice
 #define family
 family <- 'poisson'
 
-# ------------------------------------- m1 ----------------------------------------- Works in both scripts
+# ------------------------------------- m1 -----------------------------------------
 #define the model formula
 f1 <- ptb ~ year_c + black + f(ID, model = "iid")
 
@@ -273,24 +245,7 @@ alldata <- alldata %>%
   )
 
 # ------------------------------------- m2 -----------------------------------------
-m2_summ <- as.data.frame(m2$summary.fitted.values)
 
-message("From process_model.R script: Joining the posterior of the fitted values to spatial data.")
-#join to input data
-alldata2 <- smry_data %>%
-  bind_cols(m2_summ)
-
-#create rate fields for poisson family models
-alldata2 <- alldata2 %>%
-  dplyr::mutate(
-    raw_rate = (ptb/births),
-    model_rate = (mean/births),
-    rate_diff = (raw_rate - model_rate), #Deviation from truth
-    model_lci = (`0.025quant`/births),
-    model_uci = (`0.975quant`/births),
-    cred_int = (model_uci - model_lci), #if this is larger than model_rate, then estimate unreliable
-    unreliabele = if(cred_int > model_rate){1}else{0} #if credible interval greater than model rate, flag with a 1
-  )
 
 ######################################################################################################
 # ---------------------------------- Finalize timer functions -------------------------------------- #
