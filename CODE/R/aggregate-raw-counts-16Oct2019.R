@@ -210,14 +210,22 @@ df <- tbl(con, 'nchs_births_trunc') %>%
                          '02198',
                          '02230'))) %>%
   drop_na(GEOID) %>%
-  arrange(GEOID, DOB_YY, HISPRACE, MAGER9)
+  group_by(GEOID, DOB_YY, MAGER9, HISPRACE) %>% # this second time is to incorporate duplicates from recode GEOID
+  summarise(births = sum(births),
+            vptb = sum(vptb),
+            eptb = sum(eptb),
+            lptb = sum(lptb),
+            ptb = sum(ptb),
+            etb = sum(etb),
+            term = sum(term)) %>%
+  arrange(GEOID, DOB_YY, HISPRACE, MAGER9) %>%
+  ungroup() %>%
+  data.frame()
 
-df %>% group_by(DOB_YY, HISPRACE) %>%
-  summarise(births = sum(births)) %>%
-  spread(DOB_YY, births)
+
 
 df2 <- expand(df, GEOID, DOB_YY, MAGER9, HISPRACE) %>%
-  left_join(df, by = c('GEOID', 'DOB_YY', 'MAGER9', 'HISPRACE'))
+  left_join(df, by = c('DOB_YY', 'MAGER9', 'HISPRACE', 'GEOID' ))
 
 
 ## FIXING THE GEOFILE -- THIS NOW HAS COUNTIES ALIGNED WITH NCHS DATA ##
@@ -237,8 +245,16 @@ df3 <- df2 %>%
   mutate(impute_births = ifelse(is.na(births), 1, 0),
          impute_term = ifelse(is.na(term), 1, 0),
          births = ifelse(births == 0 | is.na(births), 1, births),
-         term = ifelse(term == 0 | is.na(term), 1, term)) %>%
-  replace(., is.na(.), 0)
+         term = ifelse(term == 0 | is.na(term), 1, term),
+         MAGER9f = factor(MAGER9,
+                          labels = c('under 15', '15-19 yo', '20-24 yo', '25-29 yo', 
+                                    '30-34 yo', '35-39 yo', '40-44 yo', '45-49 yo',
+                                    '50-54 yo')),
+         HISPRACEf = factor(HISPRACE,
+                            labels = c('NH White', 'NH Black', 
+                            'Hispanic'))) %>%
+  replace(., is.na(.), 0) %>%
+  data.frame()
 
 saveRDS(df3, 'DATA/nchs_births/R/Data/county-perinatal-2007-2017.rds')
 
