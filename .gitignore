@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.sas7bdat
+*.rda
+*.csv
+*.gpkg
+*.rds
