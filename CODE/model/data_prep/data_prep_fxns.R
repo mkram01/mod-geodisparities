@@ -27,7 +27,7 @@ summarise_aspatial <- function(input_data){
     # ---- load and summarize ----
     smry_data <- readRDS((input_data)) %>% 
       #subsetting to pre-specified model race/ethnicity population defined in  model_prep/load_config.R & formatted in format_config_args.R script
-      filter(racehisp_recode %in% (race_eth),
+      filter(HISPRACE %in% (race_eth),
              #subsetting to pre-specified model geography defined in model_prep/predefined_key.R
              substr(combfips,1,2) %in% (geo_fips), 
              #subsetting to pre-specified model year span defined in model_prep/load_config.R & formatted in format_config_args.R script)
@@ -36,7 +36,7 @@ summarise_aspatial <- function(input_data){
     #re-coding race/ethnicity to be binary if not false
     if (recode_binary != "nonbinary"){
       smry_data <- smry_data %>%
-        dplyr::mutate((!!recode_binary) := ifelse(racehisp_recode == (binary_code), 1, 0),
+        dplyr::mutate((!!recode_binary) := ifelse(HISPRACE == (binary_code), 1, 0),
                       combfips = factor(combfips)) %>%
         dplyr::group_by_("dob_yy", "combfips", (recode_binary)) 
     }

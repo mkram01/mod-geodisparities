@@ -10,7 +10,7 @@
 message("From load_data.R script: Loading aspatial data and prepping for model.")
 
 # ---- load and summarize ----
-smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/model_input/nchs_births/model1.rds'))
+smry_data <- summarise_aspatial(input_data = paste0(data_repo, '/model_input/nchs_births/county-perinatal-2007-2017.rds'))
 
 #######################################################################################################
 # ---------------------------------- Load adjacency matrix ------------------------------------------ #
