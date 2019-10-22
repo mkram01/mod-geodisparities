@@ -41,7 +41,10 @@ panel_div <- function(class_type, content) {
 # -------------------------------------- load data ------------------------------------------------- 
 #load spatial data
 #geodata <- readRDS('data/sf_acs5_2007_2017_w2010counties_v.Rds')
-geodata <- readRDS('data/alldata.Rds')
+geodata <- readRDS('data/newdata.Rds')
+
+# NOTE: for Alabama talk swapping out 'newdata.Rds' for 'alldata.Rds'
+#geodata <- readRDS('data/alldata.Rds')
 #transform spatial data to wgs84
 geodata <- st_transform(geodata, crs = 4326)
 

@@ -26,7 +26,6 @@ race_eth <- strsplit(race_eth, " ")
 race_eth <- race_eth[[1]][race_eth[[1]] != "+"]
 race_eth <- c(as.numeric(race_eth))
 
-
 ######################################################################################################
 # ----------------------------------------------- formatting recode_binary ---------------------------
 ######################################################################################################
@@ -40,7 +39,7 @@ suppressWarnings(
 
 suppressWarnings(
   if (recode_binary == "black"){
-    binary_code <- 3
+    binary_code <- 2
     message(paste0("You specified ", recode_binary, " as the race/ethnicity to recode as binary. ", binary_code, 
                    " is the assigned race/ethnicity encoding."))
   }
@@ -48,18 +47,11 @@ suppressWarnings(
 )
 suppressWarnings(
   if (recode_binary == "hispanic"){
-    binary_code <- 2
+    binary_code <- 3
     message(paste0("You specified ", recode_binary, " as the race/ethnicity to recode as binary. ", binary_code, 
                    " is the assigned race/ethnicity encoding."))
   }
 )
-
-######################################################################################################
-# ----------------------------------------------- formatting projection code -------------------------
-######################################################################################################
-message("From format_config_args.R script: Formatting config projection")
-#converting from character to numeric
-crs_proj <- as.numeric(projection)
 
 ######################################################################################################
 # ----------------------------------------------- formatting knn k arg -------------------------------

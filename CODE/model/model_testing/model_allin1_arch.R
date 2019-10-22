@@ -152,22 +152,25 @@ smry_data <- smry_outcome %>%
   inner_join(smry_denom)
 
 #Load key for mapping aspatial data to later outputs using id
-spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"), colClasses = c("CHARACTER", "CHARACTER"))
-spwts_key$GEOID <- as.character(spwts_key$GEOID)
+#spwts_key <- fread(file = paste0(data_repo, "/model_input/adjacency_matrices/", basefilename, ".csv"), colClasses = c("CHARACTER", "CHARACTER"))
+#spwts_key$GEOID <- as.character(spwts_key$GEOID)
 
 #scale year and order by ID and year
 smry_data <- smry_data %>%
-  dplyr::left_join(spwts_key, by = c('combfips' = 'GEOID')) %>%
-  dplyr::mutate(year_c = dob_yy - (year_start)) %>%  #scale year using start year in config so intercept interpretable
-  dplyr:: arrange(ID) #removed the dob_yy arrange var
+ # dplyr::left_join(spwts_key, by = c('combfips' = 'GEOID')) %>%
+  dplyr::mutate(year_c = dob_yy - (year_start)) #%>%  #scale year using start year in config so intercept interpretable
+  #dplyr:: arrange(ID) #removed the dob_yy arrange var
 
 ######################################################################################################
 # ---------------------------------- load & wrangle spatial data ----------------------------------- #
 ######################################################################################################
 ## Read in spatial data
 #Read in national county shapefile and save in MOD folder as `.gpkg`.
-spatdata_sf <- st_read(paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')) %>%
-  dplyr::select(GEOID) %>%
+spatdata_sf <-  st_read(paste0(data_repo, '/spatial/southatlantic_county.gpkg')) 
+spatdata_sf$ID <- seq_len(nrow(spatdata_sf))
+
+spatdata_sf <- spatdata_sf %>%
+  dplyr::select(GEOID, ID) %>%
   inner_join(smry_data, by = c('GEOID' = 'combfips')) %>%
   mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
          ID2 = ID) %>%  # ID and ID2 will be for f() in INLA
@@ -245,7 +248,24 @@ alldata <- alldata %>%
   )
 
 # ------------------------------------- m2 -----------------------------------------
+m2_summ <- as.data.frame(m2$summary.fitted.values)
 
+message("From process_model.R script: Joining the posterior of the fitted values to spatial data.")
+#join to input data
+alldata2 <- smry_data %>%
+  bind_cols(m2_summ)
+
+#create rate fields for poisson family models
+alldata2 <- alldata2 %>%
+  dplyr::mutate(
+    raw_rate = (ptb/births),
+    model_rate = (mean/births),
+    rate_diff = (raw_rate - model_rate), #Deviation from truth
+    model_lci = (`0.025quant`/births),
+    model_uci = (`0.975quant`/births),
+    cred_int = (model_uci - model_lci), #if this is larger than model_rate, then estimate unreliable
+    unreliabele = if(cred_int > model_rate){1}else{0} #if credible interval greater than model rate, flag with a 1
+  )
 
 ######################################################################################################
 # ---------------------------------- Finalize timer functions -------------------------------------- #
