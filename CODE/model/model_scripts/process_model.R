@@ -26,6 +26,13 @@ alldata <- alldata %>%
     unreliabele = if(cred_int > model_rate){1}else{0} #if credible interval greater than model rate, flag with a 1
   )
 
+#extract marginal posterior estimates and join to sf object
+spatdata_sf$m1_iid_re <- unlist(lapply(m1$marginals.random$ID,
+                                       function(x) inla.emarginal(exp, x)))
+
+# This is the posterior of the fitted values. Note that there are
+spatdata_sf$m1_fit 
+
 
 #save outputs
 write.csv(alldata, paste0(outdir, modname, "_fittedvals.csv"), row.names = FALSE)

@@ -22,7 +22,7 @@ if(sp_weights_method == "knn"){
 } else {
   basefilename <- paste0("spwts_", geography, "_",sp_weights_method)
   adjfilename <- paste0(basefilename,'.adj')
-
+  
 }
 
 #Conditionally load or create spatial weights adjacency matrix
@@ -53,7 +53,7 @@ smry_data <- smry_data %>%
 ######################################################################################################
 ## Read in spatial data
 #Read in national county shapefile and save in MOD folder as `.gpkg`.
-spatdata_sf <-  load_spatialdata(geography)
+spatdata_sf <-  load_spatialdata(geography) 
 
 #######################################################################################################
 # ---------------------------------- Load spatial data conditionally -------------------------------- #
