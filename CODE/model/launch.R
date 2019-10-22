@@ -18,7 +18,7 @@ rm(list = ls())
 ######################################################################################################
 # load packages
 x <- c("data.table", "tidyverse", "sf", "sp","spdep", "tmap", "INLA", "magrittr", "tictoc",
-       "plyr", "dplyr", "rmarkdown")
+       "plyr", "dplyr", "rmarkdown", "Rgraphviz", "RANN")
 #installing any packages not installed already
 new.packages <- x[!(x %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -37,7 +37,7 @@ setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
 
 # load central functions
-source('CODE/central_functions/utility_fxns.R')
+source('CODE/central_functions/utility_fxns.R') #make_time_stamp() & generate_time_log()
 
 #start timer for whole script
 tic("Entire script")
@@ -45,29 +45,34 @@ tic("Entire script")
 # time stamp
 run_date <- make_time_stamp()
 
-# load model prep functions
-source('CODE/model/model_prep/prep_fxns.R')
+# load model set up functions
+source('CODE/model/functions/setup_fxns.R') #create_modelname() & create_dirs()
 
-# load config
-source('CODE/model/model_prep/load_config.R')
+# load model input loading functions
+source('CODE/model/functions/load_inputs_fxns.R') # load_config(), load_spatialdata()
 
-# format config args
-source('CODE/model/model_prep/format_config_args.R')
+# load model input creation functions
+source('CODE/model/functions/create_inputs_fxns.R') # create_adjmatrix() 
 
-# load predefined objects
-source('CODE/model/model_prep/predefined_key.R')
-
-#source data prep function script
-source("CODE/model/data_prep/data_prep_fxns.R")
+# load model input wrangling functions
+source('CODE/model/functions/wrangle_inputs_fxns.R') # summarise_denominator(), summarise_aspatial() 
 
 #load modeling functions
 #source("CODE/model/model_prep/model_functions.R")
+######################################################################################################
+# ---------------------------------- Load config file ---------------------------------------------- #
+######################################################################################################
+# load & format config files
+source('CODE/model/load_data/load_format_config.R') #load_config() function called - config loaded here, defaults set & args formatted
+
+# load geography details
+source('CODE/model/keys/geography2FIPS.R') #map config geography arg to a set of state FIPS codes
 
 ######################################################################################################
 # ---------------------------------- Data load ----------------------------------------------------- #
 ######################################################################################################
 tic("Data loading")
-source("CODE/model/data_load/load_data.R")
+source("CODE/model/load_data/load_inputs.R")
 toc(log = T) #end data loading timer
 ######################################################################################################
 # ---------------------------------- Create directory structure ------------------------------------ #

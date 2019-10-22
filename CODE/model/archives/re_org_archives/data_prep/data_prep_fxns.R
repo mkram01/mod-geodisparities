@@ -27,18 +27,18 @@ summarise_aspatial <- function(input_data){
     # ---- load and summarize ----
     smry_data <- readRDS((input_data)) %>% 
       #subsetting to pre-specified model race/ethnicity population defined in  model_prep/load_config.R & formatted in format_config_args.R script
-      filter(racehisp_recode %in% (race_eth),
+      filter(HISPRACE %in% (race_eth),
              #subsetting to pre-specified model geography defined in model_prep/predefined_key.R
-             substr(combfips,1,2) %in% (geo_fips), 
+             substr(GEOID,1,2) %in% (geo_fips), 
              #subsetting to pre-specified model year span defined in model_prep/load_config.R & formatted in format_config_args.R script)
-             dob_yy %in% (year_span))
+             DOB_YY %in% (year_span))
     
     #re-coding race/ethnicity to be binary if not false
     if (recode_binary != "nonbinary"){
       smry_data <- smry_data %>%
-        dplyr::mutate((!!recode_binary) := ifelse(racehisp_recode == (binary_code), 1, 0),
-                      combfips = factor(combfips)) %>%
-        dplyr::group_by_("dob_yy", "combfips", (recode_binary)) 
+        dplyr::mutate((!!recode_binary) := ifelse(HISPRACE == (binary_code), 1, 0),
+                      GEOID = factor(GEOID)) %>%
+        dplyr::group_by_("DOB_YY", "GEOID", (recode_binary)) 
     }
     
     #Summarise data -- outcome
@@ -138,31 +138,38 @@ create_adjmatrix <- function(geography, outpath =  paste0(data_repo, "/model_inp
 # ---------------------------------- load spatial data for visualization --------------------------- #
 ######################################################################################################
 
-load_spatialdata <- function(geography, baselayer = paste0(data_repo, '/spatial/cb_2016_us_county_500k.shp')){
+load_spatialdata <- function(geography, baselayer = paste0(data_repo, '/model_input/base_geo/us_counties_2017.gpkg')){
   # Function for loading and prepping spatial data into modeling framework
   #   Input args:
   #           geography : what geography from predefined areas is this for? used to map to geo_fips in predefined_key.R
   #           baselayer : base county shapefile to use, default is set
   #   Output:
   
-  cty_sf_name <- paste0(str_sub(geography), '_county.gpkg')
+  cty_sf_name <- paste0(str_sub(geography), '_counties_2017.gpkg')
   
   #Load spatial data directly or create based upon file existence and/or config preference
-  if (file.exists(paste0(data_repo, '/spatial/', cty_sf_name)) & create_sf_obj == FALSE){
+  if (file.exists(paste0(data_repo, '/model_input/base_geo/', cty_sf_name)) & create_sf_obj == FALSE){
     message(paste0("From create_data.R script: The spatial data for your geography already exists and you have elected not to recreate it. Loading it now!"))
-    spatdata_sf <- st_read(paste0(data_repo, '/spatial/', cty_sf_name))
+    spatdata_sf <- st_read(paste0(data_repo, '/model_input/base_geo/', cty_sf_name))
   } else {
     message(paste0("From create_data.R script: Either the spatial data for your geography does not exist or you have elected to recreate it. Creating it now!"))
     #Read in national county shapefile and save in MOD folder as `.gpkg`.
     spatdata_sf <- st_read(baselayer) %>%
-      filter(STATEFP %in% (geo_fips)) %>%
+      dplyt::filter(STATEFP %in% (geo_fips)) %>%
       st_transform((crs_proj))
-    st_write(spatdata_sf, paste0(data_repo, '/spatial/', cty_sf_name), delete_dsn = T)
+    st_write(spatdata_sf, paste0(data_repo, '/model_input/base_geo/', cty_sf_name), delete_dsn = T)
   }
   
+  #create ID
+  spatdata_sf$ID <- seq_len(nrow(spatdata_sf))
+  
   spatdata_sf <- spatdata_sf %>%
-    dplyr::right_join(smry_data, by = c('GEOID' = 'combfips')) %>%
-    dplyr:: arrange(ID, dob_yy) 
+    dplyr::select(GEOID, ID) %>%
+    inner_join(smry_data, by = c('GEOID' = 'GEOID')) %>%
+    mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
+           ID2 = ID) %>%  # ID and ID2 will be for f() in INLA
+    dplyr::arrange(ID)
+  
   
 }
 

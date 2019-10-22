@@ -18,8 +18,8 @@ knitr::opts_chunk$set(echo = TRUE)
 **Summary of INLA object:**
 
 ```{r, echo=FALSE}
-summary(model_knn)
-#plot(model_knn, coords = coordinates(as(spatdata_sf, 'Spatial')))
+summary(model_spwts)
+plot(model_spwts, coords = coordinates(as(spatdata_sf, 'Spatial')))
 ```
 
 **Interpretation:**
@@ -47,12 +47,12 @@ summary(m1)
 + These are the relative deviations of each county from the global average preterm birth rate controlling for time trend and race.
 
 ```{r}
-tm_shape(spatdata_sp) +
-  tm_fill('m1_iid_re',
-          style = 'quantile',
-          palette = 'div',
-          midpoint = 1) +
-  tm_borders()
+# tm_shape(spatdata_sf) +
+#   tm_fill('m1_iid_re',
+#           style = 'quantile',
+#           palette = 'div',
+#           midpoint = 1) +
+#   tm_borders()
 ```
 
 
@@ -61,20 +61,20 @@ tm_shape(spatdata_sp) +
 
 ## Raw (pooled) vs modeled rates
 ```{r}
-input_map <- tm_shape(spatdata_sf) +
-  tm_fill('ptb',
-          style = 'quantile') +
-  tm_borders() +
-  tm_layout(title = "Raw Pooled Rates")
-
-output_map <- tm_shape(spatdata_sf) +
-  tm_fill('m1_fit',
-          style = 'quantile') +
-  tm_borders() +
-  tm_layout(title = "Modeled Pooled Rates")
-
-#side by side
-tmap_arrange(input_map, output_map, ncol = 2)
+# input_map <- tm_shape(spatdata_sf) +
+#   tm_fill(outcome,
+#           style = 'quantile') +
+#   tm_borders() +
+#   tm_layout(title = "Raw Pooled Rates")
+# 
+# output_map <- tm_shape(spatdata_sf) +
+#   tm_fill('m1_fit',
+#           style = 'quantile') +
+#   tm_borders() +
+#   tm_layout(title = "Modeled Pooled Rates")
+# 
+# #side by side
+# tmap_arrange(input_map, output_map, ncol = 2)
 
 
 ```
