@@ -12,7 +12,7 @@ f1 <- inla_formula
 #inla model run
 m1 <- inla(f1, family = (family),
            data = spatdata_sf,
-           offset = log(births),
+           offset = log(births), #corresponds to denominator
            control.predictor = list(link = 1,
                                     compute = T),
            control.compute = list(dic = TRUE,

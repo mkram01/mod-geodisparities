@@ -17,8 +17,8 @@ alldata <- smry_data %>%
 #create rate fields for poisson family models
 alldata <- alldata %>%
   dplyr::mutate(
-    raw_rate = (ptb/births),
-    model_rate = (mean/births),
+    raw_rate = ((outcome)/(denominator)), #outcome/denominator
+    model_rate = (mean/(denominator)),
     rate_diff = (raw_rate - model_rate), #Deviation from truth
     model_lci = (`0.025quant`/births),
     model_uci = (`0.975quant`/births),
@@ -26,13 +26,12 @@ alldata <- alldata %>%
     unreliabele = if(cred_int > model_rate){1}else{0} #if credible interval greater than model rate, flag with a 1
   )
 
-#extract marginal posterior estimates and join to sf object
-spatdata_sf$m1_iid_re <- unlist(lapply(m1$marginals.random$ID,
-                                       function(x) inla.emarginal(exp, x)))
+# #extract marginal posterior estimates and join to sf object
+# spatdata_sf$m1_iid_re <- unlist(lapply(m1$marginals.random$ID,
+#                                        function(x) inla.emarginal(exp, x)))
 
 # This is the posterior of the fitted values. Note that there are
-spatdata_sf$m1_fit 
-
+# spatdata_sf$m1_fit 
 
 #save outputs
 write.csv(alldata, paste0(outdir, modname, "_fittedvals.csv"), row.names = FALSE)
