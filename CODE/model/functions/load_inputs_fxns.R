@@ -49,7 +49,7 @@ load_spatialdata <- function(geography, baselayer = paste0(data_repo, '/model_in
   }
   
   #create ID
-  spatdata_sf$ID <- seq_len(nrow(spatdata_sf))
+  spatdata_sf$ID <- spatdata_sf$region.ID
   
   spatdata_sf <- spatdata_sf %>%
     dplyr::select(GEOID, ID) %>%
@@ -57,7 +57,6 @@ load_spatialdata <- function(geography, baselayer = paste0(data_repo, '/model_in
     mutate(ID3 = ID, # ID and ID3 will be for f() in INLA
            ID2 = ID) %>%  # ID and ID2 will be for f() in INLA
     dplyr::arrange(ID)
-  
   
 }
 
