@@ -311,8 +311,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               
                                               #select geography
                                               selectizeInput("state", "State",
-                                                             choices = c("All",state_names),
-                                                             selected = "All"),
+                                                             choices = c(state_names),
+                                                             selected = "Georgia",
+                                                             multiple = TRUE),
                                               
                                               #select year
                                               sliderInput('year', label = "Year", value = min(acsdata$year), 
