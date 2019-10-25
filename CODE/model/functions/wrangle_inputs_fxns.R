@@ -43,6 +43,13 @@ summarise_aspatial <- function(input_data){
       dplyr::group_by_("DOB_YY", "GEOID", (recode_binary)) 
   }
   
+  if (recode_binary == "nonbinary"){
+    smry_data <- smry_data %>%
+    dplyr::mutate(GEOID = factor(GEOID)) %>%
+    dplyr::group_by_("DOB_YY", "GEOID", "HISPRACEf") 
+    
+  }
+  
   #Summarise data -- outcome
   smry_outcome <- smry_data %>%
     #summarize over vector of outcomes using summary function defined at top

@@ -26,11 +26,14 @@ if(length(new.packages)) install.packages(new.packages)
 lapply(x, require, character.only = TRUE)
 
 # set code repo
-repo <- Sys.getenv('mod_repo')
+#repo <- Sys.getenv('mod_repo')
+repo <- ""
 # set data repo
-data_repo <- Sys.getenv('mod_data')
+#data_repo <- Sys.getenv('mod_data')
+data_repo <- 'F:/March of Dimes_ShareFolder/data'
 #set your modeler name (should be yours!)
-modeler <- Sys.getenv('mod_modeler')
+#modeler <- Sys.getenv('mod_modeler')
+modeler <- 'Michael'
 
 #setting working directory
 setwd(repo)
@@ -91,6 +94,7 @@ create_dirs(outdir = outpar,
             )
 #defining where outputs should be written
 outdir <- paste0(outpar, '/', model_type,'/',family,'/', outcome, '/',geography,"/output/")
+outimage <- paste0(outpar, '/', model_type,'/',family,'/', outcome, '/',geography,"/model_image_history/")
 
 toc(log = T) #end model naming and directory creation timer
 ######################################################################################################
