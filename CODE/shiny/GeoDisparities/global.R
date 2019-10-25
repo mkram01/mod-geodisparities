@@ -23,6 +23,7 @@ library(shinyjs)
 library(DT) #provides an R interface to the JavaScript library DataTables. R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables
 library(rintrojs)
 library(OneR)
+library(shinyWidgets)
 
 # Calling carousel script -- not sure how this is being used
 source("carouselPanel.R")

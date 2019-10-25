@@ -45,8 +45,8 @@ shinyServer(function(input, output, session) {
   # ->- conductor - parent of: map endpoint, observeEvent(input$state)
   #               - child of: state input
   # subsetting to selected data using filters
-  context_selected_data <- reactive({
-    print('reactive: subset contextdf to selected inputs')
+  context_selected_data <- reactive({                                #make into eventReactive(input$updategeo,{})
+    print('eventReactive: subset contextdf to selected inputs')
     if (input$state == 'All'){
       acsdata %>%
         filter(
@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
     
   })
   
-  mod_selected_data <- reactive({
+  mod_selected_data <- reactive({                                   #make into eventReactive(input$updategeo,{})
     print('reactive: subset moddf to selected inputs')
     if (input$state == 'All'){
       moddata %>%
@@ -322,14 +322,14 @@ shinyServer(function(input, output, session) {
   # ---- get reactive contextual [left(x)] and model [right(y)] data for html labels ----
   xData <- reactive({
     print("reactive: subsetting to x Var in data")
-    contextdf1 <- contextdf
+    contextdf1 <- contextdf #context_selected_data() -- for eventReactive
     contextdf1$geometry <- NULL
     contextdf1[,xVar()]
   })
   
   yData <- reactive({
     print("reactive: subsetting to y Var in data")
-    moddf1 <- moddf
+    moddf1 <- moddf #mod_selected_data() for eventReactive
     moddf1$geometry <- NULL
     moddf1[,yVar()]
   })

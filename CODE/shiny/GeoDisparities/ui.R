@@ -299,7 +299,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                             tags$div(
                                               style = "height:50px;",
                                               
-                                              #settings icon & hide/show button
+                                              #settings icon & hide/show button ---------------- want to figure out how to collapse other options under this if possible
                                               introBox(
                                                 tags$div(
                                                   style = "height:50px;",
@@ -310,10 +310,21 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               ),
                                               
                                               #select geography
-                                              selectizeInput("state", "State",
+                                              selectizeInput("state", "Select your geography by state",
                                                              choices = c(state_names),
                                                              selected = "Georgia",
                                                              multiple = TRUE),
+                                              
+                                              #update geography button
+                                              actionBttn(
+                                                inputId = "updategeo",
+                                                label = "Update geography",
+                                                color = "primary",
+                                                style = "unite",
+                                                #icon = icon("sliders"),
+                                                size = "sm",
+                                                block = TRUE
+                                              ),
                                               
                                               #select year
                                               sliderInput('year', label = "Year", value = min(acsdata$year), 
@@ -337,6 +348,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               sliderInput('modquantiles', label = "Model Variable Quantiles", 
                                                           value = 5, min = 2, max = 10, step = 1, sep = ""
                                               ),
+                                              
+                                              
                                               
                                               #grab ui output
                                               uiOutput("ui")

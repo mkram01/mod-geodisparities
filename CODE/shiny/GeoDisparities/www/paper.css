@@ -7993,7 +7993,8 @@ input[type="checkbox"]:disabled:checked:after,
 /* Parallax Section -- here is where the banner image is assigned */
 .banner {
 	background-color: #000000;
-	background-image: url('https://www.marchofdimes.org/glue/images/mission_localprograms.jpg');
+	background-image: url('https://3.bp.blogspot.com/-ebZbnHwtS4M/XJp655tUTmI/AAAAAAAABoU/UpmsnPrnO9MevqYFE68k8-XRa9BBeXlSACLcBGAs/s1600/AWE180216-00735-01.jpg');
+	/*/background-image: url('https://www.marchofdimes.org/glue/images/mission_localprograms.jpg');/*/
 	/*/background-image: url('https://static.pexels.com/photos/467659/pexels-photo-467659.jpeg');/*/
 	height: 500px;
 	width: inherit;
