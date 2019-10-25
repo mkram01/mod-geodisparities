@@ -204,13 +204,71 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             
                             fluidRow(
                               shiny::HTML("<br><br><center> 
-                                                   <h1>GeoDisparities Mapper: Tutorial</h1> 
-                                                   <h4>What's behind the data.</h4>
+                                                   <h1>GeoDisparities Mapper: A Tutorial</h1> 
                                                    </center>
-                                                   <br>
                                                    <br>"),
-                              style = "height:250px;")
+                              style = "height:150px;"),
                             
+                            # PAGE BREAK
+                            tags$hr(),
+                            
+                            # ---------------- in brief.....
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<center> <h2>In brief...</h2> </center><br>"),
+                                     shiny::HTML("<h5>There are four easy steps to use the GeoDisparities Mapper app:
+                                                  <br><br>
+                                                  <ol>
+                                                    <li>Pick a perinatal outcome (either a single indicator, or a racial disparity measure)</li>
+                                                    <li>Pick a contextual indicator (either social, economic, or healthcare related)</li>
+                                                    <li>(Optionally) Pick one or more states to zoom in (alternatively, view the entire U.S.)</li>
+                                                    <li>Review the geographic pattern (two maps at the top) and the statistical relationship (graphs at the bottom)</li>
+                                                    </ol>
+                                                 </h5>")
+                              ),
+                              column(3)
+                            ),
+                            
+                            # PAGE BREAK
+                            tags$hr(),
+                            
+                            # ---------------- in more depth.....
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<center> <h2>In more depth...</h2> </center><br>"),
+                                     shiny::HTML("<left> <h4>Place <em><b>matters</b></em></h4> </left><br>"),
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                    <li>Decades of research has pointed to the critical importance of the places where women 
+                                                    live, work, and play as contextual regulators or both the opportunities that help make us 
+                                                    <b><em>more healthy</b></em> (e.g. access to health services, neighborhoods free from 
+                                                    violence, and economic opportunity), and many of the exposures that make us 
+                                                    <b><em>less healthy</b></em> (e.g. violent crime, neighborhood deprivation, low social 
+                                                    support, and poor housing). While many other factors such as medical risk, individual 
+                                                    behaviors, and genetic predisposition are also important factors in why one woman has a 
+                                                    healthy pregnancy and another women does not, it is also clear that individual behaviors 
+                                                    and genetics do not explain why some <u><em>groups</u></em> of women have higher average 
+                                                    risk for poor outcomes than other groups of women.</li>
+                                                    <br>
+                                                    <li>Because places such as counties or county-equivalents represent both an <em>environment</em>
+                                                    to which women and families are exposed, and which may influence health and perinatal risk 
+                                                    <u><b>and</b></u> a target for local action to improve health and health equity, examining 
+                                                    the geographic variation in perinatal risk can shed new light on complex problems, and bring 
+                                                    new partners to the table in discussions about improving perinatal outcomes.</li>
+                                                    <br>
+                                                    <li>We can see that ‘place matters’ when we look at how risk for poor outcomes varies 
+                                                    dramatically between counties (hyperlink to separate pages describing the modeling procedure 
+                                                    for perinatal outcomes). In the map below, it is clear that the risk for VLBW varies more than 
+                                                    3-fold across U.S. counties, with clusters of higher risk counties in the South and clusters of
+                                                    lower risk counties in the Northeast, Plains and Western states. Even in states with <em>“lower”</em> 
+                                                    than average risk, there are still differences between counties. Why do these differences exist? In some instances it may be because of demographic profiles of counties, and in others it may be about the social, economic, and health service profiles of counties.</li>
+                                                    </ul>
+                                                 </h5>")
+                              ),
+                              column(3)
+                            ),
                    ),  # Closes Technical Details tab
                    
                    #################################################################################################  
@@ -222,7 +280,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             fluidRow(
                               shiny::HTML("<br><br><center> 
                                                    <h1>GeoDisparities Mapper: Technical Details</h1> 
-                                                   <h4>What's behind the data.</h4>
+                                                   <h4>What's behind the modeled data.</h4>
                                                    </center>
                                                    <br>
                                                    <br>"),
@@ -239,8 +297,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             
                             fluidRow(
                               shiny::HTML("<br><br><center> 
-                                                   <h1>GeoDisparities Mapper: Technical Details</h1> 
-                                                   <h4>What's behind the data.</h4>
+                                                   <h1>GeoDisparities Mapper: Community Contextual Variables</h1> 
+                                                   <h4>What's behind the contextual variables data.</h4>
                                                    </center>
                                                    <br>
                                                    <br>"),
