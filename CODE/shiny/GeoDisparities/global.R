@@ -39,14 +39,24 @@ panel_div <- function(class_type, content) {
 }
 
 # -------------------------------------- load data ------------------------------------------------- 
+# --- previous to October 2019 code ---
 #load spatial data
 #geodata <- readRDS('data/sf_acs5_2007_2017_w2010counties_v.Rds')
-geodata <- readRDS('data/alldata.Rds')
-
+#geodata <- readRDS('data/alldata.Rds')
 # NOTE: for Alabama talk swapping out 'newdata.Rds' for 'alldata.Rds'
 #geodata <- readRDS('data/alldata.Rds')
 #transform spatial data to wgs84
-geodata <- st_transform(geodata, crs = 4326)
+#geodata <- st_transform(geodata, crs = 4326)
+
+#load acs data -- NOTE: currently using this is as the reference dataset for shared functions with model data (e.g. state names vector below, year range for dashboard toggling, etc.)
+acsdata <- readRDS('data/sf_acs.Rds')
+
+#load model data
+moddata <- readRDS('data/sf_moddata.Rds')
+
+#check crs
+#st_crs(acsdata) #retained crs
+#st_crs(moddata) #retained crs
 
 #state boundaries
 state_bounds <- readRDS('data/stateboundaries.Rds')
@@ -62,4 +72,4 @@ state_bounds <- st_transform(state_bounds, crs = 4326)
 
 # -------------------------------------- app inputs defined ----------------------------------------
 #state choices
-state_names <- as.character(unique(geodata$state_name))
+state_names <- as.character(unique(acsdata$state_name))

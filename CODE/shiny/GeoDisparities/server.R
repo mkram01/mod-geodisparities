@@ -34,23 +34,26 @@ shinyServer(function(input, output, session) {
   
   # Subsetting data ----------------------------------------------------------------------------------
   
-  # -- making data into a reactive object
-  df <- geodata
-  makeReactiveBinding('df')
+  # -- making data into reactive objects
+  contextdf <- acsdata
+  makeReactiveBinding('contextdf')
+  
+  moddf <- moddata
+  makeReactiveBinding('moddf')
   
   # -- updating data geography if differs from previous selection -- 
   # ->- conductor - parent of: map endpoint, observeEvent(input$state)
   #               - child of: state input
   # subsetting to selected data using filters
-  selected_data <- reactive({
-    print('reactive: subset df to selected inputs')
+  context_selected_data <- reactive({
+    print('reactive: subset contextdf to selected inputs')
     if (input$state == 'All'){
-      geodata %>%
+      acsdata %>%
         filter(
           year %in% input$year
         )
     } else {
-      geodata %>% 
+      acsdata %>% 
         filter(
           state_name %in% input$state,
           year %in% input$year
@@ -59,12 +62,28 @@ shinyServer(function(input, output, session) {
     
   })
   
+  mod_selected_data <- reactive({
+    print('reactive: subset moddf to selected inputs')
+    if (input$state == 'All'){
+      moddata %>%
+        filter(
+          year %in% input$year
+        )
+    } else {
+      moddata %>% 
+        filter(
+          state_name %in% input$state,
+          year %in% input$year
+        )
+    }
+    
+  })
   
-  # Creating left-side base leaflet map ---------------------------------------------------------------------------
+  # Creating contextual variables base leaflet map ---------------------------------------------------------------------------
   # -- base map --
   # ->- conductor - parent of: map endpoint
   #               - child of: 
-  output$leftmap <- renderLeaflet({
+  output$contextmap <- renderLeaflet({
     print('render map')
     leaflet() %>% 
       addTiles() %>% 
@@ -81,8 +100,8 @@ shinyServer(function(input, output, session) {
         onClick=JS("function(btn, map){ map.setZoom(1); }")))
   })
   
-  # Creating right-side base leaflet map ---------------------------------------------------------------------------
-  output$rightmap <- renderLeaflet({
+  # Creating model variables base leaflet map ---------------------------------------------------------------------------
+  output$modmap <- renderLeaflet({
     print('render map')
     leaflet() %>% 
       addTiles() %>% 
@@ -102,56 +121,56 @@ shinyServer(function(input, output, session) {
   
   # ---- trigger subsetting ----
   # >- endpoint - child of: state_selected()
-  #left side
+  #left side - contextual var
   observeEvent(c(input$state,input$year),{
-    print('observeEvent: updating df and clearing map features')
-    leafletProxy('leftmap') %>%
+    print('observeEvent: updating context df and clearing map features')
+    leafletProxy('contextmap') %>%
       clearShapes()
-    df <<- selected_data()
+    contextdf <<- context_selected_data()
     
-    print(paste0("df data class is: ", class(df)))
+    print(paste0("context df data class is: ", class(contextdf)))
     
   })
-  #right side
+  #right side - model var
   observeEvent(c(input$state,input$year),{
-    print('observeEvent: updating df and clearing map features')
-    leafletProxy('rightmap') %>%
+    print('observeEvent: updating mod df and clearing map features')
+    leafletProxy('modmap') %>%
       clearShapes()
-    df <<- selected_data()
+    moddf <<- mod_selected_data()
     
-    print(paste0("df data class is: ", class(df)))
+    print(paste0("mod df data class is: ", class(moddf)))
     
   })
   
   # ---- update map bounding box ---- 
   # ->- conductor - parent of: map endpoint
   #               - child of: 
-  #left map
-  leftcoords <- reactive({
+  #left map - contextual var map
+  contextcoords <- reactive({
     print('reactive: coords')
-    print(paste0('calculating bbox - df is: ', class(df)))
+    print(paste0('calculating bbox - context df is: ', class(contextdf)))
     if(input$state == 'All'){
-      leafletProxy('leftmap') %>% 
+      leafletProxy('contextmap') %>% 
         fitBounds(-124.848974, 24.396308, -66.885444, 49.384358)
     } else {
-      bbox <- st_bbox(selected_data())
+      bbox <- st_bbox(context_selected_data())
       print
-      leafletProxy('leftmap') %>% 
+      leafletProxy('contextmap') %>% 
         fitBounds(bbox[[1]], bbox[[2]], bbox[[3]], bbox[[4]])
     }
     
   })
-  #right map
-  rightcoords <- reactive({
+  #right map - model var map
+  modcoords <- reactive({
     print('reactive: coords')
-    print(paste0('calculating bbox - df is: ', class(df)))
+    print(paste0('calculating bbox - mod df is: ', class(moddf)))
     if(input$state == 'All'){
-      leafletProxy('rightmap') %>% 
+      leafletProxy('modmap') %>% 
         fitBounds(-124.848974, 24.396308, -66.885444, 49.384358)
     } else {
-      bbox <- st_bbox(selected_data())
+      bbox <- st_bbox(mod_selected_data())
       print
-      leafletProxy('rightmap') %>% 
+      leafletProxy('modmap') %>% 
         fitBounds(bbox[[1]], bbox[[2]], bbox[[3]], bbox[[4]])
     }
     
@@ -159,46 +178,51 @@ shinyServer(function(input, output, session) {
   
   
   # ---- adjust mapview based on state selected ----
-  #leftmap
+  #contextmap
   observeEvent(input$state, {
-    leftcoords()
+    contextcoords()
   })
-  #rightmap
+  #modmap
   observeEvent(input$state, {
-    rightcoords()
+    modcoords()
   })
   
   # Update xvar & yvar var input options ---------------------------------------------------
   
-  # dependent on subsetting of df above
-  output$leftvar <- renderUI(selectInput('leftvar',label='Left-side Var',
-                                         choices = names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
-                                         selected =  names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][1]))
-  output$rightvar <- renderUI(selectInput('rightvar',label='Right-side Var',
-                                          choices = names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
-                                          selected =  names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2]))
+  # dependent on subsetting of dfs above
+  output$contextvar <- renderUI(selectInput('contextvar',label='Contextual Var',
+                                         choices = names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
+                                         selected =  names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][1]))
+  output$modvar <- renderUI(selectInput('modvar',label='Model Var',
+                                          choices = names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
+                                          selected =  names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2]))
   
   # Defining xvar, yvar & color var reactives -------------------------------------------------------
   xvar_ <- ''
   xVar <- reactive({
     print('reactive: xVar')
-    if(is.null(input$leftvar)) return(names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][1])
-    xvar_ <<- input$leftvar
-    input$leftvar})
+    if(is.null(input$contextvar)) return(names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][1])
+    xvar_ <<- input$contextvar
+    input$contextvar})
   yVar <- reactive({
     print('reactive: yVar')
-    if(is.null(input$rightvar)) return(names(df)[!names(df) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2])
-    input$rightvar})
+    if(is.null(input$modvar)) return(names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2])
+    input$modvar})
   
   
-  # create plot dataframe -- renaming vars of interest as 'x' and 'y'
+  # create plot dataframe -- renaming vars of interest as 'x' and 'y' ---- NOTE: because 2 separate data sets now, need to join together for this, may cause issues
   plotdf <- reactive({
     print('plotdf')
-    #df1 <- `st_geometry<-`(df, NULL)
-    gdf <- df[,c(xVar(), yVar(), "geometry")]
+    #subsetting contextual variable df
+    cdf <- contextdf[,c(xVar(), "GEOID", "geometry")]
+    #subsetting model variable df
+    mdf <- moddf[,c(yVar(), "GEOID", "geometry")]
+    #join together
+    jdf <- st_join(mdf, cdf)
+    #create plot dataframe
+    gdf <- jdf[,c(xVar(), yVar(), "geometry")]
     names(gdf) <- c("x","y", "geometry")
     gdf 
-    #df1
   })
   
   # create charts -----------------------------------------------------------------
@@ -214,14 +238,14 @@ shinyServer(function(input, output, session) {
       theme_bw() +
       coord_fixed()+
       theme(legend.position = "none") +
-      xlab(input$leftvar) +
-      ylab(input$rightvar)
+      xlab(input$contextvar) +
+      ylab(input$modvar)
     
   })
   
   # xvar/input data scatter plot
-  output$leftscatter <- renderPlot({
-    print('plotting xvar scatter plot')
+  output$contextscatter <- renderPlot({
+    print('plotting contextual var scatter plot')
     
     #linking to brushed points from bivariate scatter
     brushed <- brushedPoints(plotdf(), input$bibrush)
@@ -231,12 +255,12 @@ shinyServer(function(input, output, session) {
       geom_density(data=brushed, fill = "red") +
       theme_bw() +
       theme(legend.position = "none") +
-      xlab(input$leftvar)
+      xlab(input$contextvar)
     
   })
   
   # yvar/model output data scatter plot
-  output$rightscatter <- renderPlot({
+  output$modscatter <- renderPlot({
     print('plotting yvar scatter plot')
     
     #linking to brushed points from bivariate scatter
@@ -247,86 +271,86 @@ shinyServer(function(input, output, session) {
       geom_density(data=brushed, fill = "red") +
       theme_bw() + 
       theme(legend.position = "none") +
-      xlab(input$rightvar)
+      xlab(input$modvar)
   })
   
   # set map aesthetics ------------------------------------------------------------------------------------
   #---- create colorData to be able to create palette ----
-  #left map
-  leftcolorData <- reactive({
+  #left map - contextual var
+  contextcolorData <- reactive({
     print("reactive: subsetting to colorVar in data")
-    df1 <- df
-    df1$geometry <- NULL
-    df1[,xVar()] <- round(df1[,xVar()], digits = 2)
-    df1$leftquantile <- bin(df1[,xVar()], nbins = input$leftquantiles, method = "content")
-    df1[,"leftquantile"]
+    contextdf1 <- contextdf
+    contextdf1$geometry <- NULL
+    contextdf1[,xVar()] <- round(contextdf1[,xVar()], digits = 2)
+    contextdf1$contextquantile <- bin(contextdf1[,xVar()], nbins = input$contextquantiles, method = "content")
+    contextdf1[,"contextquantile"]
   })
   
-  #right map
-  rightcolorData <- reactive({
+  #right map - model data var
+  modcolorData <- reactive({
     print("reactive: subsetting to colorVar in data")
-    df2 <- df
-    df2$geometry <- NULL
+    moddf2 <- moddf
+    moddf2$geometry <- NULL
     #rounding values to 2 decimal points
-    df2[,yVar()] <- round(df2[,yVar()], digits = 2)
+    moddf2[,yVar()] <- round(moddf2[,yVar()], digits = 2)
     #dividing var into user-specified quantiles
-    df2$rightquantile <- bin(df2[,yVar()], nbins = input$rightquantiles, method = "content")
-    df2[,"rightquantile"]
+    moddf2$modquantile <- bin(moddf2[,yVar()], nbins = input$modquantiles, method = "content")
+    moddf2[,"modquantile"]
   })
   
   # ---- creating palette for colorvar ----
-  #left map
-  leftcolorpal <- reactive({
-    print('reactive: create left color palette')
-    colorFactor("YlOrRd", leftcolorData())
+  #left map - contextual var
+  contextcolorpal <- reactive({
+    print('reactive: create contextual var color palette')
+    colorFactor("YlOrRd", contextcolorData())
   })
-  leftpal <- reactive({
-    print('reactive: create left palette for leaflet arg')
-    leftcolorpal()(leftcolorData())
+  contextpal <- reactive({
+    print('reactive: create contextual var palette for leaflet arg')
+    contextcolorpal()(contextcolorData())
   })
   
   #right map
-  rightcolorpal <- reactive({
+  modcolorpal <- reactive({
     print('reactive: create right color palette')
-    colorFactor("YlOrRd", rightcolorData())
+    colorFactor("YlOrRd", modcolorData())
   })
-  rightpal <- reactive({
+  modpal <- reactive({
     print('reactive: create left palette for leaflet arg')
-    rightcolorpal()(rightcolorData())
+    modcolorpal()(modcolorData())
   })
   
-  # ---- get reactive left(x) and right(y) data for html labels ----
+  # ---- get reactive contextual [left(x)] and model [right(y)] data for html labels ----
   xData <- reactive({
     print("reactive: subsetting to x Var in data")
-    df1 <- df
-    df1$geometry <- NULL
-    df1[,xVar()]
+    contextdf1 <- contextdf
+    contextdf1$geometry <- NULL
+    contextdf1[,xVar()]
   })
   
   yData <- reactive({
     print("reactive: subsetting to y Var in data")
-    df1 <- df
-    df1$geometry <- NULL
-    df1[,yVar()]
+    moddf1 <- moddf
+    moddf1$geometry <- NULL
+    moddf1[,yVar()]
   })
   
   # ---- create html labels ----
-  #left map
-  leftmap.labels <- reactive({
+  #left map - contextual var
+  contextmap.labels <- reactive({
     sprintf(
       "%s<br/>%s<br/>",
-      paste0(input$leftvar,": ", round(xData(),digits = 2)),
-      paste0(input$rightvar, ": ", round(yData(),digits = 2))
+      paste0(input$contextvar,": ", round(xData(),digits = 2)),
+      paste0(input$modvar, ": ", round(yData(),digits = 2))
     ) %>% lapply(htmltools::HTML)
     
   })
   
-  #right map
-  rightmap.labels <- reactive({
+  #right map - model var
+  modmap.labels <- reactive({
     sprintf(
       "%s<br/>%s<br/>",
-      paste0(input$rightvar, ": ", round(yData(),digits = 2)),
-      paste0(input$leftvar,": ", round(xData(),digits = 2))
+      paste0(input$modvar, ": ", round(yData(),digits = 2)),
+      paste0(input$contextvar,": ", round(xData(),digits = 2))
     ) %>% lapply(htmltools::HTML)
     
   })
@@ -335,19 +359,19 @@ shinyServer(function(input, output, session) {
   
   # ---- update maps with polygons ----
   # - child of: pal()
-  #left map
+  #left map -- contextual var map
   observe({
-    print('observe: updating left map to be chloropleth of leftVar')
-    print(paste0("df class: ",class(df)))
+    print('observe: updating left map to be chloropleth of contextvar')
+    print(paste0("contextdf class: ",class(contextdf)))
       #national level map -- no county boundaries, only state
-      leafletProxy('leftmap') %>%
+      leafletProxy('contextmap') %>%
       #counties
         addPolygons(
-          data = df,
-          fillColor = leftpal(),
+          data = contextdf,
+          fillColor = contextpal(),
           weight = 1,
           opacity = 1,
-          color = leftpal(),
+          color = contextpal(),
           dashArray = "3",
           fillOpacity = 0.7,
           highlight = highlightOptions(
@@ -356,7 +380,7 @@ shinyServer(function(input, output, session) {
             dashArray = "",
             fillOpacity = 0.7,
             bringToFront = TRUE),
-          label = leftmap.labels(), popup = leftmap.labels(), #~htmlEscape(input$color)
+          label = contextmap.labels(), popup = contextmap.labels(), #~htmlEscape(input$color)
           labelOptions = labelOptions(
             style = list("font-weight" = "normal", padding = "3px 8px"),
             textsize = "15px",
@@ -364,7 +388,7 @@ shinyServer(function(input, output, session) {
         ) %>%
         addPolygons(
           data = state_bounds,
-          #fillColor = rightpal(),
+          #fillColor = modpal(),
           fill = FALSE,
           #fillOpacity = 1,
           weight = 1,
@@ -378,15 +402,15 @@ shinyServer(function(input, output, session) {
   
   #right map
   observe({
-    print('observe: updating left map to be chloropleth of leftVar')
-    print(paste0("df class: ",class(df)))
-    leafletProxy('rightmap') %>%
+    print('observe: updating left map to be chloropleth of contextvar')
+    print(paste0("moddf class: ",class(moddf)))
+    leafletProxy('modmap') %>%
       addPolygons(
-        data = df,
-        fillColor = rightpal(),
+        data = moddf,
+        fillColor = modpal(),
         weight = 1,
         opacity = 1,
-        color = rightpal(),
+        color = modpal(),
         dashArray = "3",
         fillOpacity = 0.7,
         highlight = highlightOptions(
@@ -395,7 +419,7 @@ shinyServer(function(input, output, session) {
           dashArray = "",
           fillOpacity = 0.7,
           bringToFront = TRUE),
-        label = rightmap.labels(), popup = rightmap.labels(), #~htmlEscape(input$color)
+        label = modmap.labels(), popup = modmap.labels(), #~htmlEscape(input$color)
         labelOptions = labelOptions(
           style = list("font-weight" = "normal", padding = "3px 8px"),
           textsize = "15px",
@@ -403,7 +427,7 @@ shinyServer(function(input, output, session) {
       )  %>%
       addPolygons(
         data = state_bounds,
-        #fillColor = rightpal(),
+        #fillColor = modpal(),
         fill = FALSE,
         #fillOpacity = 1,
         weight = 1,
@@ -415,22 +439,22 @@ shinyServer(function(input, output, session) {
   })
   
   # ---- add legend ----
-  #left map
+  #left map -- contextual var map
   observe({
     print("observe: legend")
-    leafletProxy("leftmap") %>%
+    leafletProxy("contextmap") %>%
       clearControls() %>%
       addLegend(opacity = 0.99,position = "bottomright",title = xVar(),
-                pal = leftcolorpal(), values = rev(leftcolorData()))
+                pal = contextcolorpal(), values = rev(contextcolorData()))
   })
   
-  #right map
+  #right map -- model var map
   observe({
     print("observe: legend")
-    leafletProxy("rightmap") %>%
+    leafletProxy("modmap") %>%
       clearControls() %>%
       addLegend(opacity = 0.99,position = "bottomright",title = yVar(),
-                pal = rightcolorpal(), values = rev(rightcolorData()))
+                pal = modcolorpal(), values = rev(modcolorData()))
   })
   #################################################################################################  
   # -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 

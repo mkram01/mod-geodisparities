@@ -315,25 +315,25 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                              selected = "All"),
                                               
                                               #select year
-                                              sliderInput('year', label = "Year", value = min(geodata$year), 
-                                                          min = min(geodata$year), max = max(geodata$year), 
+                                              sliderInput('year', label = "Year", value = min(acsdata$year), 
+                                                          min = min(acsdata$year), max = max(acsdata$year), 
                                                           step=1, sep = ""
                                                           #,animate = animationOptions(interval = 750) #too slow with animation
                                               ),
                                               
-                                              #select left-side data to be mapped & plotted
-                                              uiOutput('leftvar'),
+                                              #select contextual variables (left-side) data to be mapped & plotted
+                                              uiOutput('contextvar'),
                                               
                                               #select number of quantiles for left-side data
-                                              sliderInput('leftquantiles', label = "Left-side Quantiles", 
+                                              sliderInput('contextquantiles', label = "Contextual Variable Quantiles", 
                                                           value = 5, min = 2, max = 10, step = 1, sep = ""
                                               ),
                                               
-                                              #select right-side data to be mapped & plotted
-                                              uiOutput('rightvar'),
+                                              #select model data variables (right-side) data to be mapped & plotted
+                                              uiOutput('modvar'),
                                               
                                               #select number of quantiles for right-side data
-                                              sliderInput('rightquantiles', label = "Right-side Quantiles", 
+                                              sliderInput('modquantiles', label = "Model Variable Quantiles", 
                                                           value = 5, min = 2, max = 10, step = 1, sep = ""
                                               ),
                                               
@@ -347,10 +347,10 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               mainPanel( width = 8,
                                          fluidRow(
                                            column(6,
-                                                  leafletOutput("leftmap")
+                                                  leafletOutput("contextmap")
                                            ),
                                            column(6,
-                                                  leafletOutput("rightmap")
+                                                  leafletOutput("modmap")
                                            )
                                            
                                          ),
@@ -365,10 +365,10 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          #Univariate scatter plots
                                          fluidRow(
                                            column(6,
-                                                  plotOutput("leftscatter")
+                                                  plotOutput("contextscatter")
                                            ),
                                            column(6,
-                                                  plotOutput("rightscatter")
+                                                  plotOutput("modscatter")
                                            )
                                          ),
                                          
