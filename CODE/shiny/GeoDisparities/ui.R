@@ -44,7 +44,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               HTML("
                                    <section class='banner'>
                                    <h2 class='parallax'>GeoDisparities Mapper</h2>
-                                   <p class='parallax_description'>Explore associations between socio-economic stress and preterm birth.</p>
+                                   <p class='parallax_description'>A tool for exploring the geography of socio-economic stressors and perinatal outcomes.</p>
                                    </section>
                                    ")
                               ),
@@ -54,11 +54,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3),
                               column(6,
                                      shiny::HTML("<br><br><center> <h1>What you'll find here</h1> </center><br>"),
-                                     shiny::HTML("<h5>An interactive tool to help you explore the associations between 
-                                                 socio-economic opportunity and stress and preterm birth.  With information 
-                                                 about the impact of various social and systemic indicators on preterm and 
-                                                 adverse birth outcomes, programs and interventions can be tailored to 
-                                                 maximize impact.</h5>")
+                                     shiny::HTML("<h5>This is an interactive tool to help you visually explore the 
+                                                 geographic associations between socio-economic opportunity and stress, 
+                                                 and perinatal outcomes such as preterm birth.</h5>")
                                      ),
                               column(3)
                                      ),
@@ -75,12 +73,13 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3),
                               column(6,
                                      shiny::HTML("<br><br><center> <h1>How it can help you</h1> </center><br>"),
-                                     shiny::HTML("<h5>Despite decades of clinical and population research, the problem of 
-                                                 large and unacceptable racial, economic, and geographic disparities in 
-                                                 preterm birth persist. Integrating theoretical and methodological insights 
-                                                 from clinical, epidemiologic and social science with program and 
-                                                 intervention design will accelerate impactful action to eliminate inequity 
-                                                 in preterm birth and other adverse perinatal outcomes..</h5>")
+                                     shiny::HTML("<h5>This tool can help inform users about geographic patterns of 
+                                                 maternal and infant risk and resilience, alongside the geographic 
+                                                 patterns of community-based stressors and resources.  The tool is 
+                                                 designed to offer a new way of <u><em>seeing</em></u> perinatal risk, and we hope it 
+                                                 will spark conversation, communicate new insight, lead to new questions, 
+                                                 and catalyze new opportunities for local collaboration and action to 
+                                                 improve the health of women and infants.</h5>")
                                      ),
                               column(3)
                                      ),
@@ -92,40 +91,31 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             # PAGE BREAK
                             tags$hr(),
                             
-                            # ---------------- where it came from
+                            # ---------------- what is in the app?
                             fluidRow(
                               column(3),
                               column(6,
-                                     shiny::HTML("<br><br><center> <h1>Where it came from</h1> </center><br>"),
-                                     shiny::HTML("<h5>Our team currently has access to restricted-access NCHS 
-                                                 natality records from 1989-2016 that we used to estimate (and map) the 
-                                                 prevalence of very preterm birth (<32 weeks); late preterm birth (34-36 weeks); 
-                                                 and preterm birth (<37 weeks) for each U.S. county overall, and for 
-                                                 non-Hispanic White and non-Hispanic Black women separately. We  further 
-                                                 estimated (and mapped) the county-specific Black-White relative and absolute 
-                                                 disparities. To produce stable and valid estimates of both the risks and the 
-                                                 disparity measures we implemented spatial Bayesian disease mapping techniques,
-                                                 which ‘borrow’ statistical strength for spatiotemporal dependencies. These 
-                                                 have been widely validated, are frequently used, and our team has used them 
-                                                 in previous projects for estimating perinatal and mortality parameters in US 
-                                                 counties.</h5>
-                                                 <br>
-                                                 <h5>We have assembled a unique set of county-level indicators of social and 
-                                                 economic context that represent potentially policy-modifiable factors that 
-                                                 could vary by race and geography, and that are plausibly related to known 
-                                                 pathways to preterm birth (e.g. they may influence social support, chronic 
-                                                 economic stress, and lack of quality health care). The indicators include 
-                                                 measures of material capital (e.g. median household income, poverty rate); 
-                                                 social capital (e.g. crime rate, % housing instability/turnover); human 
-                                                 capital (e.g. % unemployed, % changed jobs in last year, % at various levels 
-                                                 attained education); and local measures of economic fragility (e.g. % food 
-                                                 insecure, cost of living including % spending >30% on housing); and economic 
-                                                 safety net (e.g. % WIC, % SNAP, % of tax returns with EITC). These data come 
-                                                 from PolicyMap.org, the Census Bureau, and Brown University’s Diversity and 
-                                                 Disparities project compendium.</h5>
-                                                 <br>
-                                                 <h5>You will see these ecological and modeled variables in the GeoDisparities 
-                                                 Mapper.</h5>")
+                                     shiny::HTML("<br><br><center> <h1>What is in the app?</h1> </center><br>"),
+                                     shiny::HTML("<h5>The GeoDisparities Mapper has two types of data indicators for mapping: 
+                                                  <br><br>
+                                                  <ol>
+                                                    <li><b><u><em>Perinatal health indicators</em></u></b> – measures of the perinatal health of local 
+                                                    populations are available for every county in the U.S., and are derived from a 
+                                                    statistical modeling summary of vital statistics designed to produce reliable 
+                                                    estimates even for sparsely populated counties. These indicators of perinatal 
+                                                    health include live birth prevalence (‘risk’) of very preterm, moderately preterm, 
+                                                    and overall preterm birth. In addition, there are several indicators of ‘racial 
+                                                    disparity’ in each of these outcomes, because sometimes the geographic patterns of 
+                                                    <u><em>high perinatal risk</u></em> are not the same as the geographic patterns of 
+                                                    <u><em>large racial inequities</u></em>. </li>
+                                                    <br>
+                                                    <li><b><u><em>Community contextual variables</em></u></b> – measures of the 
+                                                    healthcare, social, and economic context of each U.S. county are provided to 
+                                                    further paint the picture of how places are different from one another. Indicators 
+                                                    in this category are wide reaching, ranging from the concentration of obstetricians 
+                                                    and location of Maternity Care Deserts, to the rate of poverty, violent crime, 
+                                                    and housing instability.</li>
+                                                  </ol></h5>")
                                      ),
                               column(3)
                                      ),
@@ -137,41 +127,68 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             # PAGE BREAK
                             tags$hr(),
                             
-                            # ---------------- how to get started
+                            # ---------------- how do you get started?
                             fluidRow(
                               column(3),
                               column(6,
-                                     shiny::HTML("<br><br><center> <h1>How to get started</h1> </center><br>"),
-                                     shiny::HTML("<h5>To learn more about the project premise and methods or launch the 
-                                                 GeoDisparities Mapper, click the corresponding button below.</h5>")
+                                     shiny::HTML("<br><br><center> <h1>How do you get started?</h1> </center><br>"),
+                                     shiny::HTML("<h5>We recommend you start by going through a brief tutorial on how to use and interpret
+                                                 the perinatal and community contextual indicators, and how to use the tool. You may also 
+                                                 be interested in learning about how the perinatal indicators were created by reading the 
+                                                 technical documentation.
+                                                 </h5>")
                                      ),
                               column(3)
                               ),
                             
-                            # ---------------- how to get started: buttons; 
+                            # give 'em some space
+                            fluidRow(
+                              style = "height:50px;"
+                            ),
+                            
+                            # ---------------- how do you get started: buttons; 
+                            #                                 - Tutorial - 'tuts'
                             #                                 - Technical details - 'techdeets' 
+                            #                                 - Contextual vars - 'contextpage'
                             #                                 - GeoDisparities Mapper - 'geomapper' 
                             fluidRow(
                               column(3),
                               column(6,
                                      
+                                     #tutorial button
                                      tags$div(class = "wrap",
                                               div(class = "center", 
-                                                  style="display: inline-block;vertical-align:top; width: 225px;",
-                                                  tags$a("Learn more",
-                                                         onclick = "fakeClick('techdeets')",
-                                                         class="btn btn-primary btn-lg")
-                                              ),
-                                              div(class = "center",
-                                                  style="display: inline-block; vertical-align:top; horizontal-align:middle; width: 75px;",
-                                                  tags$br(), tags$h4("OR") ),
-                                              div(class = "center",
-                                                  style="display: inline-block;vertical-align:top; width: 225px;",
-                                                  tags$a("GeoDisparities Mapper", 
-                                                         onclick="fakeClick('geomapper')", 
+                                                  style="display: inline-block;vertical-align:top; width: 500px;",
+                                                  tags$a("1. Tutorial",
+                                                         onclick = "fakeClick('tuts')",
                                                          class="btn btn-primary btn-lg")
                                               )
-                                     )
+                                     ),
+                                     
+                                     #technical details button
+                                     tags$div(class = "wrap",
+                                              div(class = "center", 
+                                                  style="display: inline-block;vertical-align:top; width: 500px;",
+                                                  tags$a("2. Learn more about the perinatal outcome estimation process",
+                                                         onclick = "fakeClick('techdeets')",
+                                                         class="btn btn-primary btn-lg")
+                                              )
+                                          ),
+                                     
+                                     # give 'em some space
+                                     fluidRow(
+                                       style = "height:50px;"
+                                     ),
+                                     
+                                     #geomapper button
+                                     tags$div(class = "wrap",
+                                              div(class = "center",
+                                                  style="display: inline-block;vertical-align:top; width: 500px;",
+                                                  tags$a("4. Go straight to the GeoDisparities Mapper", 
+                                                         onclick="fakeClick('geomapper')", 
+                                                         class="btn btn-primary btn-lg")
+                                              )    
+                                          )
                               ),
                               column(3)
                             ),
@@ -183,100 +200,60 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             # PAGE BREAK
                             tags$hr(),
                             
-                            # ---------------- Understanding the drivers of disparate adverse birth outcomes (Instructional overview)
-                            fluidRow(
-                              shiny::HTML("<br><br><center> <h1>Understanding the drivers of disparate adverse birth outcomes.</h1> </center>
-                                          <br>")
-                              ),
+                            
+                      ), # closes "Home" tabPanel
+                   
+                   #################################################################################################  
+                   # -------------------------- "TUTORIAL" PAGE ------------------------------------------- 
+                   #################################################################################################  
+                   
+                   tabPanel("Tutorial", value = "tuts",
                             
                             fluidRow(
-                              column(3),
-                              
-                              column(2,
-                                     div(class="panel panel-default", 
-                                         div(class="panel-body",  width = "600px",
-                                             align = "center",
-                                             div(
-                                               tags$img(src = "one.svg", 
-                                                        width = "50px", height = "50px")
-                                             ),
-                                             div(
-                                               h5(
-                                                 "Pick a modeled outcome you would like to see visualized as a map and univariate scatter plot."
-                                               )
-                                             )
-                                         )
-                                     )
-                              ),
-                              column(2,
-                                     div(class="panel panel-default",
-                                         div(class="panel-body",  width = "600px", 
-                                             align = "center",
-                                             div(
-                                               tags$img(src = "two.svg", 
-                                                        width = "50px", height = "50px")
-                                             ),
-                                             div(
-                                               h5(
-                                                 "Pick an ecological predictor you would like to see visualized as a map and univariate scatter plot."
-                                               )
-                                             )
-                                         )
-                                     )
-                              ),
-                              column(2,
-                                     div(class="panel panel-default",
-                                         div(class="panel-body",  width = "600px", 
-                                             align = "center",
-                                             div(
-                                               tags$img(src = "three.svg", 
-                                                        width = "50px", height = "50px")),
-                                             div(
-                                               h5(
-                                                 "Review visualizations and bivariate scatter plot comparing the two."
-                                               )
-                                             )
-                                         )
-                                     )
-                              ),
-                              column(3)
-                              
-                            ),
+                              shiny::HTML("<br><br><center> 
+                                                   <h1>GeoDisparities Mapper: Tutorial</h1> 
+                                                   <h4>What's behind the data.</h4>
+                                                   </center>
+                                                   <br>
+                                                   <br>"),
+                              style = "height:250px;")
                             
-                            # Embedded Video from Vimeo on how to use this tool
-                            # fluidRow(
-                            #     column(3),
-                            #     column(6,
-                            #            tags$embed(src = "https://player.vimeo.com/video/8419440",
-                            #                       width = "640", height = "360") 
-                            #     ),
-                            #     column(3)
-                            # ),
+                   ),  # Closes Technical Details tab
+                   
+                   #################################################################################################  
+                   # -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 
+                   #################################################################################################  
+                   
+                   tabPanel("Technical Details", value = "techdeets",
                             
                             fluidRow(
-                              
-                              style = "height:50px;"),
+                              shiny::HTML("<br><br><center> 
+                                                   <h1>GeoDisparities Mapper: Technical Details</h1> 
+                                                   <h4>What's behind the data.</h4>
+                                                   </center>
+                                                   <br>
+                                                   <br>"),
+                              style = "height:250px;")
                             
-                            # PAGE BREAK
-                            tags$hr(),
+                   ),  # Closes Technical Details tab
+                   
+                   
+                   #################################################################################################  
+                   # -------------------------- "CONTEXTUAL VARIABLES" PAGE ------------------------------------------- 
+                   #################################################################################################  
+                   
+                   tabPanel("Contextual Variables", value = "contextpage",
                             
-                            fluidRow(shiny::HTML("<br><br><center> <h1>Ready to Get Started?</h1> </center>
-                                                 <br>")
-                            ),
                             fluidRow(
-                              column(3),
-                              column(6,
-                                     tags$div(align = "center", 
-                                              tags$a("Start", 
-                                                     onclick="fakeClick('geomapper')", 
-                                                     class="btn btn-primary btn-lg")
-                                     )
-                              ),
-                              column(3)
-                            ),
-                            fluidRow(style = "height:25px;"
-                            )
-                            ), # closes home tabPanel
+                              shiny::HTML("<br><br><center> 
+                                                   <h1>GeoDisparities Mapper: Technical Details</h1> 
+                                                   <h4>What's behind the data.</h4>
+                                                   </center>
+                                                   <br>
+                                                   <br>"),
+                              style = "height:250px;")
+                            
+                   ),  # Closes Technical Details tab
                    
                    #################################################################################################
                    # -------------------------- "GEODISPARITIES MAPPER"/DASHBOARD PAGE -----------------------------
@@ -469,23 +446,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          )
                               )  # Closes the mainPanel
                             )  # Closes the sidebarLayout
-                   ),  # Closes the GeoDisparities Mapper dashboard tabPanel
+                   )  # Closes the GeoDisparities Mapper dashboard tabPanel
                    
-#################################################################################################  
-# -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 
-#################################################################################################  
-                   
-                   tabPanel("Technical Details", value = "techdeets",
-                            
-                            fluidRow(
-                              shiny::HTML("<br><br><center> 
-                                                   <h1>GeoDisparities Mapper: Technical Details</h1> 
-                                                   <h4>What's behind the data.</h4>
-                                                   </center>
-                                                   <br>
-                                                   <br>"),
-                              style = "height:250px;")
-                            
-                    )  # Closes Technical Details tab
+# ------------------------------
   ) #end navbarPage
 )#end UI

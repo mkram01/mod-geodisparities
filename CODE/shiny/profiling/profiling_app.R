@@ -35,4 +35,4 @@ runApp("GeoDisparities")
 
 
 #for testing and development
-setwd("/home/e/Documents/git_repos/mod-geodisparities/CODE/shiny/GeoDisparities")
+#setwd("/home/e/Documents/git_repos/mod-geodisparities/CODE/shiny/GeoDisparities")
