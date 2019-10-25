@@ -155,47 +155,40 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3),
                               column(6,
                                      
-                                     #tutorial button
+                                     
                                      tags$div(class = "wrap",
+                                              #tutorial button
                                               div(class = "center", 
-                                                  style="display: inline-block;vertical-align:top; width: 500px;",
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
                                                   tags$a("1. Tutorial",
                                                          onclick = "fakeClick('tuts')",
                                                          class="btn btn-primary btn-lg")
-                                              )
-                                     ),
-                                     
-                                     #technical details button
-                                     tags$div(class = "wrap",
+                                              ),
+                                              #technical details button
                                               div(class = "center", 
-                                                  style="display: inline-block;vertical-align:top; width: 500px;",
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
                                                   tags$a("2. Learn more about the perinatal outcome estimation process",
                                                          onclick = "fakeClick('techdeets')",
                                                          class="btn btn-primary btn-lg")
-                                              )
-                                          ),
-                                     
-                                     # give 'em some space
-                                     fluidRow(
-                                       style = "height:50px;"
-                                     ),
-                                     
-                                     #geomapper button
-                                     tags$div(class = "wrap",
+                                              ),
+                                              #contextual variables button
+                                              div(class = "center", 
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
+                                                  tags$a("3. Learn more about the community contextual variables",
+                                                         onclick = "fakeClick('contextpage')",
+                                                         class="btn btn-primary btn-lg")
+                                              ),
+                                              #geomapper button
                                               div(class = "center",
-                                                  style="display: inline-block;vertical-align:top; width: 500px;",
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
                                                   tags$a("4. Go straight to the GeoDisparities Mapper", 
                                                          onclick="fakeClick('geomapper')", 
                                                          class="btn btn-primary btn-lg")
-                                              )    
-                                          )
-                              ),
+                                              )  
+                                     ), #end tags$div
+                              ), #end column 6
                               column(3)
                             ),
-                            
-                            fluidRow(
-                              
-                              style = "height:50px;"),
                             
                             # PAGE BREAK
                             tags$hr(),
