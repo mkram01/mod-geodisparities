@@ -10,7 +10,7 @@ rm(list = ls())
 # -------------------------------------- set up environment ---------------------------------------- #
 ######################################################################################################
 #load packages
-pacman::p_load(data.table,feather,sf,dplyr,rgeos,rmapshaper)
+pacman::p_load(data.table,feather,sf,dplyr,rgeos,rmapshaper, tmap)
 
 # set code repo
 repo <- Sys.getenv('mod_repo')
@@ -89,12 +89,12 @@ mod_data <- interim2[,c(names(data), 'state_name.y'),with=F]
 # new_names[7] <- 'state_name'
 
 #ticks arent working, removing all spaces and replacing with _
-new_names <- c('FIPS','Year', 
-               'White_PTB_per_1000', 'Black_PTB_per_1000',
-               'Black_White_Rate_Ratio', "Black_White_Rate_Difference",
-               "state_name")
-
-setnames(mod_data, names(mod_data), new_names)
+# new_names <- c('FIPS','Year', 
+#                'White_PTB_per_1000', 'Black_PTB_per_1000',
+#                'Black_White_Rate_Ratio', "Black_White_Rate_Difference",
+#                "state_name")
+# 
+# setnames(mod_data, names(mod_data), new_names)
 
 #save
 #saveRDS(mod_data, file=paste0(data_repo, "/model_output/eb_rtg.Rds"))
@@ -103,22 +103,25 @@ setnames(mod_data, names(mod_data), new_names)
 # -------------------------------------- create spatial dataset------------------------------------- #
 ######################################################################################################
 #join on GEOID
-acs_spatial <- left_join(asp_wide, counties)
-
-#coerce new obj into an sf object
-acs_spatial <- st_as_sf(acs_spatial)
-
-#create spatial model output dataset
-mod_spatial <- left_join(mod_data, counties, by = c("FIPS" = "GEOID"))
-
-#drop to only needed cols
-mod_spatial <- mod_spatial[,c('FIPS','Year', 
-                              'White_PTB_per_1000', 'Black_PTB_per_1000',
-                              'Black_White_Rate_Ratio', "Black_White_Rate_Difference",
-                              "state_name", "geometry"),drop = FALSE]
-
-#coerce new obj into an sf object
-mod_spatial <- st_as_sf(mod_spatial)
+# acs_spatial <- left_join(asp_wide, counties)
+# 
+# #coerce new obj into an sf object
+# acs_spatial <- st_as_sf(acs_spatial)
+# 
+# #create spatial model output dataset
+# mod_spatial <- left_join(mod_data, counties, by = c("FIPS" = "GEOID"))
+# 
+# #rename state var
+# setnames(mod_spatial, "state_name.y", "state_name")
+# 
+# #drop to only needed cols
+# mod_spatial <- mod_spatial[,c('FIPS','Year', 
+#                               'White PTB/1000', 'Black PTB/1000',
+#                               'Black - White Rate Ratio', 'Black-White Rate Difference',
+#                               "state_name", "geometry"),drop = FALSE]
+# 
+# #coerce new obj into an sf object
+# mod_spatial <- st_as_sf(mod_spatial)
 
 #try simplifying geometry with rmapshaper
 # acs_smpl <- rmapshaper::ms_simplify(acs_spatial, keep = 0.01, keep_shapes = TRUE)
@@ -167,7 +170,7 @@ smpl_acs_fin <- st_transform(smpl_acs_spatial2, crs = 4326)
 smpl_mod_fin <- st_transform(smpl_mod_spatial2, crs = 4326)
 
 #worked
-plot(st_geometry(acs_test[acs_test$state_name == "Georgia",]), col = "grey") 
+#plot(st_geometry(acs_test[acs_test$state_name == "Georgia",]), col = "grey") 
 
 #transform spatial data to wgs84
 #acs_spatial <- st_transform(acs_spatial, crs = 4326)
@@ -179,15 +182,62 @@ acs_pts <- st_point_on_surface(acs_spatial)
 acs_pts <- st_centroid(acs_spatial)
 
 ######################################################################################################
+# -------------------------------------- rename field vars ----------------------------------------- #
+######################################################################################################
+#new model var names
+newmodnames <- c("GEOID", "year",'White PTB/1000', 'Black PTB/1000', 
+                 'Black - White Rate Ratio', 'Black-White Rate Difference', 
+                 "state_name", "geometry")
+
+#new acs var names
+newacsnames <- c("GEOID","state_name","state_code", "year", "source", 
+                 "NAME", "Black - White Ratio", 
+                 "Education - College or higher", "Education - High School or GED", "Education - Less than High School",
+                 "Median Income", 
+                 "Percent Black", "Percent Hispanic", "Percent White",
+                 "Female Poverty Rate", "Household Poverty Rate",
+                 "Housing Stability", "Housing Tenure", 
+                 "variable", "estimate", "moe", "geometry"
+                 )
+
+
+#rename model vars
+setnames(mod_smpl_v, names(mod_smpl_v), newmodnames)
+
+#rename acs names
+setnames(acs_smpl_v, names(acs_smpl_v), newacsnames)
+
+######################################################################################################
+# -------------------------------------- join ------------------------------------------------------ #
+######################################################################################################
+#subset acs data to same time range as modeled data range
+acs_sub <- acs_smpl_v[acs_smpl_v$year >= 2012 & acs_smpl_v$year <= 2016, ]
+
+
+# -------------------------- NEED TO COME BACK TO THIS ----------
+#aspatial merge
+allasp <- merge.data.frame(acs_sub, mod_smpl_v)
+
+#join modeled & input data into one dataframe
+alldata <- st_join(acs_sub, mod_smpl_v, left = F, by = c("GEOID", "state_name", "year"))
+
+#test if worked
+tm_shape(alldata) +
+  tm_fill() + 
+  tm_borders()
+
+
+
+######################################################################################################
 # -------------------------------------- save ------------------------------------------------------ #
 ######################################################################################################
 #douglas-peuker
-saveRDS(smpl_acs_fin, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties.Rds"))
+#saveRDS(smpl_acs_fin, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties.Rds"))
 #visvalingam's
-saveRDS(acs_smpl_v, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties_v.Rds"))
+saveRDS(acs_sub, file=paste0(data_repo, "/acs/sf_acs5_2007_2017_w2010counties_v.Rds"))
 
 #save spatial model data - douglas-peuker 
-saveRDS(smpl_mod_fin, file=paste0(data_repo, "/model_output/eb_spatial.Rds"))
+#saveRDS(smpl_mod_fin, file=paste0(data_repo, "/model_output/eb_spatial.Rds"))
 #save spatial model data - visvalingam's 
 saveRDS(mod_smpl_v, file=paste0(data_repo, "/model_output/eb_spatial_v.Rds"))
 

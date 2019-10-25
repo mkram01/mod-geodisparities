@@ -1,0 +1,89 @@
+---
+title: "NCHS Perinatal Data Aggregation"
+author: "Michael Kramer"
+date: "10/17/2019"
+output: 
+    html_document:
+      theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+This briefly describes the process for data aggregation contained in script `aggregate-raw-counts-16Oct2019.R`. The purpose of the script was to:
+* Evaluate missing values of education, marital status to identify ideal level of stratification/aggregation for INLA modeling
+* Update Kevin's original aggregation to include data through 2017 (now available)
+
+## Data sources
+
+The perinatal data comes from restricted access natality microdata files from NCHS for 2007-2017. This version is actually an import of Kait Stanhope's SAS datafiles created from the original raw files; it differs from the original only in the subsetting to specific columns. Those data were separately ported to SQLServer database and the current aggregation was created from that SQL table.
+
+The geography data was obtained via `tigris` package `county()` function (see `create-spatial-standard-geo-file.R`), and subsequently was subset to the 3,142 counties that aligned with NCHS data aggregation (e.g. U.S. territories were excluded).
+
+## Final datasets and data dictionaries
+
+There are three new data objects:
+
+1. Perinatal dataset: `county-perinatal-2007-2017.rds`
+* This data frame has 933,243 rows and 17 columns
+* The data represent aggregated birth and event counts for each unique `GEOID`, `DOB_YY`, `HISPRACE` (n=3 groups, see below), and `MAGER9` value
+* The table is *balanced* which is to say that every cross-product of those variables is represented even if there are no observations.
+* To address log(0) errors, the `births` and `term` variable (both denominators) were set to $1$ when there were actually $0$ births. In contrast the perinatal event outcomes were set to $0$ when there were no observed events.
+
+Variable | Definition
+---------- | -----------------------------------
+`GEOID`| 5-digit character FIPS for county of maternal residence
+`DOB_YY` | Integer year of birth (range of current data 2007 - 2017)
+`MAGER9` | NCHS 9-level maternal age categories: 1: < 15 yo; 2: 15-19 yo; 3: 20-24 yo; 4: 25-29 yo; 5: 30-34 yo; 6: 35-39 yo; 7: 40-44 yo; 8: 45-49 yo; 9: 50-54 yo
+`MAGER9f` | Factor version of integer `MAGER9` (possibly better for INLA?)
+`HISPRACE` | NCHS Bridged Race-Ethnicity. 1: Non-Hispanic White; 2: Non-Hispanic Black; 3: Hispanic
+`HISPRACEf` | Factor version of integer `HISPRACE`
+`births` | Count of all **singleton** births within strata. (*NOTE: all zero values converted to 1 for modeling purposes; see `impute_births` variable)
+`vptb` | Count of *very preterm* birth, 20-31 (e.g. <32) weeks gestation
+`eptb` | Count of *early preterm* birth, 20-34 (e.g. <35) weeks gestation (category used by NCHS)
+`lptb` | Count of *late preterm* births, 35-36 weeks gestation
+`ptb` | Count of *all preterm* births, 20-36 (e.g. < 37) weeks gestation
+`etb` | Count of *early term* births, 37-38 weeks gestation (*NOTE: should use `term` as denominator*)
+`term` | Count of all births at *term*, 37-41 weeks gestation (*NOTE: only used as denominator in calculating early term births*)
+`region.ID` | Sequential numeric ID for each **county** that aligns with the variable of same name in geographic data and corresponds to INLA graph. *NOTE: there will be repeated rows with same `region.ID` because of strata within counties.
+`impute_births` | A binary flag for whether a true *zero* count of births in a strata was changed to be *one* due to log-zero errors
+`impute_term` | A binary flag for whether a true *zero* count of term births in a strata was changed to be *one* due to log-zero errors
+
+
+2. County geography definition: `us_counties_2017.gpkg`
+
+* This `sf` dataset has 2017 boundaries from `tigris`
+* The full object has been subset to counties that have NCHS data (e.g. primarily this is excluding U.S. territories)
+
+Variable |  Definition
+-------- | --------------------
+`region.ID` | Numerical indicator for region (county) ranging from 1 to 3142. This aligns with the variable of the same name in perinatal data.
+`GEOID` | County FIPS code as 5-digit character
+`NAME` | County name
+`geom` | `sfc` geometry column
+
+3. INLA graph object: `us-soi.adj`
+* This is a sphere of influence neighbor definition
+* It starts with a Delauney triangle neighbor set, and is then 'trimmed' to maintain local sphere of influence. 
+* Result is that all counties have neighbors with mean of 5.5 neighbors, and range from 1 to 10
+
+# Details on data preparation
+
+
+## Data exclusions
+
+The following data inclusions and exclusions were made prior to aggregation:
+
+1. Exclude U.S. territories (e.g. maintain counties of 50 state plus District of Columbia)
+2. Include only *singleton* pregnancies
+3. Exclude birthweight < 500 grams and gestational age < 20 weeks
+4. Exclude those missing gestational age, race/ethnicity, or GEOID
+5. Converted several county FIPS codes to create alignment across years
+6. Included only Hispanics plus non-Hispanic White and Black
+
+ 
+
+
