@@ -345,6 +345,38 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               
                               #Main panel -- Maps & plots controlled by settings in sidebar
                               mainPanel( width = 8,
+                                    
+                                         #Title left (contextual var) & right (mod var) sides
+                                         fluidRow(
+                                           column(6,
+                                                  tags$h3("Contextual Variable")
+                                                  ),
+                                           column(6,
+                                                  tags$h3("Modeled Outcome Variable")
+                                                  )
+                                         ),
+                                         
+                                         # PAGE BREAK
+                                         tags$hr(),
+                                         
+                                         #Title for maps section
+                                         fluidRow(
+                                           column(12,
+                                                  tags$h4("Chloropleth Maps"),
+                                                  align="center"
+                                           ),
+                                           column(6,
+                                                  tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
+                                                  align="center"
+                                           ),
+                                           column(6,
+                                                  tags$em(tags$h5("What does the geographic distribution of this model output variable tell you?")),
+                                                  align="center"
+                                           )
+                                           
+                                         ),
+                                         
+                                         # maps
                                          fluidRow(
                                            column(6,
                                                   leafletOutput("contextmap")
@@ -357,10 +389,28 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          fluidRow(
                                            
-                                           style = "height:50px;"),
+                                           style = "height:50px;"
+                                           ),
                                          
                                          # PAGE BREAK
                                          tags$hr(),
+                                         
+                                         #Title for univariate plots section
+                                         fluidRow(
+                                           column(12,
+                                                  tags$h4("Univariate Plots"),
+                                                  align="center"
+                                                  ),
+                                           column(6,
+                                                  tags$em(tags$h5("What does the distribution of this contextual variable tell you?")),
+                                                  align="center"
+                                                  ),
+                                           column(6,
+                                                  tags$em(tags$h5("What does the distribution of this model output variable tell you?")),
+                                                  align="center"
+                                                  )
+                                           
+                                         ),
                                          
                                          #Univariate scatter plots
                                          fluidRow(
@@ -374,10 +424,23 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          fluidRow(
                                            
-                                           style = "height:50px;"),
+                                           style = "height:50px;"
+                                           ),
                                          
                                          # PAGE BREAK
                                          tags$hr(),
+                                         
+                                         #Title for bivariate plot section
+                                         fluidRow(
+                                           column(12,
+                                                  tags$h4("Bivariate Scatter Plot"),
+                                                  align="center"
+                                           ),
+                                           column(12,
+                                                  tags$em(tags$h5(("What does the relationship between the contextual and the model outcome variables signify?"))),
+                                                  align="center"
+                                                  )
+                                         ),
                                          
                                          #Bivariate scatter plot
                                          fluidRow(
