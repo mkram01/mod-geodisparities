@@ -217,7 +217,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3),
                               column(6,
                                      shiny::HTML("<center> <h2>In brief...</h2> </center><br>"),
-                                     shiny::HTML("<h5>There are four easy steps to use the GeoDisparities Mapper app:
+                                     shiny::HTML("<h5>There are four easy steps to use the GeoDisparities Mapper:
                                                   <br><br>
                                                   <ol>
                                                     <li>Pick a perinatal outcome (either a single indicator, or a racial disparity measure)</li>
@@ -225,6 +225,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                     <li>(Optionally) Pick one or more states to zoom in (alternatively, view the entire U.S.)</li>
                                                     <li>Review the geographic pattern (two maps at the top) and the statistical relationship (graphs at the bottom)</li>
                                                     </ol>
+                                                    <br><br>
+                                                    Go to the GeoDisparities Mapper now or continue reading for more information.
                                                  </h5>")
                               ),
                               column(3)
@@ -233,12 +235,12 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             # PAGE BREAK
                             tags$hr(),
                             
-                            # ---------------- in more depth.....
+                            # ---------------- in more depth: place matters
                             fluidRow(
                               column(3),
                               column(6,
                                      shiny::HTML("<center> <h2>In more depth...</h2> </center><br>"),
-                                     shiny::HTML("<left> <h4>Place <em><b>matters</b></em></h4> </left><br>"),
+                                     shiny::HTML("<left> <h4><b><em>Place matters</em></b></h4> </left><br>"),
                                      shiny::HTML("<h5>
                                                   <ul>
                                                     <li>Decades of research has pointed to the critical importance of the places where women 
@@ -263,16 +265,182 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                     for perinatal outcomes). In the map below, it is clear that the risk for VLBW varies more than 
                                                     3-fold across U.S. counties, with clusters of higher risk counties in the South and clusters of
                                                     lower risk counties in the Northeast, Plains and Western states. Even in states with <em>“lower”</em> 
-                                                    than average risk, there are still differences between counties. Why do these differences exist? In some instances it may be because of demographic profiles of counties, and in others it may be about the social, economic, and health service profiles of counties.</li>
+                                                    than average risk, there are still differences between counties. Why do these differences exist? 
+                                                    In some instances it may be because of demographic profiles of counties, and in others it may 
+                                                    be about the social, economic, and health service profiles of counties.</li>
                                                     </ul>
+                                                 </h5>"),
+                                     #Place Matters for Perinatal Health map figure
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Place Matters for Perinatal Health"),
+                                               tags$img(src = "tutorial_placemattersforperinatalhealth.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ), #end place matters for perinatal health map div
+                                     
+                                     shiny::HTML("<h5> 
+                                                  <ul>
+                                                  <li><u>What do the colors on the map mean?</u> All of the maps in the 
+                                                  GeoDisparities Mapper show the average risk for
+                                                  perinatal outcomes in each county, with darker colors representing
+                                                  <strong><em>higher risk</em></strong> and lighter colors representing
+                                                  <strong><em>lower risk</em></strong>. To assign a map color to each county, the
+                                                  counties are ranked from lowest to highest, and then categorized into 5 groups,
+                                                  each with an equal number of counties (‘quintiles’). This makes it easy to see
+                                                  the <em>relative ordering</em> of counties, but it does not always tell us how
+                                                  big the absolute differences are between color categories. To see the
+                                                  <em>absolute</em> risk associated with each color, look at the map legend.</li>
+                                                  <br>
+                                                  <li>Place also matters for community-level risk factors for poor health
+                                                  outcomes. In this map, counties without access to maternity health care services
+                                                  (‘Maternity Care Deserts’) are evident in nearly every state:</li>
+                                                  <ul>
+                                                 </h5>"),
+                                     #maternity care desert map figure
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("March of Dimes Maternity Care Deserts Map"),
+                                               tags$img(src = "tutorial_MoDmaternitycaredeserts.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ), #end maternity care desert map div
+                                     
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li>The GeoDisparities Mapper includes dozens of community-level indicators of 
+                                                  risk and resilience that are social, economic, and health service related. Each 
+                                                  of them were selected because they are plausibly risk factors for between-county 
+                                                  differences in risk for poor perinatal outcomes, and because they vary geographically.</li>
+                                                  <br>
+                                                  <li>While the GeoDisparities Mapper can only show correlation, but does not prove 
+                                                  causation, the variables selected are nonetheless useful and important measures 
+                                                  for asking better questions and engaging local partners in better understanding 
+                                                  the local drivers of health and equity.</li>
+                                                  </ul>
                                                  </h5>")
                               ),
                               column(3)
+                            ), # ends in more depth: place matters
+                            
+                            # PAGE BREAK
+                            tags$hr(),
+                            
+                            # ---------------- in more depth: outcome matters
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<left> <h4><b><em>Outcomes matters</b></em></h4> </left><br>"),
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li>Preterm birth is not just one thing, but is really the outcome from a mix of many 
+                                                  different disease processes (it is a ‘heterogeneous outcome’)! What this means is that 
+                                                  the causes (and solutions) are not the same for every baby born preterm. It is difficult 
+                                                  to account for all of these differences using only birth certificate data. But one way
+                                                  to begin to see differences is by looking at the severity of prematurity. For instance 
+                                                  babies born at <32 weeks gestation (sometimes called ‘very preterm birth’) have much 
+                                                  higher risk for morbidity and mortality than babies born just one week before 37 weeks 
+                                                  of gestation (more generally called ‘preterm birth’). Not only are the consequences 
+                                                  different, but in some instances the causes or reasons for prematurity may be different. 
+                                                  For instance, it is very unlikely that any baby would be intentionally delivered (e.g. 
+                                                  labor induction or cesarean section) before 32 weeks except in the most serious of 
+                                                  situations. But it is much more common for obstetric decision making about labor 
+                                                  induction or cesarean section to play a role in late preterm births. Therefore the 
+                                                  underlying drivers of each may be different (e.g. maternal health or chronic stress 
+                                                  may play a relatively larger role in the case of very preterm birth; obstetric management 
+                                                  and health care practices playing a larger role in preterm birth).
+                                                  </li>
+                                                  <br>
+                                                  <li>In the GeoDisparities Mapper we provide indicators for the live birth prevalence 
+                                                  (‘risk’) of overall preterm birth (<37 weeks gestation) but also several other 
+                                                  subsets including the proportion of babies born <32 weeks (very preterm birth); 
+                                                  34-36 weeks (late preterm birth); and, recognizing recent evidence of differences among 
+                                                  term babies, even 37-39 weeks (early term).
+                                                  </li>
+                                                  </ul>
+                                                 </h5>"),
+                                     
+                                     #gestational age categories figure 
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Gestational Age Categories in the GeoDisparities Mapper"),
+                                               tags$img(src = "tutorial_gestationalagecategories.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ), #gestational age categories figure div
+                                     
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li><u>Are there differences in the geographic pattern of different perinatal outcomes?</u> 
+                                                  In the plot below we show how the risk for preterm birth (<37 weeks) correlates with 
+                                                  the risk for very preterm birth (<32 weeks) <em>in the very same counties.</em>  Obviously the 
+                                                  absolute risk is different between these two outcomes, but we do see that they are 
+                                                  correlated. As the risk for one goes up in a county, we tend to see the risk of the 
+                                                  other go up.  But one thing that is notable is that the two outcomes are not <em>perfectly 
+                                                  correlated.</em> In other words One way to see how these outcomes might have different 
+                                                  patterns is to examine the relationship between the county-level risk of Preterm Birth
+                                                  (<37 weeks) and the risk in the same counties of Very Preterm Birth (<32 weeks). 
+                                                  Obviously, very preterm birth (<32 weeks) occur far less frequently than overall preterm
+                                                  births (<37 weeks). In this plot, there is clearly a correlation in the rates of these 
+                                                  two related outcomes for both Black and White women. However, it is also clear that the 
+                                                  two rates do not correlate perfectly. In other words some counties are relatively higher
+                                                  for Preterm Birth but relatively lower for Very Preterm Birth. This pattern is especially
+                                                  evident for Black mothers. 
+                                                  </li>
+                                                  </ul>
+                                                 </h5>"),
+                              ), #end column
+                              column(3)
                             ),
-                   ),  # Closes Technical Details tab
+                            
+                            fluidRow(
+                              column(3),
+                              column(3, 
+                                     # very preterm birth among black mothers
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Risk for preterm birth among Black mothers"),
+                                               tags$img(src = "tutorial_vptbblackmothers.png", 
+                                                        width = "350px")#, height = "50px")
+                                             )
+                                         )
+                                     ), #gestational age categories figure div
+                                  ), # end vptb black mothers column
+                              column(3, 
+                                     # very preterm birth among white mothers
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Risk for preterm birth among Wlack mothers"),
+                                               tags$img(src = "tutorial_vptbwhitemothers.png", 
+                                                        width = "350px")#, height = "50px")
+                                             )
+                                         )
+                                     )
+                                  ), # end vptb black mothers column
+                              column(3)
+                            ),
+                                     
+                            # PAGE BREAK
+                            tags$hr()
+                            
+                           
+                   ),  # Closes tutorial tab
                    
                    #################################################################################################  
-                   # -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 
+                   # -------------------------- "PERINATAL VARIABLES" PAGE ------------------------------------------- 
                    #################################################################################################  
                    
                    tabPanel("Perinatal Variables", value = "perinatalpage",
