@@ -35,10 +35,10 @@ shinyServer(function(input, output, session) {
   # Subsetting data ----------------------------------------------------------------------------------
   
   # -- making data into reactive objects
-  contextdf <- acsdata
+  contextdf <- context_data
   makeReactiveBinding('contextdf')
   
-  moddf <- moddata
+  moddf <- mod_data
   makeReactiveBinding('moddf')
   
   # -- updating data geography if differs from previous selection -- 
@@ -48,12 +48,12 @@ shinyServer(function(input, output, session) {
   context_selected_data <- reactive({                                #make into eventReactive(input$updategeo,{})
     print('eventReactive: subset contextdf to selected inputs')
     if (input$state == 'All'){
-      acsdata %>%
+      context_data %>%
         filter(
           year %in% input$year
         )
     } else {
-      acsdata %>% 
+      context_data %>% 
         filter(
           state_name %in% input$state,
           year %in% input$year
@@ -65,12 +65,12 @@ shinyServer(function(input, output, session) {
   mod_selected_data <- reactive({                                   #make into eventReactive(input$updategeo,{})
     print('reactive: subset moddf to selected inputs')
     if (input$state == 'All'){
-      moddata %>%
+      mod_data %>%
         filter(
           year %in% input$year
         )
     } else {
-      moddata %>% 
+      mod_data %>% 
         filter(
           state_name %in% input$state,
           year %in% input$year

@@ -168,7 +168,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               div(class = "center", 
                                                   style="display: inline-block;vertical-align:top; width: 175px;",
                                                   tags$a("2. Learn more about the perinatal outcome estimation process",
-                                                         onclick = "fakeClick('techdeets')",
+                                                         onclick = "fakeClick('perinatalpage')",
                                                          class="btn btn-primary btn-lg")
                                               ),
                                               #contextual variables button
@@ -275,7 +275,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                    # -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 
                    #################################################################################################  
                    
-                   tabPanel("Technical Details", value = "techdeets",
+                   tabPanel("Perinatal Variables", value = "perinatalpage",
                             
                             fluidRow(
                               shiny::HTML("<br><br><center> 
@@ -355,8 +355,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               ),
                                               
                                               #select year
-                                              sliderInput('year', label = "Year", value = min(acsdata$year), 
-                                                          min = min(acsdata$year), max = max(acsdata$year), 
+                                              sliderInput('year', label = "Year", value = min(context_data$year), 
+                                                          min = min(context_data$year), max = max(context_data$year), 
                                                           step=1, sep = ""
                                                           #,animate = animationOptions(interval = 750) #too slow with animation
                                               ),
