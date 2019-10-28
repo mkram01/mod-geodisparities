@@ -4,26 +4,26 @@
 # Date: 1.8.2019
 #############################################
 
-# Developed with R version 3.4.4 (64-bit)
-library(shiny)
-library(leaflet)
-library(leaflet.extras)
-library(RColorBrewer)
-library(rgdal)
-library(sf)
-library(ggplot2)
-library(ggvis)
-library(dplyr)
-#library(fontawesome)
-require(raster)
-require(gstat)
-library(stringr)
-library(png)
-library(shinyjs)
-library(DT) #provides an R interface to the JavaScript library DataTables. R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables
-library(rintrojs)
-library(OneR)
-library(shinyWidgets)
+# Developed with R version 3.6.1 (64-bit)
+
+# --------------------------------------- set up environment ------------------------------------
+# load packages
+x <- c("shiny", "shinyjs", "rintrojs", "shinyWidgets",    #packages responsible to app performance
+       "rgdal", "sf", "raster",                           #spatial data packages
+       "gstat",                                           #spatial modeling packages
+       "dplyr", "stringr", "OneR", "data.table",          #data handling and basic stats packages
+       "leaflet", "leaflet.extras",                       #TO-DO: --- delete these once fully transitioned to plotly -----------
+       "ggplot2", "ggvis",                                #TO-DO: --- delete these once fully transitioned to plotly -----------
+       "RColorBrewer",                                    # Color palette
+       "png", "DT"                                       # png for self-explanatory reasons, DT is an R interface to JS lib DataTables -- R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables
+)
+  
+#installing any packages not installed already
+new.packages <- x[!(x %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+#loading all package libraries
+lapply(x, require, character.only = TRUE)
 
 # Calling carousel script -- not sure how this is being used
 source("carouselPanel.R")
@@ -40,37 +40,22 @@ panel_div <- function(class_type, content) {
 }
 
 # -------------------------------------- load data ------------------------------------------------- 
-# --- previous to October 2019 code ---
-#load spatial data
-#geodata <- readRDS('data/sf_acs5_2007_2017_w2010counties_v.Rds')
-#geodata <- readRDS('data/alldata.Rds')
-# NOTE: for Alabama talk swapping out 'newdata.Rds' for 'alldata.Rds'
-#geodata <- readRDS('data/alldata.Rds')
-#transform spatial data to wgs84
-#geodata <- st_transform(geodata, crs = 4326)
-
 #load acs data -- NOTE: currently using this is as the reference dataset for shared functions with model data (e.g. state names vector below, year range for dashboard toggling, etc.)
-acsdata <- readRDS('data/sf_acs.Rds')
+context_data <- readRDS('data/sf_acs.Rds')
 
 #load model data
-moddata <- readRDS('data/sf_moddata.Rds')
-
-#check crs
-#st_crs(acsdata) #retained crs
-#st_crs(moddata) #retained crs
+mod_data <- readRDS('data/sf_moddata.Rds')
 
 #state boundaries
 state_bounds <- readRDS('data/stateboundaries.Rds')
-#transform spatial data to wgs84
+
+#transform state bounds data to wgs84
 state_bounds <- st_transform(state_bounds, crs = 4326)
 
-#aspatial data for plots
-# adata <- copy(geodata)
-# adata$geometry <- NULL
-
-#load aspatial data
-#adata <- readRDS('data/acs5_2007_2017_fin.Rds')
+#load in data classification keys for mapping colors & transformations to vars
+context_key <- fread('data/context_vars_palettemapper.csv', stringsAsFactors = F)
+mod_key <- fread('data/model_vars_palettemapper.csv', stringsAsFactors = F)
 
 # -------------------------------------- app inputs defined ----------------------------------------
 #state choices
-state_names <- as.character(unique(acsdata$state_name))
+state_names <- as.character(unique(context_data$state_name))

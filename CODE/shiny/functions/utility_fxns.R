@@ -34,7 +34,8 @@ save_profvis2html <- function(input, outdir, outname = NA){
   #   Output: html file in designated dir
   
   if (is.na(outname)){
-    outname <- gsub(".*/(.*)\\..*","\\1", (input), perl = T)
+    basename <- gsub(".*/(.*)\\..*","\\1", (input), perl = T) 
+    outname <- paste0(basename, ".html")
   } else {
     outname <- (outname)
   }

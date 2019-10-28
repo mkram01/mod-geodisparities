@@ -35,10 +35,10 @@ shinyServer(function(input, output, session) {
   # Subsetting data ----------------------------------------------------------------------------------
   
   # -- making data into reactive objects
-  contextdf <- acsdata
+  contextdf <- context_data
   makeReactiveBinding('contextdf')
   
-  moddf <- moddata
+  moddf <- mod_data
   makeReactiveBinding('moddf')
   
   # -- updating data geography if differs from previous selection -- 
@@ -48,12 +48,12 @@ shinyServer(function(input, output, session) {
   context_selected_data <- reactive({                                #make into eventReactive(input$updategeo,{})
     print('eventReactive: subset contextdf to selected inputs')
     if (input$state == 'All'){
-      acsdata %>%
+      context_data %>%
         filter(
           year %in% input$year
         )
     } else {
-      acsdata %>% 
+      context_data %>% 
         filter(
           state_name %in% input$state,
           year %in% input$year
@@ -65,12 +65,12 @@ shinyServer(function(input, output, session) {
   mod_selected_data <- reactive({                                   #make into eventReactive(input$updategeo,{})
     print('reactive: subset moddf to selected inputs')
     if (input$state == 'All'){
-      moddata %>%
+      mod_data %>%
         filter(
           year %in% input$year
         )
     } else {
-      moddata %>% 
+      mod_data %>% 
         filter(
           state_name %in% input$state,
           year %in% input$year
@@ -190,10 +190,10 @@ shinyServer(function(input, output, session) {
   # Update xvar & yvar var input options ---------------------------------------------------
   
   # dependent on subsetting of dfs above
-  output$contextvar <- renderUI(selectInput('contextvar',label='Contextual Var',
+  output$contextvar <- renderUI(selectInput('contextvar',label='Contextual Variable',
                                          choices = names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
                                          selected =  names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][1]))
-  output$modvar <- renderUI(selectInput('modvar',label='Model Var',
+  output$modvar <- renderUI(selectInput('modvar',label='Perinatal Outcome Variable',
                                           choices = names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
                                           selected =  names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2]))
   
@@ -236,7 +236,7 @@ shinyServer(function(input, output, session) {
       geom_line(stat = "smooth", method = "lm", alpha = 0.3, colour = "red") +
       scale_colour_distiller(palette = "YlOrRd", direction = 1) +
       theme_bw() +
-      coord_fixed()+
+      #coord_fixed()+
       theme(legend.position = "none") +
       xlab(input$contextvar) +
       ylab(input$modvar)
