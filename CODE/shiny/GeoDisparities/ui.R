@@ -152,42 +152,103 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             #                                 - Contextual vars - 'contextpage'
                             #                                 - GeoDisparities Mapper - 'geomapper' 
                             fluidRow(
-                              column(3),
-                              column(6,
-                                     
-                                     
+                              column(2),
+                              
+                              column(2,  #tutorial
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "600px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Learn how to use and interpret the GeoDisparities Mapper with the Tutorial!")
+                                             )
+                                         )
+                                     )
+                                  ),
+                              column(2,
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "600px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Explore geodisparities and go straight to the GeoDisparities Mapper!")
+                                             )
+                                         )
+                                     )
+                                  ),
+                              
+                              column(2,
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "600px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Learn more about the community contextual variables!")
+                                             )
+                                         )
+                                     )
+                                  ),
+                              
+                              column(2,
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "600px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Learn more about the perinatal outcome estimation process!")
+                                             )
+                                         )
+                                     )
+                                   ),
+                              
+                              column(2)
+                            ),
+                              
+                              
+                              fluidRow(
+                                column(2),
+                              
+                              column(2,
                                      tags$div(class = "wrap",
                                               #tutorial button
                                               div(class = "center", 
                                                   style="display: inline-block;vertical-align:top; width: 175px;",
-                                                  tags$a("1. Tutorial",
+                                                  tags$a("Go!",
                                                          onclick = "fakeClick('tuts')",
                                                          class="btn btn-primary btn-lg")
-                                              ),
-                                              #technical details button
-                                              div(class = "center", 
-                                                  style="display: inline-block;vertical-align:top; width: 175px;",
-                                                  tags$a("2. Learn more about the perinatal outcome estimation process",
-                                                         onclick = "fakeClick('perinatalpage')",
-                                                         class="btn btn-primary btn-lg")
-                                              ),
-                                              #contextual variables button
-                                              div(class = "center", 
-                                                  style="display: inline-block;vertical-align:top; width: 175px;",
-                                                  tags$a("3. Learn more about the community contextual variables",
-                                                         onclick = "fakeClick('contextpage')",
-                                                         class="btn btn-primary btn-lg")
-                                              ),
-                                              #geomapper button
-                                              div(class = "center",
-                                                  style="display: inline-block;vertical-align:top; width: 175px;",
-                                                  tags$a("4. Go straight to the GeoDisparities Mapper", 
-                                                         onclick="fakeClick('geomapper')", 
-                                                         class="btn btn-primary btn-lg")
-                                              )  
-                                     ), #end tags$div
-                              ), #end column 6
-                              column(3)
+                                              )
+                                            )
+                                     ),
+                              column(2,
+                                     tags$div(class="wrap",
+                                     #technical details button
+                                     div(class = "center", 
+                                         style="display: inline-block;vertical-align:top; width: 175px;",
+                                         tags$a("Go!",
+                                                onclick = "fakeClick('geomapper')",
+                                                class="btn btn-primary btn-lg")
+                                        )
+                                     )
+                              ),
+                              column(2,
+                                     tags$div(class="wrap",
+                                     #contextual variables button
+                                     div(class = "center", 
+                                         style="display: inline-block;vertical-align:top; width: 175px;",
+                                         tags$a("Go!",
+                                                 onclick = "fakeClick('contextpage')",
+                                                 class="btn btn-primary btn-lg")
+                                              )
+                                            )
+                                     ),
+                              column(2,
+                                     tags$div(class="wrap",
+                                     #geomapper button
+                                     div(class = "center",
+                                         style="display: inline-block;vertical-align:top; width: 175px;",
+                                         tags$a("Go!", 
+                                                 onclick="fakeClick('perinatalpage')", 
+                                                 class="btn btn-primary btn-lg")
+                                              )
+                                            )
+                                     ),
+                              column(2)
                             ),
                             
                             # PAGE BREAK
