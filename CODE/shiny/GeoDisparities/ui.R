@@ -53,7 +53,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             fluidRow(
                               column(3),
                               column(6,
-                                     shiny::HTML("<br><br><center> <h1>What you'll find here</h1> </center><br>"),
+                                     shiny::HTML("<br><br><center> <h1>What will you find here?</h1> </center><br>"),
                                      shiny::HTML("<h5>This is an interactive tool to help you visually explore the 
                                                  geographic associations between socio-economic opportunity and stress, 
                                                  and perinatal outcomes such as preterm birth.</h5>")
@@ -72,7 +72,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             fluidRow(
                               column(3),
                               column(6,
-                                     shiny::HTML("<br><br><center> <h1>How it can help you</h1> </center><br>"),
+                                     shiny::HTML("<br><br><center> <h1>How can it help you?</h1> </center><br>"),
                                      shiny::HTML("<h5>This tool can help inform users about geographic patterns of 
                                                  maternal and infant risk and resilience, alongside the geographic 
                                                  patterns of community-based stressors and resources.  The tool is 
@@ -506,10 +506,16 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               ),
                                               
                                               #select geography
-                                              selectizeInput("state", "Select your geography by state",
+                                              selectizeInput("state", "Select your geography",
                                                              choices = c(state_names),
                                                              selected = "Georgia",
                                                              multiple = TRUE),
+                                              
+                                              #select model data variables (right-side) data to be mapped & plotted
+                                              uiOutput('modvar'),
+                                              
+                                              #select contextual variables (left-side) data to be mapped & plotted
+                                              uiOutput('contextvar'),
                                               
                                               #update geography button
                                               actionBttn(
@@ -522,30 +528,24 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                 block = TRUE
                                               ),
                                               
-                                              #select year
-                                              sliderInput('year', label = "Year", value = min(context_data$year), 
-                                                          min = min(context_data$year), max = max(context_data$year), 
-                                                          step=1, sep = ""
-                                                          #,animate = animationOptions(interval = 750) #too slow with animation
+                                              #select number of quantiles for right-side data
+                                              sliderInput('modquantiles', label = "Perinatal Outcome Variable Quantiles", 
+                                                          value = 5, min = 2, max = 10, step = 1, sep = ""
                                               ),
-                                              
-                                              #select contextual variables (left-side) data to be mapped & plotted
-                                              uiOutput('contextvar'),
                                               
                                               #select number of quantiles for left-side data
                                               sliderInput('contextquantiles', label = "Contextual Variable Quantiles", 
                                                           value = 5, min = 2, max = 10, step = 1, sep = ""
                                               ),
                                               
-                                              #select model data variables (right-side) data to be mapped & plotted
-                                              uiOutput('modvar'),
                                               
-                                              #select number of quantiles for right-side data
-                                              sliderInput('modquantiles', label = "Model Variable Quantiles", 
-                                                          value = 5, min = 2, max = 10, step = 1, sep = ""
+                                              
+                                              #select year
+                                              sliderInput('year', label = "Year", value = min(context_data$year), 
+                                                          min = min(context_data$year), max = max(context_data$year), 
+                                                          step=1, sep = ""
+                                                          #,animate = animationOptions(interval = 750) #too slow with animation
                                               ),
-                                              
-                                              
                                               
                                               #grab ui output
                                               uiOutput("ui")
@@ -572,7 +572,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          #Title for maps section
                                          fluidRow(
                                            column(12,
-                                                  tags$h4("Chloropleth Maps"),
+                                                  tags$h4("Maps"),
                                                   align="center"
                                            ),
                                            column(6,
@@ -612,11 +612,11 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   align="center"
                                                   ),
                                            column(6,
-                                                  tags$em(tags$h5("What does the distribution of this contextual variable tell you?")),
+                                                  tags$em(tags$h5("How does this contextual variable vary?")),
                                                   align="center"
                                                   ),
                                            column(6,
-                                                  tags$em(tags$h5("What does the distribution of this model output variable tell you?")),
+                                                  tags$em(tags$h5("How does this perinatal variable vary?")),
                                                   align="center"
                                                   )
                                            
@@ -647,7 +647,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   align="center"
                                            ),
                                            column(12,
-                                                  tags$em(tags$h5(("What does the relationship between the contextual and the model outcome variables signify?"))),
+                                                  tags$em(tags$h5(("What does the relationship between the contextual and the perinatal outcome variables signify?"))),
                                                   align="center"
                                                   )
                                          ),
