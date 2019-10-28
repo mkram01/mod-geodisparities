@@ -493,10 +493,235 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                   ), # end vptb black mothers column
                               column(3)
                             ),
+                            
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li>These differences can also be seen on maps. In each of the maps below, the colors indicate
+                                                  the relative ordering of rates of each outcome. In the two maps below of the risk for <em>Very</em> 
+                                                  Preterm birth and <em>Preterm</em> Birth among non-Hispanic Black women, we can see that counties 
+                                                  along the Atlantic coastal states have <em>relatively lower</em> Preterm Birth, but <em>relatively higher</em> 
+                                                  Very Preterm Birth. The opposite pattern is evident in Southeastern Texas counties. These 
+                                                  differences may point to different risk profiles in these counties.
+                                                  </li>
+                                                  <br>
+                                                  <li><u>How can we compare the colors in two maps side-by-side?</u> As discussed above, the 
+                                                  GeoDisparities Mapper uses a mapping rule that ranks all counties in a single maps from the 
+                                                  lowest to the highest risk, and then groups them into 5 equally sized categories (‘quintiles’).  
+                                                  The colors are assigned to these categories from the lowest (lighter color) to highest 
+                                                  (darker color).   If two maps are side by side, the colors in one map do not necessarily 
+                                                  reflect the same absolute risk as that color in another  map. It is always important to look
+                                                  at the map legend to understand what the colors represent.
+                                                  </li>
+                                                  </ul>
+                                                 </h5>"),
+                                     
+                                     #comparing colors in maps figure
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Comparing colors in 2 maps"),
+                                               tags$img(src = "tutorial_comparecolorsinmaps.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ), #gestational age categories figure div
+                                     
+                                     ),
+                              column(3)
+                            ),
                                      
                             # PAGE BREAK
-                            tags$hr()
+                            tags$hr(),
                             
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<left> <h4><b><em>Race matters</b></em></h4> </left><br>"),
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li>The notion that ‘place matters for health’ suggests that some places are more or less 
+                                                  healthy for <em>everyone in the county.</em> Many aspects of community context likely do affect 
+                                                  everyone living in that community. For example, counties with no maternity health care 
+                                                  services means lower access for all. However, because of the history of slavery, Jim Crow 
+                                                  laws, economic inequality, racial residential segregation, and other processes of 
+                                                  structural racism and inequality, there can be differences in <em>where</em> Black and White 
+                                                  families live, but also differences in <em>how</em> Black and White families experience even the
+                                                  same places in which they live.
+                                                  </li>
+                                                  <br>
+                                                  <li>For example, there can be place-based racial disparities in educational and economic
+                                                  opportunity, racial differences in access to and quality of health care, and differences 
+                                                  in experience of chronic stressors known to be risk factors for preterm birth.  These 
+                                                  differences can produce <em>racial differences</em> in the geographic patterns of relatively 
+                                                  higher or relatively lower risk for perinatal outcomes.
+                                                  </li>
+                                                  <br>
+                                                  <li>There may be distinct geographic patterns of perinatal outcomes for the total population,
+                                                  and  separate patterns for groups defined by race/ethnicty, or even when viewing measures of
+                                                  health equity between race groups (link to Measures Matter, below).
+                                                  </li>
+                                                  <br>
+                                                  <li>For example in this map of very low birth weight, the region with the highest relative 
+                                                  risk for White women is the Appalachian Mountain region, and generally ‘moderate’ levels 
+                                                  of risk in the Deep South. On the other hand, for Black women, the largest concentration 
+                                                  of high risk are in the Deep South.
+                                                  </li>
+                                                  </ul>
+                                                  </h5>"
+                                     ),
+                                     #very low birthweight among white women in appalachia & black women in deep south maps figure
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Highest Rates of Very Low Birth Weight Among Black and White Women"),
+                                               tags$img(src = "tutorial_vlbwwhiteappalachiablackdeepsouth.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ), #end vlbw map figure
+                                     
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li>The GeoDisparities Mapper currently includes perinatal outcome indicators for 
+                                                  non-Hispanic White, non-Hispanic Black, and Hispanic women in counties where there
+                                                  are sufficient births to each group to produce a statistically reliable estimate. 
+                                                  When there are not sufficient births to estimate a reliable value, the counties are 
+                                                  colored grey.
+                                                  </li>
+                                                  </ul>
+                                                 </h5>")
+                              ),
+                              column(3)
+                            ),
+                            
+                            # PAGE BREAK
+                            tags$hr(),
+                            
+                            #measures matter
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<left> <h4><b><em>Measures matters</b></em></h4> </left><br>"),
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li>Numbers don’t lie but a single number does not always tell the whole truth. 
+                                                  Take, for instance, measures of health equity. In the United States, on average 
+                                                  Black women and infants experience excess burden of poor perinatal outcomes as 
+                                                  compared to non-Hispanic White women. As discussed above, there is little 
+                                                  evidence that genetics or individual health behaviors explain this difference. 
+                                                  Instead, many researchers posit that the reason for the persistence of racial 
+                                                  inequity in perinatal outcomes is due to historical inequality by race and 
+                                                  socioeconomic opportunity, factors that not only affect pregnancy, but can 
+                                                  influence girls and women’s health across their life and even across generations. 
+                                                  </li>
+                                                  <br>
+                                                  <li>In the United States it is quite common to ‘measure’ health disparities 
+                                                  (health inequity) between two groups by dividing the risk of one group by the
+                                                  risk of another. We may call this measure a <em>risk ratio.</em> The interpretation of
+                                                  a <em>risk ratio</em> of 1.0 is that both groups have equal risk for the outcome. 
+                                                  In contrast a risk ratio of 1.5 and 2.0 mean that the high-risk group has either 
+                                                  50% increased risk or 100% increased risk (double the risk) as compared to the 
+                                                  lower risk group. You may have seen these measures used for describing racial 
+                                                  disparities in perinatal outcomes.
+                                                  </li>
+                                                  <br>
+                                                  <li>But there are other ways to monitor population health equity. One other
+                                                  measure is a <em>risk difference</em> rather than ratio. Instead of dividing 
+                                                  the risk in one group by the other, a <em>risk difference</em> subtracts the 
+                                                  risk in one group from another (e.g. takes the absolute arithmetic difference). 
+                                                  Why would this tell us anything different from the <em>risk ratio?</em> Because
+                                                  the same <em>absolute</em>  difference in risk will produce a different 
+                                                  <em>relative</em> (ratio) gap when the lower-risk group is doing better or worse.
+                                                  </li>
+                                                  <br>
+                                                  <li>In the figure below, we plot the Black-White <em>rate ratio</em> for U.S. 
+                                                  counties against the Black-White <em>risk difference</em> for the very same 
+                                                  counties. Clearly the two values are generally correlated (go up together). 
+                                                  But looking at counties along the purple line (representing a three-fold higher
+                                                  risk of very preterm birth among Black women as compared to White women), we can
+                                                  see that there are a range of Black-White <em>risk differences.</em> The colors 
+                                                  in this plot demonstrate how much the risk for very preterm birth in each county
+                                                  among the lower risk group (non-Hispanic White women) varies. In counties where 
+                                                  White women have low risk (colored blue), and a Black-White <em>risk ratio</em>
+                                                  of 3.0, the Black-White <em>risk difference</em> is low (between 11 and 13 per 
+                                                  1,000 births). But if we look at counties where White women have higher risk 
+                                                  (colored red), the very same Black-White <em>risk ratio</em> of 3.0 results in 
+                                                  a Black-White <em>risk difference</em> of 15-18.  
+                                                  </li>
+                                                  <br>
+                                                  </ul>
+                                                 </h5>"),
+                              #Different Measures of Health Equity Tell Different Stories figure
+                              div(class="panel panel-default", 
+                                  div(class="panel-body",  width = "800px",
+                                      align = "center",
+                                      div(
+                                        tags$h5("Different Measures of Health Equity Tell Different Stories"),
+                                        tags$img(src = "tutorial_diffmeasureshealthequity.png", 
+                                                 width = "750px")#, height = "50px")
+                                      )
+                                  )
+                                ),
+                              shiny::HTML("<h5>
+                                           <ul>
+                                           <li><u>Why does this happen?</u>  One way to understand is to imagine two different 
+                                           counties. In County A, non-Hispanic White women have a 1% risk for very preterm birth 
+                                           (<32 weeks), while non-Hispanic Black women have a 3% risk.  In County B, non-Hispanic
+                                           White women have a risk of 2% and non-Hispanic Black women have a 4% risk.   It is clear
+                                           that in each county Black women have a risk for very preterm birth that is 2% higher 
+                                           in absolute terms. In other words, the Black-White disparity measured with an <em>absolute
+                                           risk difference</em> is 2 excess very preterm births per 100 births. However, if we measured
+                                           the disparity with the <em>relative risk ratio,</em> in County A, Black women have three-times 
+                                           (<em>risk ratio 3% / 1% = 3.0</em>) the risk for very preterm birth. In County B, Black 
+                                           women have two-times the risk (4% / 2% = 2.0). 
+                                           </li>
+                                           <br>
+                                           <li>Once again, these differences in <em>how big the racial disparity is</em> can be seen on maps.
+                                           </li>
+                                           <br>
+                                           </ul>
+                                          </h5>"),
+                              #Geography of Health Inequity figure
+                              div(class="panel panel-default", 
+                                  div(class="panel-body",  width = "800px",
+                                      align = "center",
+                                      div(
+                                        tags$h5("Geography of Health Inequity"),
+                                        tags$img(src = "tutorial_geohealthinequity.png", 
+                                                 width = "750px")#, height = "50px")
+                                      )
+                                  )
+                              ),
+                              shiny::HTML("<h5>
+                                           <ul>
+                                           <li>In this map it appears that the Black-White racial disparity in the some Deep South counties
+                                           is relatively <u><em>larger</em></u> when using the <em>absolute risk difference</em> measure, but
+                                           in those same counties the Black-White racial disparity is relatively <u><em>smaller</em></u>
+                                           when using the <em>relative risk ratio</em> measure. This is because the risk for very preterm
+                                           birth is higher for <em>both Black and White</em> women in Deep Southern counties as compared 
+                                           to many counties in the Northeast.
+                                           </li>
+                                           <br>
+                                           <li><u>What do these measures tell us?</u> Both measures are mathematically correct. However 
+                                           they tell slightly different stories about where disparities in perinatal outcomes are larger
+                                           or smaller.  Making maps of health equity can be a useful complement to maps of only risk in 
+                                           the whole population or for individual racial or ethnic groups. However it is important to 
+                                           consider whether a large or small disparity is because both groups are doing well or both 
+                                           are doing poorly.
+                                           </li>
+                                           <br>
+                                           </ul>
+                                          </h5>")
+                              
+                              ),
+                              
+                              column(3)
+                            )
                            
                    ),  # Closes tutorial tab
                    
@@ -508,12 +733,129 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             
                             fluidRow(
                               shiny::HTML("<br><br><center> 
-                                                   <h1>GeoDisparities Mapper: Technical Details</h1> 
+                                                   <h1>GeoDisparities Mapper: Perinatal Outcome Variables</h1> 
                                                    <h4>What's behind the modeled data.</h4>
                                                    </center>
                                                    <br>
                                                    <br>"),
-                              style = "height:250px;")
+                              style = "height:250px;"),
+                            
+                            # PAGE BREAK
+                            tags$hr(),
+                            
+                            # ---------------- in brief.....
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<center> <h2>In brief...</h2> </center><br>"),
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li><u>Why are the perinatal indicators in the GeoDisparities Mapper only 
+                                                  estimates rather than the actual risk?</u>
+                                                  </li>
+                                                  <br>
+                                                  <li>It is true that birth certificate information on nearly every live birth in 
+                                                  the United States is collected by the National Center for Health Statistics (NCHS).
+                                                  These records include the gestational age and weight of the infant at birth, 
+                                                  information about the mother and the county in which she lived at the time of 
+                                                  birth. So wouldn’t it be better to just map the <u><em>“actual” risk</em></u> 
+                                                  rather than an <u><em>estimate?</u></em> We believe the answer is ‘no’ for two reasons. 
+                                                  <br>
+                                                  <ol>
+                                                  <li>The first is that the NCHS does not publicly distribute the county of residence 
+                                                  for vital records to protect the privacy of individual women and small demographic 
+                                                  sub-groups. These data are available under a special Data Use Agreement with NCHS, 
+                                                  but only for specific, targeted use by individuals who are part of the Agreement.
+                                                  </li>
+                                                  <br>
+                                                  <li>The second reason is that, even if we could share the actual count of preterm 
+                                                  births for every county, the statistics would be considered <u><em>“unreliable”</em></u>
+                                                  or <u><em>“unstable”</em></u> for many counties where there are not very many births 
+                                                  to the specific race/ethnic group being mapped.  Imagine there are two counties, each 
+                                                  measured for three separate years. The number of live births stayed the same in each
+                                                  county for all three years. However each year, perhaps due to random chance, there 
+                                                  was one additional baby born preterm than the previous year.  In County B, the risk 
+                                                  of preterm birth is very <u><em>stable</em></u> around 10%. In other words the 
+                                                  relatively random fluctuation of one or two more or fewer preterm babies did not 
+                                                  change the estimate of risk very much. In contrast, in County B the risk ranged from
+                                                  0% to 20%, both very extreme values for preterm birth. This is because there are not
+                                                  many births at risk in County A. When there are a very small number of births or 
+                                                  very few poor outcomes (e.g. ‘sparse data’), the calculated risk can be statistically
+                                                  unreliable or unstable, and can easily take on unreasonably extreme values.
+                                                  </li>
+                                                  </ol>
+                                                  </li>
+                                                  <br>
+                                                  </ul>
+                                                 </h5>"),
+                                     #table
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5(""),
+                                               tags$img(src = "perinatal_table.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ),
+                                     
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li><u>What does it mean to ‘estimate’ risk and how was it done here?</u>
+                                                  </li>
+                                                  <br>
+                                                  <li>Risk estimates are an effort to produce the most reliable prediction of the
+                                                  underlying ‘true’ risk of poor perinatal outcomes experienced by a group of women
+                                                  (e.g. in a specific race/ethnic group in a specific county).  To the extent that 
+                                                  the methods and approach used to calculate the estimate are valid and robust, the
+                                                  resulting estimate is more useful for comparing across counties or across years. 
+                                                  In other words the estimation process aims to describe what is really different 
+                                                  about risk without too many extreme swings that are due only to sparse data and random
+                                                  chance.
+                                                  </li>
+                                                  <br>
+                                                  <li>The approach to <em>perinatal risk estimation</em> in the GeoDisparities Mapper 
+                                                  uses sophisticated spatio-temporal statistical models called Bayesian disease mapping.
+                                                  The more technical details of the modeling procedure are described below. However in 
+                                                  broad terms, it is well known that, on average, the risk in one year is more correlated
+                                                  with the risk in the previous year than it is with risk much longer ago. Similarly, on 
+                                                  average, the risk in one county is more similar to the risk in nearby counties than it
+                                                  is to a randomly selected, distant county. Of course there are exceptions to both 
+                                                  situations. However the Bayesian disease mapping approach is a way to stabilize risk 
+                                                  estimates from sparse populations (counties or race/ethnic groups) by ‘borrowing 
+                                                  statistical information’ about risk from the previous year(s) and from the nearby 
+                                                  counties. This approach has been widely used by CDC, NCHS, and the World Health 
+                                                  Organization to develop statistically reliable maps of geographic patterns of population health.
+                                                  </li>
+                                                  <br>
+                                                  </ul>
+                                                 </h5>")
+                              ),
+                              column(3)
+                            ),
+                            
+                            # PAGE BREAK
+                            tags$hr(),
+                            
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     shiny::HTML("<center> <h2>Technical detail of risk estimation models</h2> </center><br>"),
+                                     shiny::HTML("<h5>
+                                                  <ul>
+                                                  <li>The specific model selection process is still underway. Once complete we 
+                                                  will population this section with the statistical detail, but also with some 
+                                                  evidence about model fit and performance. 
+                                                  </li>
+                                                  </ul>
+                                                 </h5>")
+                                     ),
+                              column(3)
+                            ),
+                            
+                            # PAGE BREAK
+                            tags$hr(),
                             
                    ),  # Closes Technical Details tab
                    
