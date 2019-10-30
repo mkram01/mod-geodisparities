@@ -293,6 +293,23 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3)
                             ),
                             
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     tags$div(class="wrap",
+                                              #technical details button
+                                              div(class = "center", 
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
+                                                  tags$a("Go to the GeoDisparites Mapper now!",
+                                                         onclick = "fakeClick('geomapper')",
+                                                         class="btn btn-primary btn-lg")
+                                              )
+                                        )      
+                                     ),
+                              column(3)
+                              
+                            ),
+                          
                             # PAGE BREAK
                             tags$hr(),
                             
@@ -336,8 +353,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Place Matters for Perinatal Health"),
-                                               tags$img(src = "tutorial_placemattersforperinatalhealth.png", 
+                                               tags$h5("Figure 1: Preterm birth estimates in U.S. counties, 2017"),
+                                               tags$img(src = "tutorial_fig1_placemattersforperinatalhealth.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -366,8 +383,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("March of Dimes Maternity Care Deserts Map"),
-                                               tags$img(src = "tutorial_MoDmaternitycaredeserts.png", 
+                                               tags$h5("Figure 2: Access to maternity care in U.S. counties, 2016 
+                                                       (", a(href="https://www.marchofdimes.org/materials/Nowhere_to_Go_Final.pdf","Source"), ")"),
+                                               tags$img(src = "tutorial_fig2_MoDmaternitycaredeserts.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -432,8 +450,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Gestational Age Categories in the GeoDisparities Mapper"),
-                                               tags$img(src = "tutorial_gestationalagecategories.png", 
+                                               tags$h5("Figure 3: Categories of gestational age"),
+                                               tags$img(src = "tutorial_fig3_gestationalagecategories.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -465,32 +483,20 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             
                             fluidRow(
                               column(3),
-                              column(3, 
-                                     # very preterm birth among black mothers
+                              column(6, 
+                                     # very preterm birth 
                                      div(class="panel panel-default", 
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Risk for preterm birth among Black mothers"),
-                                               tags$img(src = "tutorial_vptbblackmothers.png", 
-                                                        width = "350px")#, height = "50px")
+                                               tags$h5("Figure 4: Association of perinatal outcomes within U.S. counties, 2017"),
+                                               tags$img(src = "tutorial_fig4_vptb.png", 
+                                                        width = "750px")#, height = "50px")
                                              )
                                          )
                                      ), #gestational age categories figure div
-                              ), # end vptb black mothers column
-                              column(3, 
-                                     # very preterm birth among white mothers
-                                     div(class="panel panel-default", 
-                                         div(class="panel-body",  width = "800px",
-                                             align = "center",
-                                             div(
-                                               tags$h5("Risk for preterm birth among Wlack mothers"),
-                                               tags$img(src = "tutorial_vptbwhitemothers.png", 
-                                                        width = "350px")#, height = "50px")
-                                             )
-                                         )
-                                     )
-                              ), # end vptb black mothers column
+                              ), # end vptb mothers column
+                              
                               column(3)
                             ),
                             
@@ -523,8 +529,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Comparing colors in 2 maps"),
-                                               tags$img(src = "tutorial_comparecolorsinmaps.png", 
+                                               tags$h5("Figure 5: Comparing geographic patterns of different perinatal outcomes, Black women, 2017"),
+                                               tags$img(src = "tutorial_fig5_comparecolorsinmaps.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -578,8 +584,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Highest Rates of Very Low Birth Weight Among Black and White Women"),
-                                               tags$img(src = "tutorial_vlbwwhiteappalachiablackdeepsouth.png", 
+                                               tags$h5("Figure 6: Comparing geographic patterns in preterm birth by maternal race, 2017"),
+                                               tags$img(src = "tutorial_fig6_geopatternsmaternalrace.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -661,8 +667,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Different Measures of Health Equity Tell Different Stories"),
-                                               tags$img(src = "tutorial_diffmeasureshealthequity.png", 
+                                               tags$h5("Figure 7: Comparing racial disparities measured as 'risk ratios' and 'risk differences' for preterm birth, 2017"),
+                                               tags$img(src = "tutorial_fig7_diffmeasureshealthequity.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -691,8 +697,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Geography of Health Inequity"),
-                                               tags$img(src = "tutorial_geohealthinequity.png", 
+                                               tags$h5("Figure 8: Comparing geographic patterns of Black-White racial disparities by choice of measure, 2017"),
+                                               tags$img(src = "tutorial_fig8_geohealthinequity.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
