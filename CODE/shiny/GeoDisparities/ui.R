@@ -293,6 +293,23 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               column(3)
                             ),
                             
+                            fluidRow(
+                              column(3),
+                              column(6,
+                                     tags$div(class="wrap",
+                                              #technical details button
+                                              div(class = "center", 
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
+                                                  tags$a("Go to the GeoDisparites Mapper now!",
+                                                         onclick = "fakeClick('geomapper')",
+                                                         class="btn btn-primary btn-lg")
+                                              )
+                                        )      
+                                     ),
+                              column(3)
+                              
+                            ),
+                          
                             # PAGE BREAK
                             tags$hr(),
                             
@@ -336,8 +353,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Place Matters for Perinatal Health"),
-                                               tags$img(src = "tutorial_placemattersforperinatalhealth.png", 
+                                               tags$h5("Figure 1: Preterm birth estimates in U.S. counties, 2017"),
+                                               tags$img(src = "tutorial_fig1_placemattersforperinatalhealth.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -366,8 +383,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("March of Dimes Maternity Care Deserts Map"),
-                                               tags$img(src = "tutorial_MoDmaternitycaredeserts.png", 
+                                               tags$h5("Figure 2: Access to maternity care in U.S. counties, 2016 
+                                                       (", a(href="https://www.marchofdimes.org/materials/Nowhere_to_Go_Final.pdf","Source"), ")"),
+                                               tags$img(src = "tutorial_fig2_MoDmaternitycaredeserts.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -432,8 +450,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Gestational Age Categories in the GeoDisparities Mapper"),
-                                               tags$img(src = "tutorial_gestationalagecategories.png", 
+                                               tags$h5("Figure 3: Categories of gestational age"),
+                                               tags$img(src = "tutorial_fig3_gestationalagecategories.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -465,32 +483,20 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             
                             fluidRow(
                               column(3),
-                              column(3, 
-                                     # very preterm birth among black mothers
+                              column(6, 
+                                     # very preterm birth 
                                      div(class="panel panel-default", 
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Risk for preterm birth among Black mothers"),
-                                               tags$img(src = "tutorial_vptbblackmothers.png", 
-                                                        width = "350px")#, height = "50px")
+                                               tags$h5("Figure 4: Association of perinatal outcomes within U.S. counties, 2017"),
+                                               tags$img(src = "tutorial_fig4_vptb.png", 
+                                                        width = "750px")#, height = "50px")
                                              )
                                          )
                                      ), #gestational age categories figure div
-                              ), # end vptb black mothers column
-                              column(3, 
-                                     # very preterm birth among white mothers
-                                     div(class="panel panel-default", 
-                                         div(class="panel-body",  width = "800px",
-                                             align = "center",
-                                             div(
-                                               tags$h5("Risk for preterm birth among Wlack mothers"),
-                                               tags$img(src = "tutorial_vptbwhitemothers.png", 
-                                                        width = "350px")#, height = "50px")
-                                             )
-                                         )
-                                     )
-                              ), # end vptb black mothers column
+                              ), # end vptb mothers column
+                              
                               column(3)
                             ),
                             
@@ -523,8 +529,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Comparing colors in 2 maps"),
-                                               tags$img(src = "tutorial_comparecolorsinmaps.png", 
+                                               tags$h5("Figure 5: Comparing geographic patterns of different perinatal outcomes, Black women, 2017"),
+                                               tags$img(src = "tutorial_fig5_comparecolorsinmaps.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -578,8 +584,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Highest Rates of Very Low Birth Weight Among Black and White Women"),
-                                               tags$img(src = "tutorial_vlbwwhiteappalachiablackdeepsouth.png", 
+                                               tags$h5("Figure 6: Comparing geographic patterns in preterm birth by maternal race, 2017"),
+                                               tags$img(src = "tutorial_fig6_geopatternsmaternalrace.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -661,8 +667,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Different Measures of Health Equity Tell Different Stories"),
-                                               tags$img(src = "tutorial_diffmeasureshealthequity.png", 
+                                               tags$h5("Figure 7: Comparing racial disparities measured as 'risk ratios' and 'risk differences' for preterm birth, 2017"),
+                                               tags$img(src = "tutorial_fig7_diffmeasureshealthequity.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -691,8 +697,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          div(class="panel-body",  width = "800px",
                                              align = "center",
                                              div(
-                                               tags$h5("Geography of Health Inequity"),
-                                               tags$img(src = "tutorial_geohealthinequity.png", 
+                                               tags$h5("Figure 8: Comparing geographic patterns of Black-White racial disparities by choice of measure, 2017"),
+                                               tags$img(src = "tutorial_fig8_geohealthinequity.png", 
                                                         width = "750px")#, height = "50px")
                                              )
                                          )
@@ -899,37 +905,52 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               style = "height:50px;",
                                               
                                               #settings icon & hide/show button ---------------- want to figure out how to collapse other options under this if possible
-                                              introBox(
-                                                tags$div(
-                                                  style = "height:50px;",
-                                                  actionLink("settings", "Settings", 
-                                                             icon = icon("sliders", class = "fa-2x"))),
-                                                data.step = 6, #data steps enumerated
-                                                data.intro = "Settings is where you can set options that affect the visualization of data as maps and plots."
-                                              ),
+                                              # introBox(
+                                              #   tags$div(
+                                              #     style = "height:50px;",
+                                              #     actionLink("settings", "Settings", 
+                                              #                icon = icon("sliders", class = "fa-2x"))),
+                                              #   data.step = 6, #data steps enumerated
+                                              #   data.intro = "Settings is where you can set options that affect the visualization of data as maps and plots."
+                                              # ),
                                               
                                               #select geography
-                                              selectizeInput("state", "Select your geography",
-                                                             choices = c(state_names),
-                                                             selected = "Georgia",
-                                                             multiple = TRUE),
+                                              introBox(
+                                                selectizeInput("state", "Select your geography",
+                                                               choices = c("All",state_names),
+                                                               selected = "All",
+                                                               multiple = TRUE),
+                                                data.step = 1,
+                                                data.intro = "Start by picking one or more states to zoom in (alternatively, view the entire U.S."
+                                                
+                                              ),
                                               
-                                              #select model data variables (right-side) data to be mapped & plotted
-                                              uiOutput('modvar'),
                                               
-                                              #select contextual variables (left-side) data to be mapped & plotted
-                                              uiOutput('contextvar'),
+                                              #select model data variables data to be mapped & plotted
+                                              introBox(
+                                                uiOutput('modvar'),
+                                                data.step = 2,
+                                                data.intro = "Pick a perinatal outcome (either a single indicator, or a racial disparity measure)"
+                                                
+                                              ),
+                                              
+                                              #select contextual variables data to be mapped & plotted
+                                              introBox(
+                                                uiOutput('contextvar'),
+                                                data.step = 3,
+                                                data.intro = "Pick a contextual indicator (either social, economic, or healthcare related)"
+                                              ),
                                               
                                               #update geography button
-                                              actionBttn(
-                                                inputId = "updategeo",
-                                                label = "Update geography",
-                                                color = "primary",
-                                                style = "unite",
-                                                #icon = icon("sliders"),
-                                                size = "sm",
-                                                block = TRUE
-                                              ),
+                                              # actionBttn(
+                                              #   inputId = "updategeo",
+                                              #   label = "Update maps & graphs!",
+                                              #   color = "primary",
+                                              #   style = "unite",
+                                              #   #icon = icon("sliders"),
+                                              #   size = "sm",
+                                              #   block = TRUE
+                                              # ),
                                               
                                               #select number of quantiles for right-side data
                                               sliderInput('modquantiles', label = "Perinatal Outcome Variable Quantiles", 
@@ -949,6 +970,10 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                           step=1, sep = ""
                                                           #,animate = animationOptions(interval = 750) #too slow with animation
                                               ),
+                                              
+                                              #download report?
+                                              downloadBttn("downloadreport", label = "Download Report",
+                                                           color = "primary"),
                                               
                                               #grab ui output
                                               uiOutput("ui")
@@ -975,21 +1000,25 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          tags$hr(),
                                          
                                          #Title for maps section
-                                         fluidRow(
-                                           column(12,
-                                                  tags$h4("Maps"),
-                                                  align="center"
-                                           ),
-                                           column(6,
-                                                  tags$em(tags$h5("What does the geographic distribution of this perinatal output variable tell you?")),
-                                                  align="center"
-                                           ),
-                                           
-                                           column(6,
-                                                  tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
-                                                  align="center"
-                                           )
-                                           
+                                         introBox(
+                                             fluidRow(
+                                               column(12,
+                                                      tags$h4("Maps"),
+                                                      align="center"
+                                               ),
+                                               column(6,
+                                                      tags$em(tags$h5("What does the geographic distribution of this perinatal output variable tell you?")),
+                                                      align="center"
+                                               ),
+                                               
+                                               column(6,
+                                                      tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
+                                                      align="center"
+                                               )
+                                               
+                                              ),
+                                         data.step = 4,
+                                         data.intro = "Review the geographic patterns in the two maps below"
                                          ),
                                          
                                          # maps
@@ -1007,29 +1036,60 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          fluidRow(
                                            
-                                           style = "height:50px;"
+                                           style = "height:25px;"
+                                         ),
+                                         
+                                         # ------- variable captions --------
+                                         fluidRow(
+                                           column(6,
+                                                  div(class="panel panel-default", 
+                                                      div(class="panel-body",  width = "600px",
+                                                          align = "center",
+                                                          div(uiOutput("modcaption")
+                                                          )
+                                                      )
+                                                  )  
+                                                ),
+                                           column(6,
+                                                  div(class="panel panel-default", 
+                                                      div(class="panel-body",  width = "600px",
+                                                          align = "center",
+                                                          div(uiOutput("contextcaption")
+                                                          )
+                                                      )
+                                                  )
+                                           )
+                                         ),
+                                        
+                                         fluidRow(
+                                           
+                                           style = "height:25px;"
                                          ),
                                          
                                          # PAGE BREAK
                                          tags$hr(),
                                          
                                          #Title for univariate plots section
-                                         fluidRow(
-                                           column(12,
-                                                  tags$h4("Univariate Plots"),
-                                                  align="center"
-                                           ),
-                                           
-                                           
-                                           column(6,
-                                                  tags$em(tags$h5("How does this perinatal variable vary?")),
-                                                  align="center"
-                                           ),
-                                           column(6,
-                                                  tags$em(tags$h5("How does this contextual variable vary?")),
-                                                  align="center"
-                                           )
-                                           
+                                         introBox(
+                                             fluidRow(
+                                               column(12,
+                                                      tags$h4("Univariate Plots"),
+                                                      align="center"
+                                               ),
+                                               
+                                               
+                                               column(6,
+                                                      tags$em(tags$h5("How does this perinatal variable vary?")),
+                                                      align="center"
+                                               ),
+                                               column(6,
+                                                      tags$em(tags$h5("How does this contextual variable vary?")),
+                                                      align="center"
+                                               )
+                                               
+                                              ),
+                                         data.step = 5,
+                                         data.intro = "Review the statistical relationships visualized in the graphs below"
                                          ),
                                          
                                          #Univariate scatter plots

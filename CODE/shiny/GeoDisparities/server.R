@@ -45,8 +45,8 @@ shinyServer(function(input, output, session) {
   # ->- conductor - parent of: map endpoint, observeEvent(input$state)
   #               - child of: state input
   # subsetting to selected data using filters
-  context_selected_data <- reactive({                                #make into eventReactive(input$updategeo,{})
-    print('eventReactive: subset contextdf to selected inputs')
+  context_selected_data <- reactive({                #make into eventReactive(input$updategeo,{})
+    print('reactive: subset contextdf to selected inputs')
     if (input$state == 'All'){
       context_data %>%
         filter(
@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
     
   })
   
-  mod_selected_data <- reactive({                                   #make into eventReactive(input$updategeo,{})
+  mod_selected_data <- reactive({                     #make into eventReactive(input$updategeo,{})
     print('reactive: subset moddf to selected inputs')
     if (input$state == 'All'){
       mod_data %>%
@@ -122,7 +122,7 @@ shinyServer(function(input, output, session) {
   # ---- trigger subsetting ----
   # >- endpoint - child of: state_selected()
   #left side - contextual var
-  observeEvent(c(input$state,input$year),{
+  observeEvent(c(input$state,input$year),{                                
     print('observeEvent: updating context df and clearing map features')
     leafletProxy('contextmap') %>%
       clearShapes()
@@ -299,10 +299,29 @@ shinyServer(function(input, output, session) {
   })
   
   # ---- creating palette for colorvar ----
+  contextkeypal <- reactive({
+    print("reactive: defining color palette from metadata key")
+    as.character(context_key[context_key$variable %in% input$contextvar, "palette"])
+  })
+  
+  # contextkeyrev <- reactive({
+  #   print("reactive: defining color palette direction (reverse or not) from metadata key")
+  #   as.character(context_key[context_key$variable %in% input$contextvar, "reverse_palette"])
+  # })
+  
   #left map - contextual var
   contextcolorpal <- reactive({
     print('reactive: create contextual var color palette')
-    colorFactor("YlOrRd", contextcolorData())
+    # colorFactor(contextkeypal(), contextcolorData(), na.color = "#bdbdbd") #, reverse = contextkeyrev()
+    # 
+    # # key_pal <- as.character(context_key[context_key$variable %in% input$contextvar, "palette"])[[1]]
+    # # reverse_pal <- as.numeric(as.character(context_key[context_key$variable %in% input$contextvar, "reverse_palette"]))[[1]]
+    # # if((reverse_pal) == 1){
+    # #   colorFactor((key_pal), contextcolorData(), na.color = "#bdbdbd", reverse = TRUE)
+    # # } else {
+    # #   colorFactor((key_pal), contextcolorData(), na.color = "#bdbdbd", reverse = FALSE)
+    # # }
+    colorFactor("YlGnBu", contextcolorData())
   })
   contextpal <- reactive({
     print('reactive: create contextual var palette for leaflet arg')
@@ -312,7 +331,7 @@ shinyServer(function(input, output, session) {
   #right map
   modcolorpal <- reactive({
     print('reactive: create right color palette')
-    colorFactor("YlOrRd", modcolorData())
+    colorFactor("BuPu", modcolorData())
   })
   modpal <- reactive({
     print('reactive: create left palette for leaflet arg')
@@ -359,8 +378,8 @@ shinyServer(function(input, output, session) {
   
   # ---- update maps with polygons ----
   # - child of: pal()
-  #left map -- contextual var map
-  observe({
+  #contextual var map
+  observe({   
     print('observe: updating left map to be chloropleth of contextvar')
     print(paste0("contextdf class: ",class(contextdf)))
     #national level map -- no county boundaries, only state
@@ -456,6 +475,36 @@ shinyServer(function(input, output, session) {
       addLegend(opacity = 0.99,position = "bottomright",title = yVar(),
                 pal = modcolorpal(), values = rev(modcolorData()))
   })
+  
+  
+  # ---- captions -----
+  output$modcaption <- renderUI({
+    sprintf("<h6><b>%s</b>%s%s</h6>",
+            as.character(input$modvar),
+            ": ",
+            as.character(mod_key[mod_key$variable %in% input$modvar, "caption_text"])
+    ) %>% lapply(htmltools::HTML)
+ 
+    #return(as.character(input$modvar))
+    #return(as.character(mod_key[mod_key$variable %in% input$modvar, "caption_text"]))
+  })
+  
+  output$contextcaption <- renderUI({
+    sprintf("<h6><b>%s</b>%s%s</h6>",
+            as.character(input$contextvar),
+            ": ",
+            as.character(context_key[context_key$variable %in% input$contextvar, "caption_text"])
+            ) %>% lapply(htmltools::HTML)
+    #return(as.character(input$contextvar))
+    #return(as.character(context_key[context_key$variable %in% input$contextvar, "caption_text"]))
+  })
+  
+  # -------------------------- Report download ---------------------------------------------------- 
+  output$downloadreport <- downloadHandler(
+    filename = "GeoDisparitiesMapperReport.html",
+    content = 
+  )
+  
   #################################################################################################  
   # -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 
   #################################################################################################  
