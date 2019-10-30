@@ -17,7 +17,7 @@ x <- c("shiny", "shinyjs", "rintrojs", "shinyWidgets",    #packages responsible 
        "RColorBrewer",                                    # Color palette
        "png", "DT"                                       # png for self-explanatory reasons, DT is an R interface to JS lib DataTables -- R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables
 )
-  
+
 #installing any packages not installed already
 new.packages <- x[!(x %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -53,8 +53,8 @@ state_bounds <- readRDS('data/stateboundaries.Rds')
 state_bounds <- st_transform(state_bounds, crs = 4326)
 
 #load in data classification keys for mapping colors & transformations to vars
-context_key <- fread('data/context_vars_palettemapper.csv', stringsAsFactors = F)
-mod_key <- fread('data/model_vars_palettemapper.csv', stringsAsFactors = F)
+context_key <- readRDS('data/context_metadata.Rds')
+mod_key <- readRDS('data/mod_metadata.Rds')
 
 # -------------------------------------- app inputs defined ----------------------------------------
 #state choices
