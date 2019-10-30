@@ -19,7 +19,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                      ".navbar-right {
                      float: right !important;
                      }",
-                       "body {padding-top: 75px;}"),
+                     "body {padding-top: 75px;}"),
                    
                    #################################################################################################                   
                    # -------------------------- "HOME"/LANDING PAGE ------------------------------------------------
@@ -47,7 +47,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                    <p class='parallax_description'>A tool for exploring the geography of socio-economic stressors and perinatal outcomes.</p>
                                    </section>
                                    ")
-                              ),
+                            ),
                             
                             # ---------------- what you'll find here
                             fluidRow(
@@ -57,9 +57,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                      shiny::HTML("<h5>This is an interactive tool to help you visually explore the 
                                                  geographic associations between socio-economic opportunity and stress, 
                                                  and perinatal outcomes such as preterm birth.</h5>")
-                                     ),
+                              ),
                               column(3)
-                                     ),
+                            ),
                             
                             fluidRow(
                               
@@ -80,9 +80,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                  will spark conversation, communicate new insight, lead to new questions, 
                                                  and catalyze new opportunities for local collaboration and action to 
                                                  improve the health of women and infants.</h5>")
-                                     ),
+                              ),
                               column(3)
-                                     ),
+                            ),
                             
                             fluidRow(
                               
@@ -116,9 +116,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                     and location of Maternity Care Deserts, to the rate of poverty, violent crime, 
                                                     and housing instability.</li>
                                                   </ol></h5>")
-                                     ),
+                              ),
                               column(3)
-                                     ),
+                            ),
                             
                             fluidRow(
                               
@@ -137,9 +137,9 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                  be interested in learning about how the perinatal indicators were created by reading the 
                                                  technical documentation.
                                                  </h5>")
-                                     ),
-                              column(3)
                               ),
+                              column(3)
+                            ),
                             
                             # give 'em some space
                             fluidRow(
@@ -163,7 +163,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              )
                                          )
                                      )
-                                  ),
+                              ),
                               column(2,
                                      div(class="panel panel-default", 
                                          div(class="panel-body",  width = "600px",
@@ -173,7 +173,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              )
                                          )
                                      )
-                                  ),
+                              ),
                               
                               column(2,
                                      div(class="panel panel-default", 
@@ -184,7 +184,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              )
                                          )
                                      )
-                                  ),
+                              ),
                               
                               column(2,
                                      div(class="panel panel-default", 
@@ -195,14 +195,14 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              )
                                          )
                                      )
-                                   ),
+                              ),
                               
                               column(2)
                             ),
-                              
-                              
-                              fluidRow(
-                                column(2),
+                            
+                            
+                            fluidRow(
+                              column(2),
                               
                               column(2,
                                      tags$div(class = "wrap",
@@ -213,41 +213,41 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                          onclick = "fakeClick('tuts')",
                                                          class="btn btn-primary btn-lg")
                                               )
-                                            )
-                                     ),
-                              column(2,
-                                     tags$div(class="wrap",
-                                     #technical details button
-                                     div(class = "center", 
-                                         style="display: inline-block;vertical-align:top; width: 175px;",
-                                         tags$a("Go!",
-                                                onclick = "fakeClick('geomapper')",
-                                                class="btn btn-primary btn-lg")
-                                        )
                                      )
                               ),
                               column(2,
                                      tags$div(class="wrap",
-                                     #contextual variables button
-                                     div(class = "center", 
-                                         style="display: inline-block;vertical-align:top; width: 175px;",
-                                         tags$a("Go!",
-                                                 onclick = "fakeClick('contextpage')",
-                                                 class="btn btn-primary btn-lg")
+                                              #technical details button
+                                              div(class = "center", 
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
+                                                  tags$a("Go!",
+                                                         onclick = "fakeClick('geomapper')",
+                                                         class="btn btn-primary btn-lg")
                                               )
-                                            )
-                                     ),
+                                     )
+                              ),
                               column(2,
                                      tags$div(class="wrap",
-                                     #geomapper button
-                                     div(class = "center",
-                                         style="display: inline-block;vertical-align:top; width: 175px;",
-                                         tags$a("Go!", 
-                                                 onclick="fakeClick('perinatalpage')", 
-                                                 class="btn btn-primary btn-lg")
+                                              #contextual variables button
+                                              div(class = "center", 
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
+                                                  tags$a("Go!",
+                                                         onclick = "fakeClick('contextpage')",
+                                                         class="btn btn-primary btn-lg")
                                               )
-                                            )
-                                     ),
+                                     )
+                              ),
+                              column(2,
+                                     tags$div(class="wrap",
+                                              #geomapper button
+                                              div(class = "center",
+                                                  style="display: inline-block;vertical-align:top; width: 175px;",
+                                                  tags$a("Go!", 
+                                                         onclick="fakeClick('perinatalpage')", 
+                                                         class="btn btn-primary btn-lg")
+                                              )
+                                     )
+                              ),
                               column(2)
                             ),
                             
@@ -255,7 +255,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             tags$hr(),
                             
                             
-                      ), # closes "Home" tabPanel
+                   ), # closes "Home" tabPanel
                    
                    #################################################################################################  
                    # -------------------------- "TUTORIAL" PAGE ------------------------------------------- 
@@ -477,7 +477,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              )
                                          )
                                      ), #gestational age categories figure div
-                                  ), # end vptb black mothers column
+                              ), # end vptb black mothers column
                               column(3, 
                                      # very preterm birth among white mothers
                                      div(class="panel panel-default", 
@@ -490,7 +490,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                              )
                                          )
                                      )
-                                  ), # end vptb black mothers column
+                              ), # end vptb black mothers column
                               column(3)
                             ),
                             
@@ -530,10 +530,10 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          )
                                      ), #gestational age categories figure div
                                      
-                                     ),
+                              ),
                               column(3)
                             ),
-                                     
+                            
                             # PAGE BREAK
                             tags$hr(),
                             
@@ -656,18 +656,18 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   <br>
                                                   </ul>
                                                  </h5>"),
-                              #Different Measures of Health Equity Tell Different Stories figure
-                              div(class="panel panel-default", 
-                                  div(class="panel-body",  width = "800px",
-                                      align = "center",
-                                      div(
-                                        tags$h5("Different Measures of Health Equity Tell Different Stories"),
-                                        tags$img(src = "tutorial_diffmeasureshealthequity.png", 
-                                                 width = "750px")#, height = "50px")
-                                      )
-                                  )
-                                ),
-                              shiny::HTML("<h5>
+                                     #Different Measures of Health Equity Tell Different Stories figure
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Different Measures of Health Equity Tell Different Stories"),
+                                               tags$img(src = "tutorial_diffmeasureshealthequity.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ),
+                                     shiny::HTML("<h5>
                                            <ul>
                                            <li><u>Why does this happen?</u>  One way to understand is to imagine two different 
                                            counties. In County A, non-Hispanic White women have a 1% risk for very preterm birth 
@@ -686,18 +686,18 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                            <br>
                                            </ul>
                                           </h5>"),
-                              #Geography of Health Inequity figure
-                              div(class="panel panel-default", 
-                                  div(class="panel-body",  width = "800px",
-                                      align = "center",
-                                      div(
-                                        tags$h5("Geography of Health Inequity"),
-                                        tags$img(src = "tutorial_geohealthinequity.png", 
-                                                 width = "750px")#, height = "50px")
-                                      )
-                                  )
-                              ),
-                              shiny::HTML("<h5>
+                                     #Geography of Health Inequity figure
+                                     div(class="panel panel-default", 
+                                         div(class="panel-body",  width = "800px",
+                                             align = "center",
+                                             div(
+                                               tags$h5("Geography of Health Inequity"),
+                                               tags$img(src = "tutorial_geohealthinequity.png", 
+                                                        width = "750px")#, height = "50px")
+                                             )
+                                         )
+                                     ),
+                                     shiny::HTML("<h5>
                                            <ul>
                                            <li>In this map it appears that the Black-White racial disparity in the some Deep South counties
                                            is relatively <u><em>larger</em></u> when using the <em>absolute risk difference</em> measure, but
@@ -717,12 +717,12 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                            <br>
                                            </ul>
                                           </h5>")
-                              
+                                     
                               ),
                               
                               column(3)
                             )
-                           
+                            
                    ),  # Closes tutorial tab
                    
                    #################################################################################################  
@@ -850,7 +850,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   </li>
                                                   </ul>
                                                  </h5>")
-                                     ),
+                              ),
                               column(3)
                             ),
                             
@@ -958,15 +958,15 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                               
                               #Main panel -- Maps & plots controlled by settings in sidebar
                               mainPanel( width = 8,
-                                    
+                                         
                                          #Title left (contextual var) & right (mod var) sides
                                          fluidRow(
                                            column(6,
                                                   tags$h3("Contextual Variable")
-                                                  ),
+                                           ),
                                            column(6,
                                                   tags$h3("Modeled Outcome Variable")
-                                                  )
+                                           )
                                          ),
                                          
                                          # PAGE BREAK
@@ -1003,7 +1003,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          fluidRow(
                                            
                                            style = "height:50px;"
-                                           ),
+                                         ),
                                          
                                          # PAGE BREAK
                                          tags$hr(),
@@ -1013,15 +1013,15 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                            column(12,
                                                   tags$h4("Univariate Plots"),
                                                   align="center"
-                                                  ),
+                                           ),
                                            column(6,
                                                   tags$em(tags$h5("How does this contextual variable vary?")),
                                                   align="center"
-                                                  ),
+                                           ),
                                            column(6,
                                                   tags$em(tags$h5("How does this perinatal variable vary?")),
                                                   align="center"
-                                                  )
+                                           )
                                            
                                          ),
                                          
@@ -1038,7 +1038,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          fluidRow(
                                            
                                            style = "height:50px;"
-                                           ),
+                                         ),
                                          
                                          # PAGE BREAK
                                          tags$hr(),
@@ -1052,7 +1052,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                            column(12,
                                                   tags$em(tags$h5(("What does the relationship between the contextual and the perinatal outcome variables signify?"))),
                                                   align="center"
-                                                  )
+                                           )
                                          ),
                                          
                                          #Bivariate scatter plot
@@ -1070,6 +1070,6 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                             )  # Closes the sidebarLayout
                    )  # Closes the GeoDisparities Mapper dashboard tabPanel
                    
-# ------------------------------
-  ) #end navbarPage
+                   # ------------------------------
+) #end navbarPage
 )#end UI

@@ -17,7 +17,7 @@ x <- c("shiny", "shinyjs", "rintrojs", "shinyWidgets",    #packages responsible 
        "RColorBrewer",                                    # Color palette
        "png", "DT"                                       # png for self-explanatory reasons, DT is an R interface to JS lib DataTables -- R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables
 )
-  
+
 #installing any packages not installed already
 new.packages <- x[!(x %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)

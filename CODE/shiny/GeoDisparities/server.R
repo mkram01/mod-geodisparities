@@ -191,11 +191,11 @@ shinyServer(function(input, output, session) {
   
   # dependent on subsetting of dfs above
   output$contextvar <- renderUI(selectInput('contextvar',label='Contextual Variable',
-                                         choices = names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
-                                         selected =  names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][1]))
+                                            choices = names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
+                                            selected =  names(contextdf)[!names(contextdf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][1]))
   output$modvar <- renderUI(selectInput('modvar',label='Perinatal Outcome Variable',
-                                          choices = names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
-                                          selected =  names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2]))
+                                        choices = names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')],
+                                        selected =  names(moddf)[!names(moddf) %in% c('GEOID','state_name', 'state_code', 'year', 'source', 'NAME', 'variable', 'estimate', 'moe', 'geometry')][2]))
   
   # Defining xvar, yvar & color var reactives -------------------------------------------------------
   xvar_ <- ''
@@ -363,40 +363,40 @@ shinyServer(function(input, output, session) {
   observe({
     print('observe: updating left map to be chloropleth of contextvar')
     print(paste0("contextdf class: ",class(contextdf)))
-      #national level map -- no county boundaries, only state
-      leafletProxy('contextmap') %>%
+    #national level map -- no county boundaries, only state
+    leafletProxy('contextmap') %>%
       #counties
-        addPolygons(
-          data = contextdf,
-          fillColor = contextpal(),
-          weight = 1,
-          opacity = 1,
-          color = contextpal(),
-          dashArray = "3",
+      addPolygons(
+        data = contextdf,
+        fillColor = contextpal(),
+        weight = 1,
+        opacity = 1,
+        color = contextpal(),
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 5,
+          color = "#666",
+          dashArray = "",
           fillOpacity = 0.7,
-          highlight = highlightOptions(
-            weight = 5,
-            color = "#666",
-            dashArray = "",
-            fillOpacity = 0.7,
-            bringToFront = TRUE),
-          label = contextmap.labels(), popup = contextmap.labels(), #~htmlEscape(input$color)
-          labelOptions = labelOptions(
-            style = list("font-weight" = "normal", padding = "3px 8px"),
-            textsize = "15px",
-            direction = "auto")
-        ) %>%
-        addPolygons(
-          data = state_bounds,
-          #fillColor = modpal(),
-          fill = FALSE,
-          #fillOpacity = 1,
-          weight = 1,
-          opacity = 1,
-          color = "black",
-          #dashArray = "3",
-          fillOpacity = 0.7
-        )
+          bringToFront = TRUE),
+        label = contextmap.labels(), popup = contextmap.labels(), #~htmlEscape(input$color)
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")
+      ) %>%
+      addPolygons(
+        data = state_bounds,
+        #fillColor = modpal(),
+        fill = FALSE,
+        #fillOpacity = 1,
+        weight = 1,
+        opacity = 1,
+        color = "black",
+        #dashArray = "3",
+        fillOpacity = 0.7
+      )
     
   })
   
