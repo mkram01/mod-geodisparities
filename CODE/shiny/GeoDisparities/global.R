@@ -42,6 +42,8 @@ panel_div <- function(class_type, content) {
 # -------------------------------------- load data ------------------------------------------------- 
 #load acs data -- NOTE: currently using this is as the reference dataset for shared functions with model data (e.g. state names vector below, year range for dashboard toggling, etc.)
 context_data <- readRDS('data/sf_acs.Rds')
+#create county_data field
+#context_data$county_name <- gsub(" .*$", "", context_data$NAME)
 
 #load model data
 mod_data <- readRDS('data/sf_moddata.Rds')

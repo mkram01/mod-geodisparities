@@ -1032,7 +1032,34 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          fluidRow(
                                            
-                                           style = "height:50px;"
+                                           style = "height:25px;"
+                                         ),
+                                         
+                                         # ------- variable captions --------
+                                         fluidRow(
+                                           column(6,
+                                                  div(class="panel panel-default", 
+                                                      div(class="panel-body",  width = "600px",
+                                                          align = "center",
+                                                          div(uiOutput("modcaption")
+                                                          )
+                                                      )
+                                                  )  
+                                                ),
+                                           column(6,
+                                                  div(class="panel panel-default", 
+                                                      div(class="panel-body",  width = "600px",
+                                                          align = "center",
+                                                          div(uiOutput("contextcaption")
+                                                          )
+                                                      )
+                                                  )
+                                           )
+                                         ),
+                                        
+                                         fluidRow(
+                                           
+                                           style = "height:25px;"
                                          ),
                                          
                                          # PAGE BREAK

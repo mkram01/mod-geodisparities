@@ -456,6 +456,29 @@ shinyServer(function(input, output, session) {
       addLegend(opacity = 0.99,position = "bottomright",title = yVar(),
                 pal = modcolorpal(), values = rev(modcolorData()))
   })
+  
+  
+  # ---- captions -----
+  output$modcaption <- renderUI({
+    sprintf("<h6><b>%s</b>%s%s</h6>",
+            as.character(input$modvar),
+            ": ",
+            as.character(mod_key[mod_key$variable %in% input$modvar, "caption_text"])
+    ) %>% lapply(htmltools::HTML)
+ 
+    #return(as.character(input$modvar))
+    #return(as.character(mod_key[mod_key$variable %in% input$modvar, "caption_text"]))
+  })
+  
+  output$contextcaption <- renderUI({
+    sprintf("<h6><b>%s</b>%s%s</h6>",
+            as.character(input$contextvar),
+            ": ",
+            as.character(context_key[context_key$variable %in% input$contextvar, "caption_text"])
+            ) %>% lapply(htmltools::HTML)
+    #return(as.character(input$contextvar))
+    #return(as.character(context_key[context_key$variable %in% input$contextvar, "caption_text"]))
+  })
   #################################################################################################  
   # -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 
   #################################################################################################  
