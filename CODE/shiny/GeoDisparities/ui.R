@@ -905,26 +905,41 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               style = "height:50px;",
                                               
                                               #settings icon & hide/show button ---------------- want to figure out how to collapse other options under this if possible
-                                              introBox(
-                                                tags$div(
-                                                  style = "height:50px;",
-                                                  actionLink("settings", "Settings", 
-                                                             icon = icon("sliders", class = "fa-2x"))),
-                                                data.step = 6, #data steps enumerated
-                                                data.intro = "Settings is where you can set options that affect the visualization of data as maps and plots."
-                                              ),
+                                              # introBox(
+                                              #   tags$div(
+                                              #     style = "height:50px;",
+                                              #     actionLink("settings", "Settings", 
+                                              #                icon = icon("sliders", class = "fa-2x"))),
+                                              #   data.step = 6, #data steps enumerated
+                                              #   data.intro = "Settings is where you can set options that affect the visualization of data as maps and plots."
+                                              # ),
                                               
                                               #select geography
-                                              selectizeInput("state", "Select your geography",
-                                                             choices = c(state_names),
-                                                             selected = "Georgia",
-                                                             multiple = TRUE),
+                                              introBox(
+                                                selectizeInput("state", "Select your geography",
+                                                               choices = c(state_names),
+                                                               selected = "Georgia",
+                                                               multiple = TRUE),
+                                                data.step = 1,
+                                                data.intro = "Start by picking one or more states to zoom in (alternatively, view the entire U.S."
+                                                
+                                              ),
                                               
-                                              #select model data variables (right-side) data to be mapped & plotted
-                                              uiOutput('modvar'),
                                               
-                                              #select contextual variables (left-side) data to be mapped & plotted
-                                              uiOutput('contextvar'),
+                                              #select model data variables data to be mapped & plotted
+                                              introBox(
+                                                uiOutput('modvar'),
+                                                data.step = 2,
+                                                data.intro = "Pick a perinatal outcome (either a single indicator, or a racial disparity measure)"
+                                                
+                                              ),
+                                              
+                                              #select contextual variables data to be mapped & plotted
+                                              introBox(
+                                                uiOutput('contextvar'),
+                                                data.step = 3,
+                                                data.intro = "Pick a contextual indicator (either social, economic, or healthcare related)"
+                                              ),
                                               
                                               #update geography button
                                               actionBttn(
@@ -981,21 +996,25 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          tags$hr(),
                                          
                                          #Title for maps section
-                                         fluidRow(
-                                           column(12,
-                                                  tags$h4("Maps"),
-                                                  align="center"
-                                           ),
-                                           column(6,
-                                                  tags$em(tags$h5("What does the geographic distribution of this perinatal output variable tell you?")),
-                                                  align="center"
-                                           ),
-                                           
-                                           column(6,
-                                                  tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
-                                                  align="center"
-                                           )
-                                           
+                                         introBox(
+                                             fluidRow(
+                                               column(12,
+                                                      tags$h4("Maps"),
+                                                      align="center"
+                                               ),
+                                               column(6,
+                                                      tags$em(tags$h5("What does the geographic distribution of this perinatal output variable tell you?")),
+                                                      align="center"
+                                               ),
+                                               
+                                               column(6,
+                                                      tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
+                                                      align="center"
+                                               )
+                                               
+                                              ),
+                                         data.step = 4,
+                                         data.intro = "Review the geographic patterns in the two maps below"
                                          ),
                                          
                                          # maps
@@ -1020,22 +1039,26 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          tags$hr(),
                                          
                                          #Title for univariate plots section
-                                         fluidRow(
-                                           column(12,
-                                                  tags$h4("Univariate Plots"),
-                                                  align="center"
-                                           ),
-                                           
-                                           
-                                           column(6,
-                                                  tags$em(tags$h5("How does this perinatal variable vary?")),
-                                                  align="center"
-                                           ),
-                                           column(6,
-                                                  tags$em(tags$h5("How does this contextual variable vary?")),
-                                                  align="center"
-                                           )
-                                           
+                                         introBox(
+                                             fluidRow(
+                                               column(12,
+                                                      tags$h4("Univariate Plots"),
+                                                      align="center"
+                                               ),
+                                               
+                                               
+                                               column(6,
+                                                      tags$em(tags$h5("How does this perinatal variable vary?")),
+                                                      align="center"
+                                               ),
+                                               column(6,
+                                                      tags$em(tags$h5("How does this contextual variable vary?")),
+                                                      align="center"
+                                               )
+                                               
+                                              ),
+                                         data.step = 5,
+                                         data.intro = "Review the statistical relationships visualized in the graphs below"
                                          ),
                                          
                                          #Univariate scatter plots
