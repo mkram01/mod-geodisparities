@@ -484,7 +484,7 @@ shinyServer(function(input, output, session) {
             ": ",
             as.character(mod_key[mod_key$variable %in% input$modvar, "caption_text"])
     ) %>% lapply(htmltools::HTML)
- 
+    
     #return(as.character(input$modvar))
     #return(as.character(mod_key[mod_key$variable %in% input$modvar, "caption_text"]))
   })
@@ -494,7 +494,7 @@ shinyServer(function(input, output, session) {
             as.character(input$contextvar),
             ": ",
             as.character(context_key[context_key$variable %in% input$contextvar, "caption_text"])
-            ) %>% lapply(htmltools::HTML)
+    ) %>% lapply(htmltools::HTML)
     #return(as.character(input$contextvar))
     #return(as.character(context_key[context_key$variable %in% input$contextvar, "caption_text"]))
   })
@@ -502,7 +502,7 @@ shinyServer(function(input, output, session) {
   # -------------------------- Report download ---------------------------------------------------- 
   output$downloadreport <- downloadHandler(
     filename = "GeoDisparitiesMapperReport.html",
-    content = 
+    content = ""
   )
   
   #################################################################################################  

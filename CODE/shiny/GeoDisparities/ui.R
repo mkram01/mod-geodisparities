@@ -304,12 +304,12 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                          onclick = "fakeClick('geomapper')",
                                                          class="btn btn-primary btn-lg")
                                               )
-                                        )      
-                                     ),
+                                     )      
+                              ),
                               column(3)
                               
                             ),
-                          
+                            
                             # PAGE BREAK
                             tags$hr(),
                             
@@ -1001,24 +1001,24 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          #Title for maps section
                                          introBox(
-                                             fluidRow(
-                                               column(12,
-                                                      tags$h4("Maps"),
-                                                      align="center"
-                                               ),
-                                               column(6,
-                                                      tags$em(tags$h5("What does the geographic distribution of this perinatal output variable tell you?")),
-                                                      align="center"
-                                               ),
-                                               
-                                               column(6,
-                                                      tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
-                                                      align="center"
-                                               )
-                                               
-                                              ),
-                                         data.step = 4,
-                                         data.intro = "Review the geographic patterns in the two maps below"
+                                           fluidRow(
+                                             column(12,
+                                                    tags$h4("Maps"),
+                                                    align="center"
+                                             ),
+                                             column(6,
+                                                    tags$em(tags$h5("What does the geographic distribution of this perinatal output variable tell you?")),
+                                                    align="center"
+                                             ),
+                                             
+                                             column(6,
+                                                    tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
+                                                    align="center"
+                                             )
+                                             
+                                           ),
+                                           data.step = 4,
+                                           data.intro = "Review the geographic patterns in the two maps below"
                                          ),
                                          
                                          # maps
@@ -1049,7 +1049,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                           )
                                                       )
                                                   )  
-                                                ),
+                                           ),
                                            column(6,
                                                   div(class="panel panel-default", 
                                                       div(class="panel-body",  width = "600px",
@@ -1060,7 +1060,7 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   )
                                            )
                                          ),
-                                        
+                                         
                                          fluidRow(
                                            
                                            style = "height:25px;"
@@ -1071,25 +1071,25 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          #Title for univariate plots section
                                          introBox(
-                                             fluidRow(
-                                               column(12,
-                                                      tags$h4("Univariate Plots"),
-                                                      align="center"
-                                               ),
-                                               
-                                               
-                                               column(6,
-                                                      tags$em(tags$h5("How does this perinatal variable vary?")),
-                                                      align="center"
-                                               ),
-                                               column(6,
-                                                      tags$em(tags$h5("How does this contextual variable vary?")),
-                                                      align="center"
-                                               )
-                                               
-                                              ),
-                                         data.step = 5,
-                                         data.intro = "Review the statistical relationships visualized in the graphs below"
+                                           fluidRow(
+                                             column(12,
+                                                    tags$h4("Univariate Plots"),
+                                                    align="center"
+                                             ),
+                                             
+                                             
+                                             column(6,
+                                                    tags$em(tags$h5("How does this perinatal variable vary?")),
+                                                    align="center"
+                                             ),
+                                             column(6,
+                                                    tags$em(tags$h5("How does this contextual variable vary?")),
+                                                    align="center"
+                                             )
+                                             
+                                           ),
+                                           data.step = 5,
+                                           data.intro = "Review the statistical relationships visualized in the graphs below"
                                          ),
                                          
                                          #Univariate scatter plots
