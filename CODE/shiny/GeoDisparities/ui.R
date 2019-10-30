@@ -971,6 +971,10 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                           #,animate = animationOptions(interval = 750) #too slow with animation
                                               ),
                                               
+                                              #download report?
+                                              downloadBttn("downloadreport", label = "Download Report",
+                                                           color = "primary"),
+                                              
                                               #grab ui output
                                               uiOutput("ui")
                                               

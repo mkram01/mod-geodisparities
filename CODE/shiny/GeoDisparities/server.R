@@ -498,6 +498,13 @@ shinyServer(function(input, output, session) {
     #return(as.character(input$contextvar))
     #return(as.character(context_key[context_key$variable %in% input$contextvar, "caption_text"]))
   })
+  
+  # -------------------------- Report download ---------------------------------------------------- 
+  output$downloadreport <- downloadHandler(
+    filename = "GeoDisparitiesMapperReport.html",
+    content = 
+  )
+  
   #################################################################################################  
   # -------------------------- "TECHNICAL DETAILS" PAGE ------------------------------------------- 
   #################################################################################################  
