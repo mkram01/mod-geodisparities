@@ -45,8 +45,8 @@ shinyServer(function(input, output, session) {
   # ->- conductor - parent of: map endpoint, observeEvent(input$state)
   #               - child of: state input
   # subsetting to selected data using filters
-  context_selected_data <- reactive({                                #make into eventReactive(input$updategeo,{})
-    print('eventReactive: subset contextdf to selected inputs')
+  context_selected_data <- reactive({                #make into eventReactive(input$updategeo,{})
+    print('reactive: subset contextdf to selected inputs')
     if (input$state == 'All'){
       context_data %>%
         filter(
@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
     
   })
   
-  mod_selected_data <- reactive({                                   #make into eventReactive(input$updategeo,{})
+  mod_selected_data <- reactive({                     #make into eventReactive(input$updategeo,{})
     print('reactive: subset moddf to selected inputs')
     if (input$state == 'All'){
       mod_data %>%
@@ -122,7 +122,7 @@ shinyServer(function(input, output, session) {
   # ---- trigger subsetting ----
   # >- endpoint - child of: state_selected()
   #left side - contextual var
-  observeEvent(c(input$state,input$year),{
+  observeEvent(c(input$state,input$year),{                                
     print('observeEvent: updating context df and clearing map features')
     leafletProxy('contextmap') %>%
       clearShapes()
@@ -359,8 +359,8 @@ shinyServer(function(input, output, session) {
   
   # ---- update maps with polygons ----
   # - child of: pal()
-  #left map -- contextual var map
-  observe({
+  #contextual var map
+  observe({   
     print('observe: updating left map to be chloropleth of contextvar')
     print(paste0("contextdf class: ",class(contextdf)))
     #national level map -- no county boundaries, only state

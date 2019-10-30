@@ -917,8 +917,8 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               #select geography
                                               introBox(
                                                 selectizeInput("state", "Select your geography",
-                                                               choices = c(state_names),
-                                                               selected = "Georgia",
+                                                               choices = c("All",state_names),
+                                                               selected = "All",
                                                                multiple = TRUE),
                                                 data.step = 1,
                                                 data.intro = "Start by picking one or more states to zoom in (alternatively, view the entire U.S."
@@ -942,15 +942,15 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               ),
                                               
                                               #update geography button
-                                              actionBttn(
-                                                inputId = "updategeo",
-                                                label = "Update geography",
-                                                color = "primary",
-                                                style = "unite",
-                                                #icon = icon("sliders"),
-                                                size = "sm",
-                                                block = TRUE
-                                              ),
+                                              # actionBttn(
+                                              #   inputId = "updategeo",
+                                              #   label = "Update maps & graphs!",
+                                              #   color = "primary",
+                                              #   style = "unite",
+                                              #   #icon = icon("sliders"),
+                                              #   size = "sm",
+                                              #   block = TRUE
+                                              # ),
                                               
                                               #select number of quantiles for right-side data
                                               sliderInput('modquantiles', label = "Perinatal Outcome Variable Quantiles", 
