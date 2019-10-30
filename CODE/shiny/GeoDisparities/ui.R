@@ -933,12 +933,12 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                               
                                               #select number of quantiles for right-side data
                                               sliderInput('modquantiles', label = "Perinatal Outcome Variable Quantiles", 
-                                                          value = 5, min = 2, max = 10, step = 1, sep = ""
+                                                          value = 5, min = 3, max = 7, step = 1, sep = ""
                                               ),
                                               
                                               #select number of quantiles for left-side data
                                               sliderInput('contextquantiles', label = "Contextual Variable Quantiles", 
-                                                          value = 5, min = 2, max = 10, step = 1, sep = ""
+                                                          value = 5, min = 3, max = 7, step = 1, sep = ""
                                               ),
                                               
                                               
@@ -961,12 +961,14 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          #Title left (contextual var) & right (mod var) sides
                                          fluidRow(
+                                           
                                            column(6,
-                                                  tags$h3("Contextual Variable")
+                                                  tags$h3("Perinatal Outcome Variable")
                                            ),
                                            column(6,
-                                                  tags$h3("Modeled Outcome Variable")
+                                                  tags$h3("Contextual Variable")
                                            )
+                                           
                                          ),
                                          
                                          # PAGE BREAK
@@ -979,11 +981,12 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   align="center"
                                            ),
                                            column(6,
-                                                  tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
+                                                  tags$em(tags$h5("What does the geographic distribution of this perinatal output variable tell you?")),
                                                   align="center"
                                            ),
+                                           
                                            column(6,
-                                                  tags$em(tags$h5("What does the geographic distribution of this model output variable tell you?")),
+                                                  tags$em(tags$h5("What does the geographic distribution of this contextual variable tell you?")),
                                                   align="center"
                                            )
                                            
@@ -991,11 +994,13 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          # maps
                                          fluidRow(
-                                           column(6,
-                                                  leafletOutput("contextmap")
-                                           ),
+                                           
                                            column(6,
                                                   leafletOutput("modmap")
+                                           ),
+                                           
+                                           column(6,
+                                                  leafletOutput("contextmap")
                                            )
                                            
                                          ),
@@ -1014,12 +1019,14 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                                   tags$h4("Univariate Plots"),
                                                   align="center"
                                            ),
+                                           
+                                           
                                            column(6,
-                                                  tags$em(tags$h5("How does this contextual variable vary?")),
+                                                  tags$em(tags$h5("How does this perinatal variable vary?")),
                                                   align="center"
                                            ),
                                            column(6,
-                                                  tags$em(tags$h5("How does this perinatal variable vary?")),
+                                                  tags$em(tags$h5("How does this contextual variable vary?")),
                                                   align="center"
                                            )
                                            
@@ -1027,11 +1034,12 @@ shinyUI(navbarPage(title = img(src="mod.jpg", height = "40px"), id = "navBar",
                                          
                                          #Univariate scatter plots
                                          fluidRow(
-                                           column(6,
-                                                  plotOutput("contextscatter")
-                                           ),
+                                           
                                            column(6,
                                                   plotOutput("modscatter")
+                                           ),
+                                           column(6,
+                                                  plotOutput("contextscatter")
                                            )
                                          ),
                                          
