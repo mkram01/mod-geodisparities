@@ -299,10 +299,29 @@ shinyServer(function(input, output, session) {
   })
   
   # ---- creating palette for colorvar ----
+  contextkeypal <- reactive({
+    print("reactive: defining color palette from metadata key")
+    as.character(context_key[context_key$variable %in% input$contextvar, "palette"])
+  })
+  
+  # contextkeyrev <- reactive({
+  #   print("reactive: defining color palette direction (reverse or not) from metadata key")
+  #   as.character(context_key[context_key$variable %in% input$contextvar, "reverse_palette"])
+  # })
+  
   #left map - contextual var
   contextcolorpal <- reactive({
     print('reactive: create contextual var color palette')
-    colorFactor("YlOrRd", contextcolorData())
+    # colorFactor(contextkeypal(), contextcolorData(), na.color = "#bdbdbd") #, reverse = contextkeyrev()
+    # 
+    # # key_pal <- as.character(context_key[context_key$variable %in% input$contextvar, "palette"])[[1]]
+    # # reverse_pal <- as.numeric(as.character(context_key[context_key$variable %in% input$contextvar, "reverse_palette"]))[[1]]
+    # # if((reverse_pal) == 1){
+    # #   colorFactor((key_pal), contextcolorData(), na.color = "#bdbdbd", reverse = TRUE)
+    # # } else {
+    # #   colorFactor((key_pal), contextcolorData(), na.color = "#bdbdbd", reverse = FALSE)
+    # # }
+    colorFactor("YlGnBu", contextcolorData())
   })
   contextpal <- reactive({
     print('reactive: create contextual var palette for leaflet arg')
@@ -312,7 +331,7 @@ shinyServer(function(input, output, session) {
   #right map
   modcolorpal <- reactive({
     print('reactive: create right color palette')
-    colorFactor("YlOrRd", modcolorData())
+    colorFactor("BuPu", modcolorData())
   })
   modpal <- reactive({
     print('reactive: create left palette for leaflet arg')
