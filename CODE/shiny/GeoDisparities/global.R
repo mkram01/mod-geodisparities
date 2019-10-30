@@ -53,8 +53,8 @@ state_bounds <- readRDS('data/stateboundaries.Rds')
 state_bounds <- st_transform(state_bounds, crs = 4326)
 
 #load in data classification keys for mapping colors & transformations to vars
-context_key <- fread('data/context_vars_palettemapper.csv', stringsAsFactors = F)
-mod_key <- fread('data/model_vars_palettemapper.csv', stringsAsFactors = F)
+context_key <- readRDS('data/context_metadata.Rds')
+mod_key <- readRDS('data/mod_metadata.Rds')
 
 # -------------------------------------- app inputs defined ----------------------------------------
 #state choices

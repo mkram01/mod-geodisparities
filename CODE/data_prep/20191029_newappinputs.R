@@ -18,20 +18,25 @@ repo <- Sys.getenv('mod_repo')
 data_repo <- Sys.getenv('mod_data')
 
 #setting working directory
-setwd(repo)
+#setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
 
 #TO-DO -- define app input data for preparation to be pulled into app
 #contextual data & associated data dictionary
-contextual_data <- paste0(data_repo,"/app_inputs/mod-contextual-vars.rds")
-contextual_dd <- paste0(data_repo,"/app_inputs/contextual-variable-dictionary.csv")
+contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/mod-contextual-vars.rds")
+contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-variable-dictionary.csv")
 
 #perinatal model data & associated data dictionary
-model_data <- paste0(data_repo,"/app_inputs/ptb_vptb.rds")
-model_dd <- paste0(data_repo,"/app_inputs/ptb_vptb-dictionary.csv")
+model_data <- paste0(data_repo,"/app_inputs/re_processed_inputs/ptb_vptb.rds")
+model_dd <- paste0(data_repo,"/app_inputs/re_processed_inputs/ptb_vptb-dictionary.csv")
 
 #base spatial layer
-base <- paste0(data_repo,"/app_inputs/us_counties_2017.gpkg")
+base <- paste0(data_repo,"/app_inputs/re_processed_inputs/us_counties_2017.gpkg")
+
+
+#temporary metadata for previous data
+context_metadata <- paste0(data_repo,"/app_inputs/pre_processed_inputs/context_vars_palettemapper.csv")
+mod_metadata <- paste0(data_repo,"/app_inputs/pre_processed_inputs/model_vars_palettemapper.csv")
 
 ######################################################################################################
 # -------------------------------------- load data ------------------------------------------------- #
@@ -52,6 +57,15 @@ states <- fread(paste0(data_repo,"/app_inputs/state_fips_codes.csv"), stringsAsF
 
 #load 2017 US counties spatial layer
 basegeo <- st_read(base)
+
+#read in metadata
+context_meta <- fread(context_metadata, stringsAsFactors = F)
+mod_meta <- fread(mod_metadata, stringsAsFactors = F)
+
+######################################################################################################
+# -------------------------------------- save meta data objects ----------------------------------- #
+######################################################################################################
+
 
 ######################################################################################################
 # -------------------------------------- wrangle data ---------------------------------------------- #
