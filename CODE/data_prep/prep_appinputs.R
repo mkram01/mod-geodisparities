@@ -23,7 +23,7 @@ message(paste0("You have specified ", data_repo, " as the location of your data.
 
 #TO-DO -- define app input data for preparation to be pulled into app
 #contextual data & associated data dictionary
-contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-2november2019.rds")
+contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-4november2019.rds")
 contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata.rds")
 
 #perinatal model data & associated data dictionary
@@ -149,7 +149,7 @@ mod_fin <- st_transform(mod_smpl, crs = 4326)
 ######################################################################################################
 # -------------------------------------- save spatial data objects ------------------------------- #
 ######################################################################################################
-saveRDS(acs_fin, file = paste0(data_repo,"/app_inputs/contextual-data-3november2019.rds"))
+saveRDS(acs_fin, file = paste0(data_repo,"/app_inputs/contextual-data-5november2019.rds"))
 saveRDS(mod_fin, file = paste0(data_repo,"/app_inputs/perinatal-data-3november2019.rds"))
 
 
