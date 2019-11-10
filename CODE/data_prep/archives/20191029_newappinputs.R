@@ -35,8 +35,8 @@ base <- paste0(data_repo,"/app_inputs/re_processed_inputs/us_counties_2017.gpkg"
 
 
 #temporary metadata for previous data
-context_metadata <- paste0(data_repo,"/app_inputs/pre_processed_inputs/context_vars_palettemapper.csv")
-mod_metadata <- paste0(data_repo,"/app_inputs/pre_processed_inputs/model_vars_palettemapper.csv")
+context_metadata <- paste0(data_repo,"/app_inputs/pre_processed_inputs/context_vars_palettemapper_newdata.csv")
+mod_metadata <- paste0(data_repo,"/app_inputs/pre_processed_inputs/model_vars_palettemapper_newdata.csv")
 
 ######################################################################################################
 # -------------------------------------- load data ------------------------------------------------- #
