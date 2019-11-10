@@ -68,6 +68,9 @@ mdd$display_name <- trimws(mdd$display_name)
 # -------------------------------------- create grouping var for dropdown menu -----------------------
 cdd_dt <- as.data.table(cdd)
 mdd_dt <- as.data.table(mdd)
+#create plot_type & reverse_palette field in model metadata to match dimensions to context metadata
+mdd_dt <- mdd_dt[, reverse_palette:=FALSE]
+mdd_dt <- mdd_dt[,plot_type:="sequential"]
 
 # ---- contextual var groupings ----
 c_access <- c("Maternity care access (2016)", "Physicians per capita",
@@ -285,8 +288,8 @@ class(st_geometry(all_sf))
 # -------------------------------------- save spatial data objects ------------------------------- #
 ######################################################################################################
 #save meta data
-saveRDS(cdd, file = paste0(data_repo,"/app_inputs/contextual-metadata-9november2019.rds"))
-saveRDS(mdd, file = paste0(data_repo,"/app_inputs/perinatal-metadata-9november2019.rds"))
+saveRDS(cdd_dt, file = paste0(data_repo,"/app_inputs/contextual-metadata-9november2019.rds"))
+saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-9november2019.rds"))
 
 #save app inputs
 #saveRDS(context_sf, file = paste0(data_repo,"/app_inputs/contextual-data-5november2019.rds"))
