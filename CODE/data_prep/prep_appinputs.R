@@ -298,9 +298,9 @@ saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-27november2019.
 #save app inputs
 #saveRDS(context_sf, file = paste0(data_repo,"/app_inputs/contextual-data-5november2019.rds"))
 #saveRDS(mod_sf, file = paste0(data_repo,"/app_inputs/perinatal-data-5november2019.rds"))
-saveRDS(all_sf, file = paste0(data_repo,"/app_inputs/all-data-13november2019.rds"))
+saveRDS(all_sf, file = paste0(data_repo,"/app_inputs/all-data-2december2019.rds"))
 
-#save json
+  #save json
 #geojson_write(alljson, file = paste0(data_repo,"/app_inputs/all-data-9november2019.geojson"))
 
 
