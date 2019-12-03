@@ -23,7 +23,7 @@ message(paste0("You have specified ", data_repo, " as the location of your data.
 
 #TO-DO -- define app input data for preparation to be pulled into app
 #contextual data & associated data dictionary
-contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-4november2019.rds")
+contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-10november2019.rds")
 #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata.rds")
 #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.rds")
 #output metadata as csv and added label field 
@@ -211,7 +211,7 @@ acs4 <- (acs3[acs3$state_name != "Puerto Rico",])
 mod5 <- (mod4[mod4$state_name != "Puerto Rico",])
 
 #rework cols to keep
-acs5 <- acs4[,c(1:2, 53, 54, 4:52)] #GEOID, year, county_name, state_name, ..., geom
+acs5 <- acs4[,c(1:2, 57, 58, 4:56)] #GEOID, year, county_name, state_name, ..., geom
 mod6 <- mod5[,c(1, 3, 45, 47, 4:44)] #GEOID, year, county_name, state_name, ..., geom
 
 #join together
@@ -299,38 +299,52 @@ for (c in 1:length(convert2decimals)){
 ######################################################################################################
 # ------------------------------------------ remove context meta vars not in data ------------------ #
 ######################################################################################################
-cdd_dt2 <- cdd_dt[!display_name %in% c("% College", "Hispanic-Black disparity in poverty rate",
-                                       "White-Hispanic disparity in median HH income",
-                                       "Income inequality, Hispanic"),]
+# cdd_dt2 <- cdd_dt[!display_name %in% c("% College", "Hispanic-Black disparity in poverty rate",
+#                                        "White-Hispanic disparity in median HH income",
+#                                        "Income inequality, Hispanic"),]
 
 ######################################################################################################
 # ------------------------------------------ remove vars causing strange issues ------------------ #
 ######################################################################################################
-#problem vars
+# #problem vars
 probvars <- c("Teen birth rate", "% Obese (2010-2015 only)", "% Fair/Poor health (2010-2015 only)")
 
 #remove from app data
 all_sf2 <- all_sf[!names(all_sf) %in% probvars]
 
 #remove from context meta data
-cdd_dt2 <- cdd_dt2[!display_name %in% probvars]
+cdd_dt2 <- cdd_dt[!display_name %in% probvars]
 
 ######################################################################################################
 # ------------------------------------------ add some validation code here ------------------------- #
 ######################################################################################################
 #make sure number of vars in data match number of vars between meta data
+#if dropping problem vars
 datavarnum <- ncol(all_sf2) - 5
 metavarnum <- sum(nrow(cdd_dt2), nrow(mdd_dt))
 if(datavarnum == metavarnum){
   message("Awesome. You have the expected number of vars in your data and meta data")
 } else {
-  message("Eeeks. You do not have the same number of vars in your meta data and input data -- better check again, 
+  message("Eeeks. You do not have the same number of vars in your meta data and input data -- better check again,
           otherwise the app will have issues")
 }
+
+#not dropping
+# datavarnum <- ncol(all_sf) - 5
+# metavarnum <- sum(nrow(cdd_dt), nrow(mdd_dt))
+# if(datavarnum == metavarnum){
+#   message("Awesome. You have the expected number of vars in your data and meta data")
+# } else {
+#   message("Eeeks. You do not have the same number of vars in your meta data and input data -- better check again, 
+#           otherwise the app will have issues")
+# }
 ######################################################################################################
 # -------------------------------------- save spatial data objects ------------------------------- #
 ######################################################################################################
 #save meta data
+#not removing problem vars
+#saveRDS(cdd_dt, file = paste0(data_repo,"/app_inputs/contextual-metadata-3december2019.rds"))
+#if removing problem vars
 saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-3december2019.rds"))
 saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-2december2019.rds"))
 
@@ -340,7 +354,10 @@ saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-27november2019.
 #save app inputs
 #saveRDS(context_sf, file = paste0(data_repo,"/app_inputs/contextual-data-5november2019.rds"))
 #saveRDS(mod_sf, file = paste0(data_repo,"/app_inputs/perinatal-data-5november2019.rds"))
-saveRDS(all_sf, file = paste0(data_repo,"/app_inputs/all-data-2december2019.rds"))
+#not removing problem vars
+#saveRDS(all_sf, file = paste0(data_repo,"/app_inputs/all-data-3december2019.rds"))
+#if removing problem vars
+saveRDS(all_sf2, file = paste0(data_repo,"/app_inputs/all-data-3december2019.rds"))
 
     #save json
 #geojson_write(alljson, file = paste0(data_repo,"/app_inputs/all-data-9november2019.geojson"))
