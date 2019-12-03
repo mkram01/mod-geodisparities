@@ -286,10 +286,52 @@ class(st_geometry(all_sf))
 #alljson <- sf_geojson(all_sf, options(encoding = "utf8"))
 
 ######################################################################################################
+# ------------------------------------------ transform %s so all decimals -------------------------- #
+######################################################################################################
+convert2decimals <- c("Percent women uninsured", "% Obese (2010-2015 only)", 
+                      "% Fair/Poor health (2010-2015 only)", "% Housing distress (2014-2015 only)")
+
+for (c in 1:length(convert2decimals)){
+  convertcol <- convert2decimals[c]
+  all_sf[[convertcol]] <- (all_sf[[convertcol]]/100)
+}
+
+######################################################################################################
+# ------------------------------------------ remove context meta vars not in data ------------------ #
+######################################################################################################
+cdd_dt2 <- cdd_dt[!display_name %in% c("% College", "Hispanic-Black disparity in poverty rate",
+                                       "White-Hispanic disparity in median HH income",
+                                       "Income inequality, Hispanic"),]
+
+######################################################################################################
+# ------------------------------------------ remove vars causing strange issues ------------------ #
+######################################################################################################
+#problem vars
+probvars <- c("Teen birth rate", "% Obese (2010-2015 only)", "% Fair/Poor health (2010-2015 only)")
+
+#remove from app data
+all_sf2 <- all_sf[!names(all_sf) %in% probvars]
+
+#remove from context meta data
+cdd_dt2 <- cdd_dt2[!display_name %in% probvars]
+
+######################################################################################################
+# ------------------------------------------ add some validation code here ------------------------- #
+######################################################################################################
+#make sure number of vars in data match number of vars between meta data
+datavarnum <- ncol(all_sf2) - 5
+metavarnum <- sum(nrow(cdd_dt2), nrow(mdd_dt))
+if(datavarnum == metavarnum){
+  message("Awesome. You have the expected number of vars in your data and meta data")
+} else {
+  message("Eeeks. You do not have the same number of vars in your meta data and input data -- better check again, 
+          otherwise the app will have issues")
+}
+######################################################################################################
 # -------------------------------------- save spatial data objects ------------------------------- #
 ######################################################################################################
 #save meta data
-saveRDS(cdd_dt, file = paste0(data_repo,"/app_inputs/contextual-metadata-2december2019.rds"))
+saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-2december2019.rds"))
 saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-2december2019.rds"))
 
 #save map-years data
@@ -300,7 +342,7 @@ saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-27november2019.
 #saveRDS(mod_sf, file = paste0(data_repo,"/app_inputs/perinatal-data-5november2019.rds"))
 saveRDS(all_sf, file = paste0(data_repo,"/app_inputs/all-data-2december2019.rds"))
 
-  #save json
+    #save json
 #geojson_write(alljson, file = paste0(data_repo,"/app_inputs/all-data-9november2019.geojson"))
 
 
