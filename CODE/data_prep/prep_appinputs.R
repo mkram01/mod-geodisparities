@@ -25,11 +25,14 @@ message(paste0("You have specified ", data_repo, " as the location of your data.
 #contextual data & associated data dictionary
 contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-4november2019.rds")
 #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata.rds")
-contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.rds")
+#contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.rds")
+#output metadata as csv and added label field 
+contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv")
 
 #perinatal model data & associated data dictionary
 model_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-data-2november2019.rds")
-model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.rds")
+#model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.rds")
+model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.csv")
 
 #matrix of variables x years with data source year as cell value -- to be used to dynamically plug year of data source into captioning
 mapyears_data <- paste0(data_repo, "/app_inputs/pre_processed_inputs/map-years.rds")
@@ -43,7 +46,8 @@ base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg
 #load contextual data
 acs <- readRDS(contextual_data)
 #load meta data 
-cdd <- readRDS(contextual_dd)
+#cdd <- readRDS(contextual_dd)
+cdd <- fread(contextual_dd, stringsAsFactors = F)
 
 #newcdd <- readRDS(newestcontext)
 
@@ -53,7 +57,8 @@ cdd <- readRDS(contextual_dd)
 #load perinatal outcome model data
 mod <- readRDS(model_data)
 #load meta data
-mdd <- readRDS(model_dd)
+#mdd <- readRDS(model_dd)
+mdd <- fread(model_dd, stringsAsFactors = F)
 
 #load matrix ov vars with data source year
 mapyears <- as.data.table(readRDS(mapyears_data))
@@ -284,8 +289,8 @@ class(st_geometry(all_sf))
 # -------------------------------------- save spatial data objects ------------------------------- #
 ######################################################################################################
 #save meta data
-saveRDS(cdd_dt, file = paste0(data_repo,"/app_inputs/contextual-metadata-25november2019.rds"))
-saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-13november2019.rds"))
+saveRDS(cdd_dt, file = paste0(data_repo,"/app_inputs/contextual-metadata-2december2019.rds"))
+saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-2december2019.rds"))
 
 #save map-years data
 saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-27november2019.rds"))
