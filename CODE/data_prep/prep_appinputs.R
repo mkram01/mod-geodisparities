@@ -91,7 +91,7 @@ mdd_dt <- mdd_dt[, reverse_palette:=FALSE]
 mdd_dt <- mdd_dt[palette == "BuPu",plot_type:="sequential"]
 mdd_dt <- mdd_dt[palette == "PRGn",plot_type:="divergent"]
 #change this once hear back from Michael about meaning
-#cdd_dt <- cdd_dt[varname == "MCD", palette := "#CDBCEC + #FFAD81 + #FF772E + #E8001F"]
+cdd_dt <- cdd_dt[varname == "MCD", palette := "#CDBCEC + #FFAD81 + #FF772E + #E8001F"]
 
 # ---- model var groupings ----
 m_ptb <- c("Preterm birth, Total",
@@ -331,7 +331,7 @@ if(datavarnum == metavarnum){
 # -------------------------------------- save spatial data objects ------------------------------- #
 ######################################################################################################
 #save meta data
-saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-2december2019.rds"))
+saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-3december2019.rds"))
 saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-2december2019.rds"))
 
 #save map-years data
