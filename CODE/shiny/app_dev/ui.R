@@ -101,6 +101,10 @@ ui <- bootstrapPage(
                     uiOutput('cvar'),
                     #selectInput('cvar',label = 'Color Var', choices = var_choices, selected = "blackwhite_ratio"),
                     
+                    #select number of quantiles
+                    sliderInput('quantiles', label = "Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
+                                ),
+                    
                     #grab ui output
                     uiOutput("ui"),
                     width = 3
@@ -160,6 +164,10 @@ ui <- bootstrapPage(
                     # -> source - parent of:
                     uiOutput('mod_cvar'),
                     #selectInput('cvar',label = 'Color Var', choices = var_choices, selected = "blackwhite_ratio"),
+                    
+                    #select number of quantiles
+                    sliderInput('mod_quantiles', label = "Quantiles", value = 5, min = 2, max = 10, step = 1, sep = ""
+                    ),
                     
                     #grab ui output
                     uiOutput("mod_ui"),

@@ -34,7 +34,8 @@ save_profvis2html <- function(input, outdir, outname = NA){
   #   Output: html file in designated dir
   
   if (is.na(outname)){
-    outname <- gsub(".*/(.*)\\..*","\\1", (input), perl = T)
+    basename <- gsub(".*/(.*)\\..*","\\1", (input), perl = T) 
+    outname <- paste0(basename, ".html")
   } else {
     outname <- (outname)
   }
@@ -42,6 +43,9 @@ save_profvis2html <- function(input, outdir, outname = NA){
   #read in profvis output
   p1 <- profvis(prof_input = (input))
   
+  #full path to final file
+  outfilepath <- paste0(outdir, outname)
+  
   #save as html
-  htmlwidgets::saveWidget(p1, (outdir)) 
+  htmlwidgets::saveWidget(p1, (outfilepath)) 
 }
