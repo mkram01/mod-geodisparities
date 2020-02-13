@@ -367,11 +367,11 @@ if(datavarnum == metavarnum){
 #not removing problem vars
 #saveRDS(cdd_dt, file = paste0(data_repo,"/app_inputs/contextual-metadata-3december2019.rds"))
 #if removing problem vars
-saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-23december2019.rds"))
-saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-23december2019.rds"))
+#********saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-23december2019.rds"))
+#********saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-23december2019.rds"))
 
 #save map-years data
-saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-23december2019.rds"))
+#********saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-23december2019.rds"))
 
 #save app inputs
 #saveRDS(context_sf, file = paste0(data_repo,"/app_inputs/contextual-data-5november2019.rds"))
@@ -379,9 +379,9 @@ saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-23december2019.
 #not removing problem vars
 #saveRDS(all_sf, file = paste0(data_repo,"/app_inputs/all-data-3december2019.rds"))
 #if removing problem vars
-saveRDS(all_sf2, file = paste0(data_repo,"/app_inputs/all-data-23december2019.rds"))
+#********saveRDS(all_sf2, file = paste0(data_repo,"/app_inputs/all-data-23december2019.rds"))
 
-    #save json
+#save json
 #geojson_write(alljson, file = paste0(data_repo,"/app_inputs/all-data-9november2019.geojson"))
 
 
