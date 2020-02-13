@@ -23,11 +23,11 @@ message(paste0("You have specified ", data_repo, " as the location of your data.
 
 #TO-DO -- define app input data for preparation to be pulled into app
 #contextual data & associated data dictionary
-contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-10november2019.rds")
+contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-4December2019.rds")
 #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata.rds")
-#contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.rds")
+contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-4December2019.rds")
 #output metadata as csv and added label field 
-contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv")
+#contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv")
 
 #perinatal model data & associated data dictionary
 model_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-data-2november2019.rds")
@@ -35,7 +35,7 @@ model_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-data-
 model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.csv")
 
 #matrix of variables x years with data source year as cell value -- to be used to dynamically plug year of data source into captioning
-mapyears_data <- paste0(data_repo, "/app_inputs/pre_processed_inputs/map-years.rds")
+mapyears_data <- paste0(data_repo, "/app_inputs/pre_processed_inputs/map-years-4December2019.rds")
 
 #base spatial layer
 base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg")
@@ -46,8 +46,8 @@ base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg
 #load contextual data
 acs <- readRDS(contextual_data)
 #load meta data 
-#cdd <- readRDS(contextual_dd)
-cdd <- fread(contextual_dd, stringsAsFactors = F)
+cdd <- readRDS(contextual_dd)
+#cdd <- fread(contextual_dd, stringsAsFactors = F)
 
 #newcdd <- readRDS(newestcontext)
 
@@ -154,6 +154,27 @@ mapyears4 <- gather(mapyears3, key = "viz_year", value = "source_year", -display
 #convert viz year to integer
 mapyears4$viz_year <- as.integer(mapyears4$viz_year)
 
+# -------------------------------------- create 'label' field for in-app unit labeling ---------------
+nolabel.vars <- c('MCD', 'RUCA')
+num.vars <- c('MDrate', 'OBGYNrate', 'rtMHPRACT', 'rtTEENBIRTH', 'BWPOVRR', 'HWPOVRR', 'BWMEDINCOMERR',
+              'HWMEDINCOMERR', 'NDI_scale', 'INCOME_8020', 'INCOME_8020_BLK', 'INCOME_8020_WHT',
+              'INCOME_8020_HISP', 'ICE_INCOME_all', 'rtSocASSOC', 'SocCap', 'rtVIOLENTCR_ICPSR',
+              'race_entropy', 'rtOPIOIDPRESCRIPT', 'rtDRUGPOISON'
+              )
+percent.vars <- c('PCTFEMUNINSURED', 'pctOBESE', 'pctFAIRPOORHLTH', 'pctSPHH', 'pctFHH', 'pctHOUSE_DISTRESS',
+                  'pctOVERCROWDHH', 'pctMOVE', 'pctNOHS', 'pctNOHS_BLK', 'pctNOHS_HISP', 'pctNOHS_NHWHT',
+                  'pctCOLL', 'pctCOLL_BLK', 'pctCOLL_HISP', 'pctCOLL_NHWHT', 'pctPOV', 'pctPOV_BLK',
+                  'pctPOV_HISP', 'pctPOV_NHWHT', 'pctOWNER_OCC', 'pctOWNER_OCC_BLK', 'pctOWNER_OCC_HISP',
+                  'pctOWNER_OCC_NHWHT', 'pctPUBLICASST', 'pctBLK', 'pctHISP'
+                  )
+dollars.vars <- c('MEDHHINC','MEDHHINC_BLK', 'MEDHHINC_HISP', 'MEDHHINC_NHWHT')
+
+#create label var and define using categories above
+cdd_dt <- cdd_dt[varname %in% num.vars, label:='number']
+cdd_dt <- cdd_dt[varname %in% percent.vars, label:='percent']
+cdd_dt <- cdd_dt[varname %in% dollars.vars, label:='dollars']
+cdd_dt <- cdd_dt[varname %in% nolabel.vars, label := NA]
+
 ######################################################################################################
 # -------------------------------------- Rename data fields to their human-readable versions ------- #
 ######################################################################################################
@@ -169,8 +190,8 @@ modnamesdt <- as.data.table(modoriginal)
 modnamesdt <- modnamesdt[,id:=row.names(modnamesdt)]
 
 #join to meta data dictionary
-acsnamesdt2 <- as.data.table(left_join(acsnamesdt, cdd, by=c("acsoriginal" = "varname")))
-modnamesdt2 <- as.data.table(left_join(modnamesdt, mdd, by=c("modoriginal" = "varname")))
+acsnamesdt2 <- as.data.table(left_join(acsnamesdt, cdd_dt, by=c("acsoriginal" = "varname")))
+modnamesdt2 <- as.data.table(left_join(modnamesdt, mdd_dt, by=c("modoriginal" = "varname")))
 
 #create single new field for names
 acsnamesdt2 <- acsnamesdt2[,newname:=display_name]
@@ -234,17 +255,18 @@ allin1 <- left_join(acs5, mod6dt)
 # ------------------------------------------ simplify geometry ------------------------------------- #
 ######################################################################################################
 #transform to Albers Equal Area projection
-aeap <- "+proj=aea +lat_1=29.83333333333334 +lat_2=45.83333333333334 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#aeap <- "+proj=aea +lat_1=29.83333333333334 +lat_2=45.83333333333334 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 
 #transform to projected CRS and try simplifying
 # acs6 <- st_transform(acs5, aeap)
 # mod7 <- st_transform(mod6, aeap)
-all2 <- st_transform(allin1, aeap)
+
+#all2 <- st_transform(allin1, aeap)
 
 #geometry simplification
 #acs_smpl <- st_simplify(acs6, dTolerance = 0.1, preserveTopology = T)
 #mod_smpl <- st_simplify(mod7, dTolerance = 0.1, preserveTopology = T)
-all_smpl <- st_simplify(all2, dTolerance = 0.1, preserveTopology = T)
+#all_smpl <- st_simplify(all2, dTolerance = 0.1, preserveTopology = T)
 
 ######################################################################################################
 # ------------------------------------------ set CRS ----------------------------------------------- #
@@ -252,7 +274,7 @@ all_smpl <- st_simplify(all2, dTolerance = 0.1, preserveTopology = T)
 #transform to wgs84
 #acs_fin <- st_transform(acs_smpl, crs = 4326)
 #mod_fin <- st_transform(mod_smpl, crs = 4326)
-all_fin <- st_transform(all_smpl, crs = 4326)
+all_fin <- st_transform(allin1, crs = 4326)
 
 #test
 #plot(st_geometry(acs_fin[acs_fin$state_name == "Maine" & acs_fin$year=="2008",])) 
@@ -345,11 +367,11 @@ if(datavarnum == metavarnum){
 #not removing problem vars
 #saveRDS(cdd_dt, file = paste0(data_repo,"/app_inputs/contextual-metadata-3december2019.rds"))
 #if removing problem vars
-saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-3december2019.rds"))
-saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-2december2019.rds"))
+#********saveRDS(cdd_dt2, file = paste0(data_repo,"/app_inputs/contextual-metadata-23december2019.rds"))
+#********saveRDS(mdd_dt, file = paste0(data_repo,"/app_inputs/perinatal-metadata-23december2019.rds"))
 
 #save map-years data
-saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-27november2019.rds"))
+#********saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-23december2019.rds"))
 
 #save app inputs
 #saveRDS(context_sf, file = paste0(data_repo,"/app_inputs/contextual-data-5november2019.rds"))
@@ -357,9 +379,9 @@ saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-27november2019.
 #not removing problem vars
 #saveRDS(all_sf, file = paste0(data_repo,"/app_inputs/all-data-3december2019.rds"))
 #if removing problem vars
-saveRDS(all_sf2, file = paste0(data_repo,"/app_inputs/all-data-3december2019.rds"))
+#********saveRDS(all_sf2, file = paste0(data_repo,"/app_inputs/all-data-23december2019.rds"))
 
-    #save json
+#save json
 #geojson_write(alljson, file = paste0(data_repo,"/app_inputs/all-data-9november2019.geojson"))
 
 
