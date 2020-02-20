@@ -40,17 +40,17 @@ base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg
 # contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-4December2019.rds")
 # #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata.rds")
 # contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-4December2019.rds")
-# #output metadata as csv and added label field 
+# #output metadata as csv and added label field
 # #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv")
-# 
+#
 # #perinatal model data & associated data dictionary
 # model_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-data-2november2019.rds")
 # #model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.rds")
 # model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.csv")
-# 
+#
 # #matrix of variables x years with data source year as cell value -- to be used to dynamically plug year of data source into captioning
 # mapyears_data <- paste0(data_repo, "/app_inputs/pre_processed_inputs/map-years-4December2019.rds")
-# 
+#
 # #base spatial layer
 # base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg")
 
@@ -59,7 +59,7 @@ base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg
 ######################################################################################################
 #load contextual data
 acs <- readRDS(contextual_data)
-#load meta data 
+#load meta data
 cdd <- readRDS(contextual_dd)
 
 #load perinatal outcome model data
@@ -77,31 +77,31 @@ states <- fread(paste0(data_repo,"/app_inputs/pre_processed_inputs/state_fips_co
 
 #load 2017 US counties spatial layer
 basegeo <- st_read(base)
-# 
+#
 # #load contextual data
 # acs <- readRDS(contextual_data)
-# #load meta data 
+# #load meta data
 # cdd <- readRDS(contextual_dd)
 # #cdd <- fread(contextual_dd, stringsAsFactors = F)
-# 
+#
 # #newcdd <- readRDS(newestcontext)
-# 
+#
 # #for display
 # #write.csv(newcdd, file = paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv"))
-# 
+#
 # #load perinatal outcome model data
 # mod <- readRDS(model_data)
 # #load meta data
 # #mdd <- readRDS(model_dd)
 # mdd <- fread(model_dd, stringsAsFactors = F)
-# 
+#
 # #load matrix ov vars with data source year
 # mapyears <- as.data.table(readRDS(mapyears_data))
-# 
+#
 # #load state fips codes to get state name in model data
 # states <- fread(paste0(data_repo,"/app_inputs/pre_processed_inputs/state_fips_codes.csv"), stringsAsFactors = F,
 #                 colClasses = list(character=c("state_name", "fips_code")))
-# 
+#
 # #load 2017 US counties spatial layer
 # basegeo <- st_read(base)
 
@@ -130,22 +130,22 @@ cdd_dt <- cdd_dt[varname == "MCD", palette := "#CDBCEC + #FFAD81 + #FF772E + #E8
 
 # ---- model var groupings ----
 m_ptb <- c("Preterm birth, Total",
-           "Preterm birth, Black", "Preterm birth, Hispanic", "Preterm birth, White",                               
+           "Preterm birth, Black", "Preterm birth, Hispanic", "Preterm birth, White",
            "Preterm birth, Black:White Risk ratio", "Preterm birth, Hispanic:White Risk ratio",
            "Preterm birth, Black:White Risk difference", "Preterm birth, Hispanic:White Risk difference" )
 m_vptb <- c("Very preterm birth, Total",
             "Very preterm birth, Black", "Very preterm birth, Hispanic", "Very preterm birth, White",
-            "Very preterm birth, Black:White Risk ratio", "Very preterm birth, Hispanic:White Risk ratio", 
+            "Very preterm birth, Black:White Risk ratio", "Very preterm birth, Hispanic:White Risk ratio",
             "Very preterm birth, Black:White Risk difference", "Very preterm birth, Hispanic:White Risk difference")
-m_eptb <- c("Early preterm birth, Total", 
-            "Early preterm birth, Black", "Early preterm birth, Hispanic", "Early preterm birth, White", 
+m_eptb <- c("Early preterm birth, Total",
+            "Early preterm birth, Black", "Early preterm birth, Hispanic", "Early preterm birth, White",
             "Early preterm birth, Black:White Risk ratio", "Early preterm birth, Hispanic:White Risk ratio",
             "Early preterm birth, Black:White Risk difference", "Early preterm birth, Hispanic:White Risk difference")
 m_lptb <- c("Late preterm birth, Total",
             "Late preterm birth, Black", "Late preterm birth, Hispanic", "Late preterm birth, White",
             "Late preterm birth, Black:White Risk ratio", "Late preterm birth, Hispanic:White Risk ratio",
             "Late preterm birth, Black:White Risk difference", "Late preterm birth, Hispanic:White Risk difference" )
-m_etb <- c("Early term birth, Total", 
+m_etb <- c("Early term birth, Total",
            "Early term birth, Black", "Early term birth, Hispanic", "Early term birth, White",
            "Early term birth, Black:White Risk ratio", "Early term birth, Hispanic:White Risk ratio",
            "Early term birth, Black:White Risk difference","Early term birth, Hispanic:White Risk difference")
@@ -163,7 +163,7 @@ mdd_dt <- mdd_dt[display_name %in% m_ptb, category_name:="Preterm birth"]
 mdd_dt <- mdd_dt[display_name %in% m_vptb, category_name:="Very preterm birth"]
 mdd_dt <- mdd_dt[display_name %in% m_eptb, category_name:="Early preterm birth"]
 mdd_dt <- mdd_dt[display_name %in% m_lptb, category_name:="Late preterm birth"]
-mdd_dt <- mdd_dt[display_name %in% m_etb, category_name:="Early term birth"] 
+mdd_dt <- mdd_dt[display_name %in% m_etb, category_name:="Early term birth"]
 
 # ---- wrangling map-years ----
 #fix columns named 2015.1 and 2015.2 to read as 2016 and 2017, respectively
@@ -179,7 +179,7 @@ setnames(mapyears, mapyrs_oldnames, mapyrs_newnames)
 #join to contextual metadata to get display name -- this is what will be used for matching in the app
 mapyears2 <- merge(mapyears, cdd, by = "varname")
 
-# -- reshape long -- 
+# -- reshape long --
 #subset to only needed columns
 mapyears3 <- mapyears2[,c("display_name", mapyrs_newnames), with=FALSE]
 
@@ -239,7 +239,7 @@ modnamesdt2 <- modnamesdt2[is.na(modnamesdt2$display_name),newname:=modoriginal]
 acsnewnames <- acsnamesdt2[["newname"]]
 modnewnames <- modnamesdt2[["newname"]]
 
-#rename vars 
+#rename vars
 acs2 <- setnames(acs, acsoriginal, acsnewnames)
 mod2 <- setnames(mod, modoriginal, modnewnames)
 
@@ -282,7 +282,7 @@ mod4 <- left_join(mod3, states, by = c("state_fips" = "fips_code"))
 acs4 <- (acs3[acs3$state_name != "Puerto Rico",])
 mod5 <- (mod4[mod4$state_name != "Puerto Rico",])
 
-#rework cols to keep
+#rework cols to keep # ---------------------------------------------------------------------- SKIPPING THIS - shouldn't matter
 acs5 <- acs4[,c(1:2, 57, 58, 4:56)] #GEOID, year, county_name, state_name, ..., geom
 mod6 <- mod5[,c(1, 3, 45, 47, 4:44)] #GEOID, year, county_name, state_name, ..., geom
 
@@ -339,19 +339,19 @@ unique(de.basegeo$GEOID) #3
 all_fin <- st_transform(allin1, crs = 4326)
 
 #test
-#plot(st_geometry(acs_fin[acs_fin$state_name == "Maine" & acs_fin$year=="2008",])) 
+#plot(st_geometry(acs_fin[acs_fin$state_name == "Maine" & acs_fin$year=="2008",]))
 #plot(st_geometry(mod_fin[mod_fin$state_name == "Georgia" & mod_fin$year=="2008",]))
 plot(st_geometry(all_fin[all_fin$state_name == "Maine" & all_fin$year=="2008",]))
 
-# #need to turn geom into polygon geometry column -- may not need to do this  
+# #need to turn geom into polygon geometry column -- may not need to do this
 # contextdata <- as.data.frame(acs_fin)
 # contextgeom <- st_sfc(acs_fin$geom)
 # context_sf <- st_sf(contextdata, geometry = contextgeom)
-# 
+#
 # modeldata <- as.data.frame(mod_fin)
 # modelgeom <- st_sfc(mod_fin$geom)
 # model_sf <- st_sf(modeldata, geometry = modelgeom)
-# 
+#
 # #drop geom columns
 # context_sf$geom <- NULL
 # model_sf$geom <- NULL
@@ -372,7 +372,7 @@ class(st_geometry(all_sf))
 ######################################################################################################
 # ------------------------------------------ transform %s so all decimals -------------------------- #
 ######################################################################################################
-convert2decimals <- c("Percent women uninsured", "% Obese (2010-2015 only)", 
+convert2decimals <- c("Percent women uninsured", "% Obese (2010-2015 only)",
                       "% Fair/Poor health (2010-2015 only)", "% Housing distress (2014-2015 only)")
 
 for (c in 1:length(convert2decimals)){
@@ -419,7 +419,7 @@ if(datavarnum == metavarnum){
 # if(datavarnum == metavarnum){
 #   message("Awesome. You have the expected number of vars in your data and meta data")
 # } else {
-#   message("Eeeks. You do not have the same number of vars in your meta data and input data -- better check again, 
+#   message("Eeeks. You do not have the same number of vars in your meta data and input data -- better check again,
 #           otherwise the app will have issues")
 # }
 ######################################################################################################
@@ -481,7 +481,7 @@ leaflet(acs6) %>%
   addTiles() %>%
   addPolygons(
     fillColor = ~pal(`% Poverty`),
-    weight = 2, 
+    weight = 2,
     color = "white",
     dashArray = "3",
     fillOpacity = 0.7
@@ -495,17 +495,17 @@ leaflet(acs6) %>%
 #               "Percent women uninsured")
 # c_health <- c("Teen birth rate", "% Obese (2010-2015 only)",
 #               "% Fair/Poor health (2010-2015 only)",
-#               "Opioid prescription rate (2007-2015 only)", 
-#               "Drug poisoning mortality rate (2007-2015 only)" 
+#               "Opioid prescription rate (2007-2015 only)",
+#               "Drug poisoning mortality rate (2007-2015 only)"
 #               )
 # c_hh <- c("% Single parent households", "% Female headed household",
 #           "% Housing overcrowding"
 #           )
-# c_edu <- c("% No high school", 
+# c_edu <- c("% No high school",
 #            "% No high school, Black", "% No high school, Hispanic", "% No high school, White",
 #            "% College, Black", "% College, Hispanic", "% College, White"
 #            )
-# c_poverty <- c("% Poverty", 
+# c_poverty <- c("% Poverty",
 #                "% Poverty, Black", "% Poverty, Hispanic", "% Poverty, White",
 #                "Black-White disparity in poverty rate"
 #                )
@@ -515,21 +515,21 @@ leaflet(acs6) %>%
 #               "Income inequality",
 #               "Income inequality, Black", "Income inequality, White")
 # c_socsupport <- c("% Receiving public assistance", "Neighbor Deprivation Index",
-#                   "Index of concentration at extremes (ICE)", 
-#                   "Social associations per capita (2007-2015 only)",    
+#                   "Index of concentration at extremes (ICE)",
+#                   "Social associations per capita (2007-2015 only)",
 #                   "Social Capital Index",
 #                   "Rural-Urban")
 # c_soccapital <- c("% Recently moved", "% Owner occupied housing",
-#                   "% Black owner occupied housing", "% Hispanic owner occupied housing", 
-#                   "% White owner occupied housing", 
+#                   "% Black owner occupied housing", "% Hispanic owner occupied housing",
+#                   "% White owner occupied housing",
 #                   "% Housing distress (2014-2015 only)",
 #                   "Violent crime rate (2007-2014 only)",
 #                   "Racial diversity (entropy; 2010)",
-#                   "% Black", "% Hispanic" 
+#                   "% Black", "% Hispanic"
 #                   )
-# 
+#
 # #check that all vars assigned a group
-# c_veclength <-sum(length(c_access), length(c_health), length(c_hh), length(c_edu), 
+# c_veclength <-sum(length(c_access), length(c_health), length(c_hh), length(c_edu),
 #                   length(c_poverty), length(c_income), length(c_socsupport), length(c_soccapital)
 #                   )
 # if(length(unique(cdd_dt$display_name)) == c_veclength){
@@ -537,7 +537,7 @@ leaflet(acs6) %>%
 # } else {
 #   message("erm...you didn't assign a group to all your vars...try again.")
 # }
-# 
+#
 # #create & assign group var
 # cdd_dt <- cdd_dt[display_name %in% c_access, group:="Access to Care"]
 # cdd_dt <- cdd_dt[display_name %in% c_health, group:="Health"]
@@ -550,7 +550,7 @@ leaflet(acs6) %>%
 
 
 # ------ make sure geographies & years overlap -- 11/3 same length ------
-#acsgeos <- unique(acs2$GEOID) 
+#acsgeos <- unique(acs2$GEOID)
 #modgeos <- unique(mod2$GEOID)
 #mod2 <- mod2[,mod_name:=NAME]
 #join data by geoid & year to eliminate mismatches & subset data accordingly
@@ -566,6 +566,6 @@ leaflet(acs6) %>%
 # #join back to each table
 # acsfiltered <- as.data.table(left_join(acs2, keeprows))
 # acsfiltered2 <- acsfiltered[!is.na(acsfiltered$keep),]
-# 
+#
 # modfiltered <- as.data.table(left_join(mod2, keeprows))
 # modfiltered2 <- modfiltered[!is.na(modfiltered$keep),]

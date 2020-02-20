@@ -8,6 +8,7 @@ rm(list = ls())
 
 #NTS:
 #   - do i need to even load the basegeo file?
+#   - do i need the states file anymore? - no
 
 
 
@@ -25,9 +26,12 @@ rm(list = ls())
 #                      - reshape long 
 #                      - visualization year (the year users can select)
 #    7. ACS & model metadata: create 'label' field for in-app unit labeling 
-#    8. ACS & model data: Rename data fields to their human-readable versions (display names)
-#    9. 
-#    10. 
+#    8. ACS & model data: rename data fields to their human-readable versions (display names)
+#    9. ACS & model data: join data together
+#    10. ACS & model data: create county and state name fields  
+#    11. ACS & model data: set CRS
+#    12. ACS & model data: transform %s so all decimals
+#    13. ACS & model data: save objects 
 
 
 # Ways ACS and model data differ
@@ -124,7 +128,7 @@ check_state <- function(data, state_id){
   print(paste0("Your selected state has: ",length(unique(state.data$GEOID)), " counties in this dataset."))
   
   #plot
-  plot_mapbox(state.data, split=~NAME) %>%
+  plot_mapbox(state.data, split=~NAME.y) %>%
     layout(
       mapbox = list(
         zoom = 6
@@ -133,6 +137,7 @@ check_state <- function(data, state_id){
     config(mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"))
   
 }
+
 ######################################################################################################
 # -------------------------------------- load data ------------------------------------------------- #
 ######################################################################################################
@@ -151,19 +156,17 @@ mapyears <- as.data.table(readRDS(mapyears_data))
 
 #load state fips codes to get state name in model data --------------------------------------------------------------NTS:: use of this file might be part of issue
 base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg")
-states <- fread(paste0(data_repo,"/app_inputs/pre_processed_inputs/state_fips_codes.csv"), stringsAsFactors = F,
-                colClasses = list(character=c("state_name", "fips_code")))
+
 
 #load 2017 US counties spatial layer
 basegeo <- st_read(base)
 
 ######################################################################################################
-# -------------------------------------- 1. create state geoid --------------------------------------- #
+# -------------------------------------- 1. create state geoid ----------------------- #
 ######################################################################################################
-#1. create state geoid
+# create state geoid for original data too for validation
 acs$state_geoid <- substr(acs$GEOID, 0,2)
 mod$state_geoid <- substr(mod$GEOID, 0,2)
-basegeo$state_geoid <- substr(basegeo$GEOID, 0,2)
 
 ######################################################################################################
 # -------------------------------------- 2. validate input data --------------------------------------- #
@@ -200,13 +203,6 @@ if ((length(unique(acs$GEOID)) == acs.county.overlap) & (length(unique(mod$GEOID
   message("Eeeks. Your ACS and model data DO NOT cover the same counties")
 }
 
-#check delaware
-check_state(acs, "10")
-check_state(mod, "10")
-
-#check alabama
-check_state(acs, "01")
-check_state(mod, "01")
 
 ######################################################################################################
 # -------------------------------------- 3. Metadata: get rid of trailing whitespace in var display names ---------------------------------------- #
@@ -349,7 +345,7 @@ mdd <- mdd[!str_detect(display_name, "ratio"), label:= 'percent']
 mdd <- mdd[str_detect(display_name, "ratio"), label:= 'nolabel']
 
 ######################################################################################################
-# ------------------------------------- 8. ACS & model data: Rename data fields to their human-readable versions (display names) ------- #
+# ------------------------------------- 8. ACS & model data: rename data fields to their human-readable versions (display names) ------- #
 ######################################################################################################
 #create vector of field names
 acsoriginal <- names(acs)
@@ -381,16 +377,64 @@ modnewnames <- modnamesdt2[["newname"]]
 acs2 <- setnames(acs, acsoriginal, acsnewnames)
 mod2 <- setnames(mod, modoriginal, modnewnames)
 
+######################################################################################################
+# ------------------------------------- 9. ACS & model data: join data together -------------------- #
+######################################################################################################
+#join input datasets
+modjoin <- copy(mod2)
+modjoin$geom <- NULL
+alldata <- full_join(acs2, modjoin, by = c('GEOID', 'year', 'state_geoid'))
+
+#validate data behaving as should
+check_state(alldata, "10")
+check_state(alldata, "01")
+
+######################################################################################################
+# ------------------------------------- 10. ACS & model data: create county and state name fields ------- #
+######################################################################################################
+#create county name field
+alldata$county_name <- alldata$NAME.y
+
+#create state name field
+alldata$state_name <- gsub('.*,\\s*', '', alldata$NAME.x)
+
 #validate dataset still works as it should
-check_state(acs2, "10")
-check_state(mod2, "10")
-check_state(acs2, "01")
-check_state(mod2, "01")
+check_state(alldata, "10")
+check_state(alldata, "01")
 
 ######################################################################################################
-# ------------------------------------- 8. ACS & model data: Rename data fields to their human-readable versions (display names) ------- #
+# ------------------------------------- 11. ACS & model data: set CRS ------------------------------ #
 ######################################################################################################
+alldatafin <- st_transform(alldata, crs = 4326)
 
+#validate dataset still works as it should
+check_state(alldatafin, "10")
+check_state(alldatafin, "01")
 
+######################################################################################################
+# ------------------------------------- 12. ACS & model data: transform %s so all decimals --------- #
+######################################################################################################
+convert2decimals <- c("Teen birth rate","Percent women uninsured", "% Obese (2010-2015 only)",
+                      "% Fair/Poor health (2010-2015 only)", "% Housing distress (2014-2015 only)")
 
+for (c in 1:length(convert2decimals)){
+  convertcol <- convert2decimals[c]
+  alldatafin[[convertcol]] <- (alldatafin[[convertcol]]/100)
+}
 
+######################################################################################################
+# ------------------------------------- 13. ACS & model data: save objects ------------------------- #
+######################################################################################################
+#validate dataset still works as it should
+check_state(alldatafin, "10")
+check_state(alldatafin, "01")
+
+#save meta data
+saveRDS(cdd, file = paste0(data_repo,"/app_inputs/contextual-metadata-20feb20.rds"))
+saveRDS(mdd, file = paste0(data_repo,"/app_inputs/perinatal-metadata-20feb20.rds"))
+
+#save map-years data
+saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-20feb20.rds"))
+
+#save app input dataset
+saveRDS(alldatafin, file = paste0(data_repo,"/app_inputs/all-data-20feb20.rds"))
