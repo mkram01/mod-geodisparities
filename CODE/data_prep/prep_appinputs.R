@@ -21,24 +21,38 @@ data_repo <- Sys.getenv('mod_data')
 #setwd(repo)
 message(paste0("You have specified ", data_repo, " as the location of your data."))
 
-#TO-DO -- define app input data for preparation to be pulled into app
 #contextual data & associated data dictionary
 contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-4December2019.rds")
-#contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata.rds")
-contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-4December2019.rds")
-#output metadata as csv and added label field 
-#contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv")
+contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-11feb2020.rds")
 
 #perinatal model data & associated data dictionary
-model_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-data-2november2019.rds")
-#model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.rds")
-model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.csv")
+model_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-data-11feb2020.rds")
+model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata-11feb2020.rds")
 
 #matrix of variables x years with data source year as cell value -- to be used to dynamically plug year of data source into captioning
 mapyears_data <- paste0(data_repo, "/app_inputs/pre_processed_inputs/map-years-4December2019.rds")
 
-#base spatial layer
+#base spatial layer -------------------------------------------------------------------------------------------------NTS:: why do i need this in here?
 base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg")
+
+# #TO-DO -- define app input data for preparation to be pulled into app
+# #contextual data & associated data dictionary
+# contextual_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-data-4December2019.rds")
+# #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata.rds")
+# contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-4December2019.rds")
+# #output metadata as csv and added label field 
+# #contextual_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv")
+# 
+# #perinatal model data & associated data dictionary
+# model_data <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-data-2november2019.rds")
+# #model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.rds")
+# model_dd <- paste0(data_repo,"/app_inputs/pre_processed_inputs/perinatal-metadata.csv")
+# 
+# #matrix of variables x years with data source year as cell value -- to be used to dynamically plug year of data source into captioning
+# mapyears_data <- paste0(data_repo, "/app_inputs/pre_processed_inputs/map-years-4December2019.rds")
+# 
+# #base spatial layer
+# base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg")
 
 ######################################################################################################
 # -------------------------------------- load data ------------------------------------------------- #
@@ -47,28 +61,49 @@ base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg
 acs <- readRDS(contextual_data)
 #load meta data 
 cdd <- readRDS(contextual_dd)
-#cdd <- fread(contextual_dd, stringsAsFactors = F)
-
-#newcdd <- readRDS(newestcontext)
-
-#for display
-#write.csv(newcdd, file = paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv"))
 
 #load perinatal outcome model data
 mod <- readRDS(model_data)
 #load meta data
-#mdd <- readRDS(model_dd)
-mdd <- fread(model_dd, stringsAsFactors = F)
+mdd <- readRDS(model_dd)
 
-#load matrix ov vars with data source year
+#load matrix of vars with data source year
 mapyears <- as.data.table(readRDS(mapyears_data))
 
-#load state fips codes to get state name in model data
+#load state fips codes to get state name in model data --------------------------------------------------------------NTS:: use of this file might be part of issue
+base <- paste0(data_repo,"/app_inputs/pre_processed_inputs/us_counties_2017.gpkg")
 states <- fread(paste0(data_repo,"/app_inputs/pre_processed_inputs/state_fips_codes.csv"), stringsAsFactors = F,
                 colClasses = list(character=c("state_name", "fips_code")))
 
 #load 2017 US counties spatial layer
 basegeo <- st_read(base)
+# 
+# #load contextual data
+# acs <- readRDS(contextual_data)
+# #load meta data 
+# cdd <- readRDS(contextual_dd)
+# #cdd <- fread(contextual_dd, stringsAsFactors = F)
+# 
+# #newcdd <- readRDS(newestcontext)
+# 
+# #for display
+# #write.csv(newcdd, file = paste0(data_repo,"/app_inputs/pre_processed_inputs/contextual-metadata-17November.csv"))
+# 
+# #load perinatal outcome model data
+# mod <- readRDS(model_data)
+# #load meta data
+# #mdd <- readRDS(model_dd)
+# mdd <- fread(model_dd, stringsAsFactors = F)
+# 
+# #load matrix ov vars with data source year
+# mapyears <- as.data.table(readRDS(mapyears_data))
+# 
+# #load state fips codes to get state name in model data
+# states <- fread(paste0(data_repo,"/app_inputs/pre_processed_inputs/state_fips_codes.csv"), stringsAsFactors = F,
+#                 colClasses = list(character=c("state_name", "fips_code")))
+# 
+# #load 2017 US counties spatial layer
+# basegeo <- st_read(base)
 
 ######################################################################################################
 # -------------------------------------- basic data cleanup ---------------------------------------- #
@@ -208,6 +243,22 @@ modnewnames <- modnamesdt2[["newname"]]
 acs2 <- setnames(acs, acsoriginal, acsnewnames)
 mod2 <- setnames(mod, modoriginal, modnewnames)
 
+
+#create state code
+acs2$state_fips <- substr(acs2$GEOID, 0,2)
+mod2$state_fips <- substr(mod2$GEOID, 0,2)
+basegeo$state_fips <- substr(basegeo$GEOID, 0,2)
+
+#delaware
+de.acs <- acs2[acs2$state_fips == "10",]
+de.mod <- mod2[mod2$state_fips == "10",]
+de.basegeo <- basegeo[basegeo$state_fips == "10",]
+
+#how many counties?
+unique(de.acs$GEOID) #3
+unique(de.mod$GEOID) #3
+unique(de.basegeo$GEOID) #3
+
 ######################################################################################################
 # -------------------------------------- create county and state name fields ----------------------- #
 ######################################################################################################
@@ -251,6 +302,17 @@ acs5dt$geom <- NULL
 
 allin1 <- left_join(acs5, mod6dt)
 
+
+
+#create state code
+allin1$state_fips <- substr(allin1$GEOID, 0,2)
+
+#delaware
+de.all <- allin1[allin1$state_fips == "10",]
+
+#how many counties?
+unique(de.all$GEOID) #3
+unique(de.basegeo$GEOID) #3
 ######################################################################################################
 # ------------------------------------------ simplify geometry ------------------------------------- #
 ######################################################################################################
@@ -384,6 +446,16 @@ if(datavarnum == metavarnum){
 #save json
 #geojson_write(alljson, file = paste0(data_repo,"/app_inputs/all-data-9november2019.geojson"))
 
+
+
+#create state code
+all_sf2$state_fips <- substr(all_sf2$GEOID, 0,2)
+
+#delaware
+de.allsf <- all_sf2[all_sf2$state_fips == "10",]
+
+#how many counties?
+unique(de.allsf$GEOID) #3
 
 ######################################################################################################
 # ---------------------------------------------- test w/some mapping ------------------------------- #
