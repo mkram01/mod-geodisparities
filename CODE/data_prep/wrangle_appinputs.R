@@ -31,6 +31,7 @@ rm(list = ls())
 #    10. ACS & model data: create county and state name fields  
 #    11. ACS & model data: set CRS
 #    12. ACS & model data: transform %s so all decimals
+#                     - also currently removing problem vars here
 #    13. ACS & model data: save objects 
 
 
@@ -422,6 +423,16 @@ for (c in 1:length(convert2decimals)){
   alldatafin[[convertcol]] <- (alldatafin[[convertcol]]/100)
 }
 
+# -- remove problem vars for now
+# #problem vars
+probvars <- c("Teen birth rate", "% Obese (2010-2015 only)", "% Fair/Poor health (2010-2015 only)")
+
+#remove from app data
+alldatafin_sans <- alldatafin[!names(alldatafin) %in% probvars]
+
+#remove from context meta data
+cdd2 <- cdd[!display_name %in% probvars]
+
 ######################################################################################################
 # ------------------------------------- 13. ACS & model data: save objects ------------------------- #
 ######################################################################################################
@@ -430,11 +441,191 @@ check_state(alldatafin, "10")
 check_state(alldatafin, "01")
 
 #save meta data
-saveRDS(cdd, file = paste0(data_repo,"/app_inputs/contextual-metadata-20feb20.rds"))
+saveRDS(cdd2, file = paste0(data_repo,"/app_inputs/contextual-metadata-20feb20.rds"))
 saveRDS(mdd, file = paste0(data_repo,"/app_inputs/perinatal-metadata-20feb20.rds"))
 
 #save map-years data
 saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-20feb20.rds"))
 
 #save app input dataset
-saveRDS(alldatafin, file = paste0(data_repo,"/app_inputs/all-data-20feb20.rds"))
+saveRDS(alldatafin_sans, file = paste0(data_repo,"/app_inputs/all-data-20feb20.rds"))
+
+######################################################################################################
+# ------------------------------------- 14. ACS & model data: explore 'problem' vars --------------- #
+######################################################################################################
+# check for nulls/nans/missing
+all.nullnanmiss <- null_nan_miss(as.data.table(alldatafin))
+
+#checkout range and class
+teenprg <- range(alldatafin$`Teen birth rate`)
+obese <- range(alldatafin$`% Obese (2010-2015 only)`)
+fairhealth <- range(alldatafin$`% Fair/Poor health (2010-2015 only)`)
+
+al <- alldatafin[alldatafin$state_name == "Alabama",]
+
+#plot
+plot_mapbox(al) %>%
+  add_trace(z= ~ `% Poverty`, 
+            locations = state.abb, locationmode = 'USA-states'
+            ) %>%
+  layout(
+    mapbox = list(
+      zoom = 6
+    )
+  ) %>%
+  config(mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"))
+
+
+plot_mapbox(al, 
+            color=~`% Poverty`,
+            split = ~county_name, 
+            span = I(1),
+            text = ~paste(county_name, (`% Poverty`)),
+            hoverinfo = "text",
+            hoveron = "fills",
+            frame = ~year
+            ) %>%
+  animation_opts(1000, easing = "elastic", redraw = FALSE) %>%
+  animation_button(
+    x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+  ) %>%
+  animation_slider(
+    currentvalue = list(prefix = "YEAR ", font = list(color="red"))
+  ) %>%
+  layout(
+    mapbox = list(
+      zoom = 6
+    ),
+    showlegend = FALSE
+    )
+
+# teen birth rate
+plot_mapbox(al, 
+            color=~`Teen birth rate`,
+            split = ~county_name, 
+            span = I(1),
+            text = ~paste(county_name, (`Teen birth rate`)),
+            hoverinfo = "text",
+            hoveron = "fills",
+            frame = ~year
+) %>%
+  animation_opts(1000, easing = "elastic", redraw = FALSE) %>%
+  animation_button(
+    x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+  ) %>%
+  animation_slider(
+    currentvalue = list(prefix = "YEAR ", font = list(color="red"))
+  ) %>%
+  layout(
+    mapbox = list(
+      zoom = 6
+    ),
+    showlegend = FALSE
+  )
+
+# % obese
+plot_mapbox(al, 
+            color=~`% Obese (2010-2015 only)`,
+            split = ~county_name, 
+            span = I(1),
+            text = ~paste(county_name, (`% Obese (2010-2015 only)`)),
+            hoverinfo = "text",
+            hoveron = "fills",
+            frame = ~year
+) %>%
+  animation_opts(1000, easing = "elastic", redraw = FALSE) %>%
+  animation_button(
+    x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+  ) %>%
+  animation_slider(
+    currentvalue = list(prefix = "YEAR ", font = list(color="red"))
+  ) %>%
+  layout(
+    mapbox = list(
+      zoom = 6
+    ),
+    showlegend = FALSE
+  )
+
+# % Fair/Poor health (2010-2015 only)
+plot_mapbox(al, 
+            color=~`% Fair/Poor health (2010-2015 only)`,
+            split = ~county_name, 
+            span = I(1),
+            text = ~paste(county_name, (`% Fair/Poor health (2010-2015 only)`)),
+            hoverinfo = "text",
+            hoveron = "fills",
+            frame = ~year
+) %>%
+  animation_opts(1000, easing = "elastic", redraw = FALSE) %>%
+  animation_button(
+    x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+  ) %>%
+  animation_slider(
+    currentvalue = list(prefix = "YEAR ", font = list(color="red"))
+  ) %>%
+  layout(
+    mapbox = list(
+      zoom = 6
+    ),
+    showlegend = FALSE
+  )
+
+
+
+#attempting to make into a function
+plot.var <- function(sfobj, varoi){
+  plot_mapbox((sfobj), 
+              color=~(as.name(varoi)),
+              split = ~county_name, 
+              span = I(1),
+              text = ~paste(county_name, (as.name(varoi))),
+              hoverinfo = "text",
+              hoveron = "fills",
+              frame = ~year
+  ) %>%
+    animation_opts(1000, easing = "elastic", redraw = FALSE) %>%
+    animation_button(
+      x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+    ) %>%
+    animation_slider(
+      currentvalue = list(prefix = "YEAR: ", font = list(color="red"))
+    ) %>%
+    layout(
+      mapbox = list(
+        zoom = 6
+      ),
+      showlegend = FALSE
+    )
+}
+
+plot.var(sfobj = al, varoi = "% Poverty")
+
+
+######################################################################################################
+# ------------------------------------- 15. delaware and dc issues --------------------------------- #
+######################################################################################################
+dc <- alldatafin[alldatafin$state_name == "District of Columbia",]
+
+plot_mapbox(dc, 
+            color=~`% Poverty`,
+            split = ~county_name, 
+            span = I(1),
+            text = ~paste(county_name, (`% Poverty`)),
+            hoverinfo = "text",
+            hoveron = "fills",
+            frame = ~year
+) %>%
+  animation_opts(1000, easing = "elastic", redraw = TRUE) %>%
+  animation_button(
+    x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+  ) %>%
+  animation_slider(
+    currentvalue = list(prefix = "YEAR ", font = list(color="red"))
+  ) %>%
+  layout(
+    mapbox = list(
+      zoom = 6
+    ),
+    showlegend = FALSE
+  )
