@@ -32,7 +32,8 @@ rm(list = ls())
 #    11. ACS & model data: set CRS
 #    12. ACS & model data: transform %s so all decimals
 #                     - also currently removing problem vars here
-#    13. ACS & model data: save objects 
+#    13. Model data: separate as stand-alone dataset
+#    14. ACS & model data: save objects 
 
 
 # Ways ACS and model data differ
@@ -433,8 +434,22 @@ alldatafin_sans <- alldatafin[!names(alldatafin) %in% probvars]
 #remove from context meta data
 cdd2 <- cdd[!display_name %in% probvars]
 
+
 ######################################################################################################
-# ------------------------------------- 13. ACS & model data: save objects ------------------------- #
+# ------------------------------------- 13. Model data: separate as stand-alone dataset ------------- #
+######################################################################################################
+#creating for equity report
+modalone <- alldatafin_sans %>%
+  select(GEOID, year, state_name, county_name, 
+         `Early preterm birth, Hispanic`,`Early preterm birth, Black`, `Early preterm birth, White`, `Early preterm birth, Total`, `Early preterm birth, Black:White Risk ratio`,`Early preterm birth, Hispanic:White Risk ratio`,`Early preterm birth, Black:White Risk difference`,`Early preterm birth, Hispanic:White Risk difference`,
+         `Early term birth, Hispanic`,`Early term birth, Black`,`Early term birth, White`,`Early term birth, Total`, `Early term birth, Black:White Risk ratio`, `Early term birth, Hispanic:White Risk ratio`,`Early term birth, Black:White Risk difference`,`Early term birth, Hispanic:White Risk difference`,
+         `Late preterm birth, Hispanic`,`Late preterm birth, Black`,`Late preterm birth, White`,`Late preterm birth, Total`,`Late preterm birth, Black:White Risk ratio`,`Late preterm birth, Hispanic:White Risk ratio`, `Late preterm birth, Black:White Risk difference`,`Late preterm birth, Hispanic:White Risk difference`,
+         `Preterm birth, Hispanic`,`Preterm birth, Black`,`Preterm birth, White`,`Preterm birth, Total`,`Preterm birth, Black:White Risk ratio`,`Preterm birth, Hispanic:White Risk ratio`,`Preterm birth, Black:White Risk difference`,`Preterm birth, Hispanic:White Risk difference`,
+         `Very preterm birth, Hispanic`,`Very preterm birth, Black`,`Very preterm birth, White`, `Very preterm birth, Total`,`Very preterm birth, Black:White Risk ratio`,`Very preterm birth, Hispanic:White Risk ratio`,`Very preterm birth, Black:White Risk difference`,`Very preterm birth, Hispanic:White Risk difference`
+         )
+
+######################################################################################################
+# ------------------------------------- 14. ACS & model data: save objects ------------------------- #
 ######################################################################################################
 #validate dataset still works as it should
 check_state(alldatafin, "10")
@@ -450,6 +465,8 @@ saveRDS(mapyears4, file = paste0(data_repo,"/app_inputs/mapyears-20feb20.rds"))
 #save app input dataset
 saveRDS(alldatafin_sans, file = paste0(data_repo,"/app_inputs/all-data-20feb20.rds"))
 
+#save model data for equity report
+saveRDS(modalone, file = paste0(data_repo,"/app_inputs/modonly-data-20feb20.rds"))
 ######################################################################################################
 # ------------------------------------- 14. ACS & model data: explore 'problem' vars --------------- #
 ######################################################################################################
