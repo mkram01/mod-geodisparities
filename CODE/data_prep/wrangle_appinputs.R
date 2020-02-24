@@ -467,8 +467,10 @@ saveRDS(alldatafin_sans, file = paste0(data_repo,"/app_inputs/all-data-20feb20.r
 
 #save model data for equity report
 saveRDS(modalone, file = paste0(data_repo,"/app_inputs/modonly-data-20feb20.rds"))
+
+
 ######################################################################################################
-# ------------------------------------- 14. ACS & model data: explore 'problem' vars --------------- #
+# ------------------------------------- 15. ACS & model data: explore 'problem' vars --------------- #
 ######################################################################################################
 # check for nulls/nans/missing
 all.nullnanmiss <- null_nan_miss(as.data.table(alldatafin))
@@ -620,7 +622,7 @@ plot.var(sfobj = al, varoi = "% Poverty")
 
 
 ######################################################################################################
-# ------------------------------------- 15. delaware and dc issues --------------------------------- #
+# ------------------------------------- 16. delaware and dc issues --------------------------------- #
 ######################################################################################################
 dc <- alldatafin[alldatafin$state_name == "District of Columbia",]
 
@@ -646,3 +648,114 @@ plot_mapbox(dc,
     ),
     showlegend = FALSE
   )
+
+
+######################################################################################################
+# ------------------------------------- play around with box plots --------------------------------- #
+######################################################################################################
+testdf <- alldatafin_sans %>%
+  filter(year == 2017)
+
+
+  testdf %>%
+    plot_ly(y = ~`Preterm birth, Total`) %>%
+    add_boxplot(x = "Overall",
+                #name = "Preterm birth, Total",
+                boxpoints = "suspectedoutliers",
+                marker = list(color = 'rgba(136,86,167,0.5)',
+                              outliercolor = 'rgba(219, 64, 82, 0.6)',
+                              line = list(outliercolor = 'rgba(219, 64, 82, 1.0)',
+                                          outlierwidth = 2)),
+                line = list(color = 'rgb(8,81,156)')
+                ) %>%
+    layout(yaxis = list(title = ""))
+
+#finding outliers
+Q <- quantile(testdf$`Preterm birth, Total`, probs=c(.25, .75), na.rm = FALSE)
+iqr <- IQR(testdf$`Preterm birth, Total`)
+up <- Q[2] + 1.5*iqr #Upper Range
+low <- Q[1] - 1.5*iqr #lower range
+
+testdf %>%
+  quantile(probs=c(.25, .75), na.rm = TRUE)
+
+#eliminating 
+eliminated <- subset(testdf, testdf$`Preterm birth, Total` > (Q[1] - 1.5*iqr) & 
+                       testdf$`Preterm birth, Total` < (Q[2] + 1.5*iqr))
+  
+  eliminated %>%
+    plot_ly(y = ~`Preterm birth, Total`) %>%
+    add_boxplot(x = "Overall",
+                #name = "Preterm birth, Total",
+                boxpoints = FALSE,
+                marker = list(color = 'rgba(136,86,167,0.5)',
+                              outliercolor = 'rgba(219, 64, 82, 0.6)',
+                              line = list(outliercolor = 'rgba(219, 64, 82, 1.0)',
+                                          outlierwidth = 2)),
+                line = list(color = 'rgb(8,81,156)')
+    ) %>%
+    layout(yaxis = list(title = ""),
+           title = "Test title")
+  
+#investigating black-white risk ratio
+#finding outliers
+Q <- quantile(testdf$`Preterm birth, Black:White Risk ratio`, probs=c(.25, .75), na.rm = TRUE)
+iqr <- IQR(testdf$`Preterm birth, Black:White Risk ratio`, na.rm = TRUE)
+up <- Q[2] + 1.5*iqr #Upper Range
+low <- Q[1] - 1.5*iqr #lower range  
+
+  
+eliminated <- subset(testdf, testdf$`Preterm birth, Total` > (Q[1] - 1.5*iqr) & 
+                         testdf$`Preterm birth, Total` < (Q[2] + 1.5*iqr))  
+  
+
+  eliminated %>%
+    plot_ly(y = ~`Preterm birth, Black:White Risk ratio`) %>%
+    add_boxplot(x = "Overall",
+                #name = "Preterm birth, Total",
+                boxpoints = FALSE,
+                marker = list(color = 'rgba(136,86,167,0.5)',
+                              outliercolor = 'rgba(219, 64, 82, 0.6)',
+                              line = list(outliercolor = 'rgba(219, 64, 82, 1.0)',
+                                          outlierwidth = 2)),
+                line = list(color = 'rgb(8,81,156)')
+    ) %>%
+    layout(yaxis = list(title = ""),
+           title = "Test title")
+
+#scatter plot - loess fit
+mfit <- loess(testdf$`% Poverty` ~ testdf$`Preterm birth, Total`, data = testdf)
+bestfit <- lm(testdf$`% Poverty` ~ testdf$`Preterm birth, Total`, data = testdf)
+
+  testdf %>%
+    plot_ly(x = ~testdf$`% Poverty`, color = I("black")) %>%
+    add_markers(y = ~testdf$`Preterm birth, Total`,  showlegend = FALSE) %>% #text = county_name,
+    add_lines(y = ~bestfit$model[1],
+              x = ~bestfit$model[2],
+              line = list(color = 'rgba(7, 164, 181, 1)'),
+              name = "Line of best fit") %>%
+    add_ribbons(data = augment(mfit),
+                ymin = ~.fitted - 1.96 * .se.fit,
+                ymax = ~.fitted + 1.96 * .se.fit,
+                line = list(color = 'rgba(7, 164, 181, 0.05)'),
+                fillcolor = 'rgba(7, 164, 181, 0.2)',
+                name = "Standard Error") %>%
+  layout(xaxis = list(title = "poverty"),
+         yaxis = list(title = "whatever"),
+         legend = list(x = 0.80, y = 0.90))
+
+  
+  
+  
+
+
+  #1st go
+mod_uni <- plot_ly(plots_data()) %>%
+  add_boxplot(x = x,
+              name = input$modvar, 
+              fill = "tozeroy",
+              fillcolor = 'rgba(136,86,167,0.5)'
+  )  %>%
+  layout(xaxis = list(title = input$modvar)
+  )
+
