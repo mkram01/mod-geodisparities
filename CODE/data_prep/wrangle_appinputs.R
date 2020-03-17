@@ -48,7 +48,7 @@ rm(list = ls())
 # -------------------------------------- set up environment ---------------------------------------- #
 ######################################################################################################
 #load packages
-pacman::p_load(data.table,sf,dplyr,rgeos, tmap, tidyverse, geojsonsf, geojsonio, tidyr, plotly)
+pacman::p_load(data.table,sf,dplyr,rgeos, tmap, tidyverse, geojsonsf, geojsonio, tidyr, plotly, broom)
 
 #set mapbox token if needed - https://docs.mapbox.com/help/glossary/access-token/
 #Sys.setenv("MAPBOX_TOKEN" = "insert token here")
@@ -724,16 +724,19 @@ eliminated <- subset(testdf, testdf$`Preterm birth, Total` > (Q[1] - 1.5*iqr) &
            title = "Test title")
 
 #scatter plot - loess fit
-mfit <- loess(testdf$`% Poverty` ~ testdf$`Preterm birth, Total`, data = testdf)
-bestfit <- lm(testdf$`% Poverty` ~ testdf$`Preterm birth, Total`, data = testdf)
+
+  
+testdf <- testdf %>%
+    filter(!is.na(testdf$`Preterm birth, Hispanic:White Risk ratio`), !is.na(testdf$`% Poverty`)) 
+mfit <- loess(testdf$`% Poverty` ~ testdf$`Preterm birth, Hispanic:White Risk ratio`, data = testdf, soan = 1, na.action = na.omit)
+bestfit <- lm(testdf$`% Poverty` ~ testdf$`Preterm birth, Hispanic:White Risk ratio`, data = testdf)
 
   testdf %>%
     plot_ly(x = ~testdf$`% Poverty`, color = I("black")) %>%
-    add_markers(y = ~testdf$`Preterm birth, Total`,  showlegend = FALSE) %>% #text = county_name,
-    add_lines(y = ~bestfit$model[1],
-              x = ~bestfit$model[2],
-              line = list(color = 'rgba(7, 164, 181, 1)'),
-              name = "Line of best fit") %>%
+    add_markers(y = ~testdf$`Preterm birth, Hispanic:White Risk ratio`,  showlegend = FALSE) %>% #text = county_name,
+    add_lines(y = ~fitted(loess(testdf$`% Poverty` ~ testdf$`Preterm birth, Hispanic:White Risk ratio`, span = 1, na.action = na.omit)),
+                line = list(color = 'rgba(7, 164, 181, 1)'),
+                name = "Loess Smoother") %>%
     add_ribbons(data = augment(mfit),
                 ymin = ~.fitted - 1.96 * .se.fit,
                 ymax = ~.fitted + 1.96 * .se.fit,
@@ -743,7 +746,23 @@ bestfit <- lm(testdf$`% Poverty` ~ testdf$`Preterm birth, Total`, data = testdf)
   layout(xaxis = list(title = "poverty"),
          yaxis = list(title = "whatever"),
          legend = list(x = 0.80, y = 0.90))
+  
 
+  
+  testdf %>%
+    plot_ly(x = ~testdf$`% Poverty`, color = I("black")) %>%
+    add_markers(y = ~testdf$`Preterm birth, Hispanic:White Risk ratio`,  showlegend = FALSE) %>% #text = county_name,
+    add_lines(y = ~fitted(loess(testdf$`% Poverty` ~ testdf$`Preterm birth, Hispanic:White Risk ratio`, span = 1, na.action = na.omit)),
+              line = list(color = 'rgba(7, 164, 181, 1)'),
+              name = "Loess Smoother",
+              x = ~testdf$`% Poverty`
+                ) 
+
+  test2 <- testdf[!is.na(testdf$`Preterm birth, Hispanic:White Risk ratio`),]
+  test3 <- testdf[(!is.na(testdf$`Preterm birth, Hispanic:White Risk ratio`)) && (!is.na(testdf$`% Poverty`)),]
+
+  
+  
   
   
   
